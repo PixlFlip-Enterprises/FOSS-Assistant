@@ -7,22 +7,28 @@
 # DTE (date and time), etc.
 
 def load(user):
-    file = open('Functions/Profiles/' + user + '-profile.txt')
-    returnList = []
+    file = open('Functions/Profiles/profile.csv')
     for line in file:
-        returnList.append(line)
-    return returnList
+        if line.__contains__(user):
+            return line
+    return "NO USER"
 
 
 # creating a new user profile
 def create(user, password, email, emailPassword):
-    file = open('Functions/Profiles/' + user + '-profile.txt', "a")
-    file.writelines([password, email, emailPassword])
+    file = open('Functions/Profiles/profile.csv', "a")
+    newProfile = user + ',' + password + ',' + email + ',' + emailPassword
+    file.writelines(newProfile)
     file.close()
 
 
 def isProfile(user):
-    if open('Functions/Profiles/' + user + '-profile.txt') == FileNotFoundError:
-        return False
-    else:
-        return True
+    file = open('Functions/Profiles/profile.csv', "r")
+    fileContent = []
+    for line in file:
+        fileContent.append(line)
+
+    for line in fileContent:
+        if line.__contains__(user):
+            return True
+    return False

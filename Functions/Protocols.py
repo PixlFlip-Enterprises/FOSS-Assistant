@@ -32,7 +32,7 @@ def byteToStr(bytesToConvert):
 
 def loadStartupParameters():
     # check/verify all needed parameters exist
-    if not os.path.isfile('/Functions/Program/startup.txt'):
+    if not os.path.isfile(currentDirectory + '/Functions/Program/startup.txt'):
         print("Failed Startup. Initializing Setup Protocol")
         firstTimeSetup()  # run first time setup
 
@@ -135,12 +135,12 @@ def firstTimeSetup():
     profileParams.append(input("= Enter this device's classification (mobile, work): "))
 
     # create startup file
-    open('/Functions/Program/startup.txt', 'x')
-    with open('/Functions/Program/startup.txt', 'w') as f:
+    open(currentDirectory + '/Functions/Program/startup.txt', 'x')
+    with open(currentDirectory + '/Functions/Program/startup.txt', 'w') as f:
         for line in startupParams:
             f.write(line)
     # create startup file
-    open('/Functions/Profiles/' + profileParams[0], 'x')
-    with open('/Functions/Profiles/' + profileParams[0], 'w') as f:
+    open(currentDirectory + '/Functions/Profiles/' + profileParams[0], 'x')
+    with open(currentDirectory + '/Functions/Profiles/' + profileParams[0], 'w') as f:
         for line in profileParams:
             f.write(line)
