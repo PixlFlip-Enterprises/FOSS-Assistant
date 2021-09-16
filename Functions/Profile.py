@@ -5,9 +5,12 @@
 # third email password
 # Sequence of events on startup coded as three char IDs. Example: SLK (sherlock username), RIC (rickroll),
 # DTE (date and time), etc.
+import os
+
+currentDirectory = os.getcwd()
 
 def load(user):
-    file = open('Functions/Profiles/profile.csv')
+    file = open(currentDirectory + '/Functions/Profiles/profiles.csv')
     for line in file:
         if line.__contains__(user):
             return line
@@ -16,14 +19,14 @@ def load(user):
 
 # creating a new user profile
 def create(user, password, email, emailPassword):
-    file = open('Functions/Profiles/profile.csv', "a")
+    file = open(currentDirectory + '/Functions/Profiles/profiles.csv', "a")
     newProfile = user + ',' + password + ',' + email + ',' + emailPassword
     file.writelines(newProfile)
     file.close()
 
 
 def isProfile(user):
-    file = open('Functions/Profiles/profile.csv', "r")
+    file = open(currentDirectory + '/Functions/Profiles/profiles.csv', "r")
     fileContent = []
     for line in file:
         fileContent.append(line)

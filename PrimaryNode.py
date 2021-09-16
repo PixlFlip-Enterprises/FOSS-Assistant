@@ -14,7 +14,7 @@ print("=========================================================================
 print("                          FOSS Assistant V" + startupParams[0])
 print("============================================================================")
 
-portBind = 8000
+portBind = 8009
 # create a server at ip and port listed
 serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serv.bind(('0.0.0.0', portBind))
