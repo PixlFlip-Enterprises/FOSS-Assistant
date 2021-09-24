@@ -8,7 +8,6 @@ import PrimaryNode
 currentDirectory = os.getcwd()
 
 
-# TODO this is really basic and just returns an array of the entire entry. Maybe spice it up some
 def viewEntry(date):
     file = open(currentDirectory + '/Data/Journal/Journal.csv')
     foundEntry = []
@@ -25,7 +24,6 @@ def addBasicEntry(entry, creationDevice):
     file = open(currentDirectory + '/Data/Journal/Journal.csv', "a")  # append mode
     x = datetime.datetime.now()
     xy = x.__str__().replace(" ", "")
-    # TODO the date is messed up and is therefore unreadable by DayOne App. Fix
     file.write("\n" + xy + ',"' + entry + '",UUID Unspecified,0,,,,'+creationDevice+',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,')
     file.close()
 
@@ -34,7 +32,6 @@ def addEntry(entry, starred, creationDevice, timeZone):
     file = open(currentDirectory + '/Data/Journal/Journal.csv', "a")  # append mode
     x = datetime.datetime.now()
     xy = x.__str__().replace(" ", "")
-    # TODO the date is messed up and is therefore unreadable by DayOne App. Fix
     file.write("\n" + xy + ',"' + entry + '",UUID Unspecified,0,'+starred+',,,'+creationDevice+','+timeZone+',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,')
     file.close()
 
