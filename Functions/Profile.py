@@ -34,7 +34,7 @@ def create(user, password, email, emailPassword):
 
     try:
         # Execute the SQL command
-        cursor.execute("INSERT INTO PROFILES(USER, PASSWORD, EMAIL, EMAILPASS) VALUES("+user+", "+password+", "+email+", "+emailPassword+" );")
+        cursor.execute("INSERT INTO PROFILES(USER, PASSWORD, EMAIL, EMAILPASS) VALUES(" + user + ", " + password + ", " + email + ", " + emailPassword + " );")
         # Commit your changes in the database
         db.commit()
     except:

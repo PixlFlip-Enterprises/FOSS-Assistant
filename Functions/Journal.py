@@ -1,9 +1,16 @@
 import datetime
+import os
+
+import MySQLdb
+
+import PrimaryNode
+
+currentDirectory = os.getcwd()
 
 
 # TODO this is really basic and just returns an array of the entire entry. Maybe spice it up some
 def viewEntry(date):
-    file = open('Data/Journal/Journal.csv')
+    file = open(currentDirectory + '/Data/Journal/Journal.csv')
     foundEntry = []
     for line in file:
         if line.__contains__(date):
@@ -15,7 +22,7 @@ def viewEntry(date):
 
 
 def addBasicEntry(entry, creationDevice):
-    file = open('Data/Journal/Journal.csv', "a")  # append mode
+    file = open(currentDirectory + '/Data/Journal/Journal.csv', "a")  # append mode
     x = datetime.datetime.now()
     xy = x.__str__().replace(" ", "")
     # TODO the date is messed up and is therefore unreadable by DayOne App. Fix
@@ -24,7 +31,7 @@ def addBasicEntry(entry, creationDevice):
 
 
 def addEntry(entry, starred, creationDevice, timeZone):
-    file = open('Data/Journal/Journal.csv', "a")  # append mode
+    file = open(currentDirectory + '/Data/Journal/Journal.csv', "a")  # append mode
     x = datetime.datetime.now()
     xy = x.__str__().replace(" ", "")
     # TODO the date is messed up and is therefore unreadable by DayOne App. Fix
@@ -32,8 +39,24 @@ def addEntry(entry, starred, creationDevice, timeZone):
     file.close()
 
 
+    try:
+        db = MySQLdb.connect("localhost", PrimaryNode.startupParams[3], PrimaryNode.startupParams[4], "FOSS_ASSISTANT")
+        cursor = db.cursor()
+        # Execute the SQL command
+        cursor.execute(
+            "INSERT INTO JOURNAL(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(" + xy + ", " + entry + ",UUID Unspecified ," + starred + ", " + creationDevice + ", " + timeZone + " );")
+        # Commit your changes in the database
+        db.commit()
+    except:
+        # Rollback in case there is any error
+        db.rollback()
+
+    # disconnect from server
+    db.close()
+
+
 def appendEntry(month, day, year, entry, starred, creationDevice, timeZone):
-    filename = 'Data/Journal/Journal.csv'
+    filename = currentDirectory + '/Data/Journal/Journal.csv'
     indexNum = 0
     day = day - 1
 
