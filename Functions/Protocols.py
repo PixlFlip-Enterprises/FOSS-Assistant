@@ -96,8 +96,8 @@ def findIntentFromText(messageArray):
         # backup
         return 9
 
-    elif command.__contains__("music") and command.__contains__("artist"):
-        # play all music from one artist
+    elif command.__contains__("import") and command.__contains__("journal"):
+        # imports journal to sql database (in theory)
         return 10
 
     elif command.__contains__("music") and command.__contains__("playlist"):

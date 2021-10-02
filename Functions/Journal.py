@@ -75,3 +75,27 @@ def appendEntry(month, day, year, entry, starred, creationDevice, timeZone):
     with open(filename, "w") as f:
         contents = "".join(contents)
         f.write(contents)
+
+
+def importEntries(directory):
+    file = open(currentDirectory + '/Data/Journal/Journal.csv')
+    foundEntry = []
+    for line in file:
+        foundEntry = line
+        # split message into parts
+        entryArray = [x.strip() for x in foundEntry.split(',')]
+
+        try:
+            db = MySQLdb.connect("localhost", PrimaryNode.startupParams[3], PrimaryNode.startupParams[4], "FOSS_ASSISTANT")
+            cursor = db.cursor()
+            # Execute the SQL command
+            cursor.execute("INSERT INTO JOURNAL(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(" + entryArray[0] + ", " + entryArray[1] + ", " + entryArray[2] + ", " + entryArray[4] + ", " + entryArray[8] + ", " + entryArray[9] + " );")
+            # Commit your changes in the database
+            db.commit()
+        except:
+            # Rollback in case there is any error
+            db.rollback()
+
+        # disconnect from server
+        db.close()
+

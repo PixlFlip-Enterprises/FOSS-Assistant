@@ -8,6 +8,8 @@ import os
 # TODO Add a setup condition check. If first time booting run a command line setup and store to file. Else read + load
 # I hope this works
 # startupParams = version,MusicDirectory,
+from Functions.Journal import currentDirectory
+
 startupParams = Protocols.loadStartupParameters()
 # Music.playVoice("/Functions/Program/Voice/startup.wav")
 print("============================================================================")
@@ -121,6 +123,10 @@ while True:
             # getting all the files in the source directory
             files = os.listdir(src_dir)
             shutil.copytree(src_dir, dest_dir)
+            break
+
+        elif command == 10:
+            Journal.importEntries(currentDirectory + '/Data/Journal/Journal.csv')
             break
 
         else:
