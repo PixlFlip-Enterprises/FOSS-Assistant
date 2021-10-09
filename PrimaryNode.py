@@ -8,7 +8,7 @@ import os
 # TODO Add a setup condition check. If first time booting run a command line setup and store to file. Else read + load
 # I hope this works
 # startupParams = version,MusicDirectory,
-from Functions.Journal import currentDirectory
+currentDirectory = os.getcwd()
 
 startupParams = Protocols.loadStartupParameters()
 # Music.playVoice("/Functions/Program/Voice/startup.wav")
@@ -16,7 +16,7 @@ print("=========================================================================
 print("                          FOSS Assistant V" + startupParams[0])
 print("============================================================================")
 
-portBind = 8009
+portBind = 8008
 # create a server at ip and port listed
 serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serv.bind(('0.0.0.0', portBind))
@@ -48,7 +48,7 @@ while True:
         if not Profile.isProfile(request[0][0]): break
         # password
         profile = Profile.load(request[0][0])
-        if not profile[0].__contains__(request[0][1]): break
+        # if not profile[1].__contains__(request[0][1]): break
 
         # Process Request
         # TODO add arg to base command to basically let it tell if the command num is already there
@@ -69,7 +69,7 @@ while True:
 
             # add entry to Journal
         elif command == 3:
-            Journal.addBasicEntry(commandAndArgs[1], requestingDevice)
+            Journal.addBasicEntry(commandAndArgs[1], requestingDevice, request[0][0])
             returnToClient = "Journal Entry Recorded."
 
         elif command == 4:

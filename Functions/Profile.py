@@ -6,11 +6,12 @@
 # Sequence of events on startup coded as three char IDs. Example: SLK (sherlock username), RIC (rickroll),
 # DTE (date and time), etc.
 import os
-import MySQLdb
+# import MySQLdb
 
-import PrimaryNode
 
 currentDirectory = os.getcwd()
+user = ""
+password = ""
 
 
 def load(user):
@@ -28,9 +29,11 @@ def create(user, password, email, emailPassword):
     file.writelines(newProfile)  # save to file
     file.close()
 
+    '''
     # NOW FOR SQL!
     db = MySQLdb.connect("localhost", PrimaryNode.startupParams[3], PrimaryNode.startupParams[4], "FOSS_ASSISTANT")
     cursor = db.cursor()
+
 
     try:
         # Execute the SQL command
@@ -42,7 +45,7 @@ def create(user, password, email, emailPassword):
         db.rollback()
 
     # disconnect from server
-    db.close()
+    db.close()'''
 
 
 def isProfile(user):
