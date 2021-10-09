@@ -35,8 +35,6 @@ while True:
         # verify data
         if not data: break
         # format data
-        # usr,pass,device,command,commandArg,commandArg2,etc.
-
         # V2 Format     usr,pass,device:commandID:commandArg1,commandArg2,etc.
         request = Protocols.byteToStr(data)
 

@@ -1,15 +1,15 @@
 import datetime
 import os
-
 import MySQLdb
-
 import PrimaryNode
 
+
+# TODO recode all this to work with multiple accounts
 currentDirectory = os.getcwd()
 
 
 def viewEntry(date):
-    file = open(currentDirectory + '/Data/Journal/Journal.csv')
+    file = open(currentDirectory + '/Data/Journal/' + PrimaryNode.request[0][0] + '-journal.csv')
     foundEntry = []
     for line in file:
         if line.__contains__(date):
@@ -21,7 +21,7 @@ def viewEntry(date):
 
 
 def addBasicEntry(entry, creationDevice):
-    file = open(currentDirectory + '/Data/Journal/Journal.csv', "a")  # append mode
+    file = open(currentDirectory + '/Data/Journal/' + PrimaryNode.request[0][0] + '-journal.csv', "a")  # append mode
     x = datetime.datetime.now()
     xy = x.__str__().replace(" ", "")
     file.write("\n" + xy + ',"' + entry + '",UUID Unspecified,0,,,,'+creationDevice+',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,')
@@ -29,13 +29,13 @@ def addBasicEntry(entry, creationDevice):
 
 
 def addEntry(entry, starred, creationDevice, timeZone):
-    file = open(currentDirectory + '/Data/Journal/Journal.csv', "a")  # append mode
+    file = open(currentDirectory + '/Data/Journal/' + PrimaryNode.request[0][0] + '-journal.csv', "a")  # append mode
     x = datetime.datetime.now()
     xy = x.__str__().replace(" ", "")
     file.write("\n" + xy + ',"' + entry + '",UUID Unspecified,0,'+starred+',,,'+creationDevice+','+timeZone+',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,')
     file.close()
 
-
+    '''
     try:
         db = MySQLdb.connect("localhost", PrimaryNode.startupParams[3], PrimaryNode.startupParams[4], "FOSS_ASSISTANT")
         cursor = db.cursor()
@@ -49,11 +49,11 @@ def addEntry(entry, starred, creationDevice, timeZone):
         db.rollback()
 
     # disconnect from server
-    db.close()
+    db.close()'''
 
 
 def appendEntry(month, day, year, entry, starred, creationDevice, timeZone):
-    filename = currentDirectory + '/Data/Journal/Journal.csv'
+    filename = currentDirectory + '/Data/Journal/' + PrimaryNode.request[0][0] + '-journal.csv'
     indexNum = 0
     day = day - 1
 
