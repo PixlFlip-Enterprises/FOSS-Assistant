@@ -7,14 +7,10 @@
 # DTE (date and time), etc.
 import os
 # import MySQLdb
-
-
 currentDirectory = os.getcwd()
-user = ""
-password = ""
 
 
-def load(user):
+def getProfile(user):
     file = open(currentDirectory + '/Functions/Profiles/profiles.csv')
     for line in file:
         if line.__contains__(user):

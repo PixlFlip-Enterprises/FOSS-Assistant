@@ -16,14 +16,14 @@ print("=========================================================================
 print("                          FOSS Assistant V" + startupParams[0])
 print("============================================================================")
 
-portBind = 8008
+port = 8008
 # create a server at ip and port listed
 serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serv.bind(('0.0.0.0', portBind))
+serv.bind(('0.0.0.0', port))
 
 serv.listen()
 # TODO make this display the proper IP being used by the device
-print("= Startup Complete. Listening on port " + str(portBind) + " at IP 0.0.0.0")
+print("= Startup Complete. Listening on port " + str(port) + " at IP 0.0.0.0")
 # run this code forever
 while True:
     # I have no idea what this code does
@@ -47,7 +47,7 @@ while True:
         # User Login
         if not Profile.isProfile(request[0][0]): break
         # password
-        profile = Profile.load(request[0][0])
+        profile = Profile.getProfile(request[0][0])
         # if not profile[1].__contains__(request[0][1]): break
 
         # Process Request
