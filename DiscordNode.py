@@ -2,7 +2,7 @@
 import discord
 
 # PRIVATE KEY VARIABLES
-TOKEN = 'Nzc5MTAzMDYzNzc5ODM1OTM0.X7bqRQ.79aIq0ECOLaXYcYqORy_G8i2oAk'
+TOKEN = 'dont be an idiot and upload your token to github... like I did'
 
 
 class MyClient(discord.Client):
