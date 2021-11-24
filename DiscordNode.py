@@ -2,7 +2,8 @@
 import discord
 
 # PRIVATE KEY VARIABLES
-TOKEN = 'dont be an idiot and upload your token to github... like I did'
+TOKEN = ''
+PREFIX = '/'
 
 
 class MyClient(discord.Client):
@@ -15,8 +16,11 @@ class MyClient(discord.Client):
         if message.author == self.user:
             return
 
-        if message.content == 'ping':
+        if message.content == (PREFIX + 'ping'):
             await message.channel.send('pong')
+
+        if message.content == (PREFIX + 'journal'):
+            await message.channel.send('the data you are trying to access is unavailable.')
 
 
 client = MyClient()
