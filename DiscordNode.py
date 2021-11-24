@@ -22,6 +22,16 @@ class MyClient(discord.Client):
         if message.content == (PREFIX + 'journal'):
             await message.channel.send('the data you are trying to access is unavailable.')
 
+        if message.content.startswith('/greet'):
+            channel = message.channel
+            await channel.send('Say hello!')
+
+            def check(m):
+                return m.content == 'hello' and m.channel == channel
+
+            msg = await client.wait_for('message', check)
+            await channel.send('Hello {.author}!'.format(msg))
+
 
 client = MyClient()
 
