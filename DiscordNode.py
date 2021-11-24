@@ -6,6 +6,7 @@ TOKEN = ''
 PREFIX = '/'
 
 
+
 class MyClient(discord.Client):
 
     async def on_ready(self):
