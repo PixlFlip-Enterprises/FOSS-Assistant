@@ -1,10 +1,11 @@
-# Work with Python 3.6
+import wikipedia
 import discord
 
 # PRIVATE KEY VARIABLES
-TOKEN = ''
-PREFIX = '/'
+from discord.ext.commands import bot
 
+TOKEN = 'not making this mistake again'
+PREFIX = '/'
 
 
 class MyClient(discord.Client):
@@ -17,12 +18,32 @@ class MyClient(discord.Client):
         if message.author == self.user:
             return
 
+        # ===================== Ping =====================
         if message.content == (PREFIX + 'ping'):
             await message.channel.send('pong')
 
-        if message.content == (PREFIX + 'journal'):
-            await message.channel.send('the data you are trying to access is unavailable.')
+        # =====================  Troll Commands  =====================
+        if message.content == (PREFIX + 'submit'):
+            await message.channel.send('I will not comply. Don\'t try /forcesubmit')
 
+        if message.content == (PREFIX + 'forcesubmit'):
+            await message.channel.send('Foolish mortal. ')
+
+        # ===================== Journal =====================
+        # shelved for now. Needs to scan contact database for a matching discord to contact, then load their journal
+        # and return or post whatever sub command is issued.
+        if message.content == (PREFIX + 'journal'):
+            # set channel to same as one command issued in
+            channel = message.channel
+            # we know the command now parse sub command always at char value 9
+            # 1 entered meaning they want to view entry
+            if (message.content[-9:]) == '1':
+                await channel.send('returned journal entry')
+            # send message to channel if no other data given
+            await channel.send(
+                'Please Select An Option:\n 1 | View Entry\n 2 | Add Entry\n 3 | Delete Entry\n 4 | Export Journal')
+
+        # ===================== Greet =====================
         if message.content.startswith('/greet'):
             channel = message.channel
             await channel.send('Say hello!')
@@ -30,9 +51,25 @@ class MyClient(discord.Client):
             def check(m):
                 return m.content == 'hello' and m.channel == channel
 
-            msg = await client.wait_for('message', check)
+            msg = await client.wait_for('message', check=check)
             await channel.send('Hello {.author}!'.format(msg))
 
+        # ===================== Wikipedia =====================
+        # takes message, looks for a match on wikipedia, and returns article summary
+        if message.content.startswith(PREFIX + 'wiki'):
+            # substring extract user query, pass to wikipedia, and return summary
+            try:
+                summary = wikipedia.summary(message.content[-6:], 7)
+                await message.channel.send('Wikipedia Top Result: ' + summary)
+            except:
+                await message.channel.send('No Data Found From Wikipedia')
+
+    async def play(ctx):
+        guild = ctx.guild
+        voice_client: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=guild)
+        audio_source = discord.FFmpegPCMAudio('vuvuzela.mp3')
+        if not voice_client.is_playing():
+            voice_client.play(audio_source, after=None)
 
 client = MyClient()
 
