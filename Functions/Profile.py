@@ -19,9 +19,9 @@ def getProfile(user):
 
 
 # creating a new user profile
-def create(user, password, email, emailPassword):
+def create(user, password, email, emailPassword, discord):
     file = open(currentDirectory + '/Functions/Profiles/profiles.csv', "a")  # open and read file
-    newProfile = user + ',' + password + ',' + email + ',' + emailPassword  # create new profile
+    newProfile = user + ',' + password + ',' + email + ',' + emailPassword + ',' + discord # create new profile
     file.writelines(newProfile)  # save to file
     file.close()
 
@@ -54,3 +54,26 @@ def isProfile(user):
         if line.__contains__(user):
             return True
     return False
+
+
+def isProfileDiscord(discordtag):
+    file = open(currentDirectory + '/Functions/Profiles/profiles.csv', "r")
+    fileContent = []
+    for line in file:
+        fileContent.append(line)
+
+    for line in fileContent:
+        if line.__contains__(discordtag):
+            return True
+    return False
+
+def getProfileDiscord(discordtag):
+    file = open(currentDirectory + '/Functions/Profiles/profiles.csv', "r")
+    fileContent = []
+    for line in file:
+        fileContent.append(line)
+
+    for line in fileContent:
+        if line.__contains__(discordtag):
+            return line.split(',')[0]
+    return "Dump"

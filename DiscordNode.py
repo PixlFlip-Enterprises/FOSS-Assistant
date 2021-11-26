@@ -4,7 +4,9 @@ import discord
 # PRIVATE KEY VARIABLES
 from discord.ext.commands import bot
 
-TOKEN = 'not making this mistake again'
+from Functions import Profile, Journal
+
+TOKEN = 'example token'
 PREFIX = '/'
 
 
@@ -18,30 +20,53 @@ class MyClient(discord.Client):
         if message.author == self.user:
             return
 
-        # ===================== Ping =====================
+        # ============================ Ping ============================
         if message.content == (PREFIX + 'ping'):
             await message.channel.send('pong')
 
-        # =====================  Troll Commands  =====================
+        # ============================  Troll Commands  ============================
         if message.content == (PREFIX + 'submit'):
             await message.channel.send('I will not comply. Don\'t try /forcesubmit')
 
         if message.content == (PREFIX + 'forcesubmit'):
             await message.channel.send('Foolish mortal. ')
 
-        # ===================== Journal =====================
+
+
+
+        # ============================ Journal ============================
         # shelved for now. Needs to scan contact database for a matching discord to contact, then load their journal
         # and return or post whatever sub command is issued.
-        if message.content == (PREFIX + 'journal'):
+        if message.content.startswith(PREFIX + 'journal'):
             # set channel to same as one command issued in
             channel = message.channel
             # we know the command now parse sub command always at char value 9
+
             # 1 entered meaning they want to view entry
-            if (message.content[-9:]) == '1':
+            if (message.content[9]) == '1':
+                # parse next part for a date
+                # return entry of matching user and date
                 await channel.send('returned journal entry')
+
+            # 2 entered meaning new entry
+            elif (message.content[9]) == '2':
+                # format all remaining information in the message and store in variable
+                entry = message.content[10:]
+                # check if a profile exists
+                if Profile.isProfileDiscord(str(message.author)):
+                    # add the entry
+                    Journal.addBasicEntry(entry, "DiscordClient", Profile.getProfileDiscord(str(message.author)))
+                    # tell the user the entry was recorded
+                    await channel.send('Entry Recorded.')
+                else:
+                    # Failed to find profile
+                    await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
             # send message to channel if no other data given
-            await channel.send(
-                'Please Select An Option:\n 1 | View Entry\n 2 | Add Entry\n 3 | Delete Entry\n 4 | Export Journal')
+            #await channel.send('Please Select An Option:\n 1 | View Entry\n 2 | Add Entry\n 3 | Delete Entry\n 4 | Export Journal')
+
+
+
+
 
         # ===================== Greet =====================
         if message.content.startswith('/greet'):
