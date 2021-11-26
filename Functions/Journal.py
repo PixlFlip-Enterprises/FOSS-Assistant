@@ -99,3 +99,11 @@ def importEntries(directory):
         # disconnect from server
         db.close()'''
 
+
+def isEntry(date, user):
+    file = open(currentDirectory + '/Data/Journal/' + user + '-journal.csv')
+    foundEntry = []
+    for line in file:
+        if line.__contains__(date):
+            return True
+    return False

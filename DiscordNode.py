@@ -46,7 +46,19 @@ class MyClient(discord.Client):
             if (message.content[9]) == '1':
                 # parse next part for a date
                 # return entry of matching user and date
-                await channel.send('returned journal entry')
+                date = message.content[10:]
+                # check if a profile exists
+                if Profile.isProfileDiscord(str(message.author)):
+                    # check if the entry exists
+                    if Journal.isEntry(date, Profile.getProfileDiscord(str(message.author))):
+                        entry = Journal.viewEntry(date, Profile.getProfileDiscord(str(message.author)))
+                        await channel.send('Entry for the Date ' + date + ': \n' + entry[1])
+                    else:
+                        # return error to user
+                        await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - ')
+                else:
+                    # Failed to find profile
+                    await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
 
             # 2 entered meaning new entry
             elif (message.content[9]) == '2':
