@@ -1,20 +1,21 @@
 import wikipedia
 import discord
-
-# PRIVATE KEY VARIABLES
-from discord.ext.commands import bot
-
+import os
 from Functions import Profile, Journal
 
-TOKEN = 'example token'
+# All key (read top level) variables here
+TOKEN = 'not making this mistake again'
 PREFIX = '/'
+currentDirectory = os.getcwd()
+# End Key Variables ======================
 
 
 class MyClient(discord.Client):
-
+    # Startup Bot
     async def on_ready(self):
         print('Logged on as', self.user)
 
+    # Runs When Message is Sent that is Visible to Bot
     async def on_message(self, message):
         # don't respond to ourselves
         if message.author == self.user:
@@ -29,7 +30,7 @@ class MyClient(discord.Client):
             await message.channel.send('I will not comply. Don\'t try /forcesubmit')
 
         if message.content == (PREFIX + 'forcesubmit'):
-            await message.channel.send('Foolish mortal. ')
+            await message.channel.send('You\'re an idiot.')
 
 
 
@@ -51,7 +52,9 @@ class MyClient(discord.Client):
                 if Profile.isProfileDiscord(str(message.author)):
                     # check if the entry exists
                     if Journal.isEntry(date, Profile.getProfileDiscord(str(message.author))):
-                        entry = Journal.viewEntry(date, Profile.getProfileDiscord(str(message.author)))
+                        # Get the entry
+                        entry = Journal.getFullEntry(date, Profile.getProfileDiscord(str(message.author)))
+                        # Return the entry and related information
                         await channel.send('Entry for the Date ' + date + ': \n' + entry[1])
                     else:
                         # return error to user
@@ -101,12 +104,6 @@ class MyClient(discord.Client):
             except:
                 await message.channel.send('No Data Found From Wikipedia')
 
-    async def play(ctx):
-        guild = ctx.guild
-        voice_client: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=guild)
-        audio_source = discord.FFmpegPCMAudio('vuvuzela.mp3')
-        if not voice_client.is_playing():
-            voice_client.play(audio_source, after=None)
 
 client = MyClient()
 

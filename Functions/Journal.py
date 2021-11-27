@@ -3,19 +3,28 @@ import os
 # import MySQLdb
 
 
-# TODO recode all this to work with multiple accounts
 currentDirectory = os.getcwd()
 
 
-def viewEntry(date, user):
+def getFullEntry(date, user):
     file = open(currentDirectory + '/Data/Journal/' + user + '-journal.csv')
     foundEntry = []
     for line in file:
         if line.__contains__(date):
             foundEntry = line
     # split message into parts
-    entryArray = [x.strip() for x in foundEntry.split(',')]
-
+    # first part split using quotes
+    entryArrayCenter = [x.strip() for x in foundEntry.split('"')]
+    # now split the newly created 0 and 2 spots
+    entryArrayLeft = [x.strip() for x in entryArrayCenter[0].split(',')]
+    entryArrayRight = [x.strip() for x in entryArrayCenter[2].split(',')]
+    # conjoin all three and viola the entry will be correct
+    entryArrayRight.remove(entryArrayLeft[1])
+    entryArrayLeft.remove(entryArrayLeft[1])
+    entryArray = entryArrayLeft
+    entryArray.append(entryArrayCenter[1])
+    entryArray += entryArrayRight
+    # entryArray can be returned to user
     return entryArray
 
 
@@ -76,13 +85,15 @@ def appendEntry(user, month, day, year, entry, starred, creationDevice, timeZone
         f.write(contents)
 
 
-def importEntries(directory):
-    file = open(currentDirectory + '/Data/Journal/Journal.csv')
+def importEntriesToDatabase(user):
+    # Open file
+    file = open(currentDirectory + '/Data/Journal/' + user + '-journal.csv')
+    # get all entries and store in array
+    i = 0
     foundEntry = []
     for line in file:
-        foundEntry = line
-        # split message into parts
-        entryArray = [x.strip() for x in foundEntry.split(',')]
+        foundEntry[i] = line
+        i = i+1
 
         '''
         try:

@@ -124,7 +124,7 @@ while True:
             break
 
         elif command == 10:
-            Journal.importEntries(currentDirectory + '/Data/Journal/Journal.csv')
+            Journal.importEntriesToDatabase(currentDirectory + '/Data/Journal/Journal.csv')
             break
 
         else:
