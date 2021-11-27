@@ -5,6 +5,7 @@ from Functions import Profile, Journal
 
 # All key (read top level) variables here
 TOKEN = 'not making this mistake again'
+TOKEN = 'Nzc5MTAzMDYzNzc5ODM1OTM0.X7bqRQ.kxdfllNzy66qNQPe0LbycMa0Jjc'
 PREFIX = '/'
 currentDirectory = os.getcwd()
 # End Key Variables ======================
@@ -47,7 +48,7 @@ class MyClient(discord.Client):
             if (message.content[9]) == '1':
                 # parse next part for a date
                 # return entry of matching user and date
-                date = message.content[10:]
+                date = message.content[11:]
                 # check if a profile exists
                 if Profile.isProfileDiscord(str(message.author)):
                     # check if the entry exists
@@ -66,7 +67,7 @@ class MyClient(discord.Client):
             # 2 entered meaning new entry
             elif (message.content[9]) == '2':
                 # format all remaining information in the message and store in variable
-                entry = message.content[10:]
+                entry = message.content[11:]
                 # check if a profile exists
                 if Profile.isProfileDiscord(str(message.author)):
                     # add the entry

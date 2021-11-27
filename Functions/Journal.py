@@ -113,7 +113,6 @@ def importEntriesToDatabase(user):
 
 def isEntry(date, user):
     file = open(currentDirectory + '/Data/Journal/' + user + '-journal.csv')
-    foundEntry = []
     for line in file:
         if line.__contains__(date):
             return True
