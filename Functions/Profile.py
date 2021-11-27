@@ -9,7 +9,6 @@ import os
 # import MySQLdb
 currentDirectory = os.getcwd()
 
-
 def getProfile(user):
     file = open(currentDirectory + '/Functions/Profiles/profiles.csv')
     for line in file:
