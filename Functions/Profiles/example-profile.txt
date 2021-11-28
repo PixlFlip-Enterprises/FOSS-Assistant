@@ -1,4 +1,0 @@
-password for user login
-default email
-default email password
-device classification (home, mobile)
