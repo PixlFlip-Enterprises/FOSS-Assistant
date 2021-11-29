@@ -1,11 +1,10 @@
 import wikipedia
 import discord
 import os
-from Functions import Profile, Journal
+from Functions import Profile, Journal, Protocols
 
 # All key (read top level) variables here
-TOKEN = 'not making this mistake again'
-TOKEN = 'Nzc5MTAzMDYzNzc5ODM1OTM0.X7bqRQ.kxdfllNzy66qNQPe0LbycMa0Jjc'
+TOKEN = "ug"
 PREFIX = '/'
 currentDirectory = os.getcwd()
 # End Key Variables ======================
@@ -24,7 +23,7 @@ class MyClient(discord.Client):
 
         # ============================ Ping ============================
         if message.content == (PREFIX + 'ping'):
-            await message.channel.send('pong')
+            await message.channel.send('pong', delete_after=10)
 
         # ============================  Troll Commands  ============================
         if message.content == (PREFIX + 'submit'):
@@ -36,7 +35,7 @@ class MyClient(discord.Client):
 
 
 
-        # ============================ Journal ============================
+        # ============================      Journal     ==============================
         # shelved for now. Needs to scan contact database for a matching discord to contact, then load their journal
         # and return or post whatever sub command is issued.
         if message.content.startswith(PREFIX + 'journal'):
@@ -55,11 +54,11 @@ class MyClient(discord.Client):
                     if Journal.isEntry(date, Profile.getProfileDiscord(str(message.author))):
                         # Get the entry
                         entry = Journal.getFullEntry(date, Profile.getProfileDiscord(str(message.author)))
-                        # Return the entry and related information
-                        await channel.send('Entry for the Date ' + date + ': \n' + entry[1])
+                        # Return the entry and related information and delete after 120 seconds for security
+                        await channel.send('Entry for the Date ' + date + ': \n' + entry[1], delete_after=120)
                     else:
                         # return error to user
-                        await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - ')
+                        await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - )')
                 else:
                     # Failed to find profile
                     await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
@@ -77,8 +76,18 @@ class MyClient(discord.Client):
                 else:
                     # Failed to find profile
                     await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
+
+            # 3 entered meaning delete entry
+            elif (message.content[9]) == '3':
+                await channel.send('Command Not Finished')
+
+            # 4 entered meaning export journal
+            elif (message.content[9]) == '4':
+                await channel.send('Command Not Finished')
+
             # send message to channel if no other data given
-            #await channel.send('Please Select An Option:\n 1 | View Entry\n 2 | Add Entry\n 3 | Delete Entry\n 4 | Export Journal')
+            else:
+                await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Entry\n 2 | Add Entry\n 3 | Delete Entry\n 4 | Export Journal')
 
 
 

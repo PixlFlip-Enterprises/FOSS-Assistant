@@ -7,10 +7,10 @@
 # DTE (date and time), etc.
 import os
 # import MySQLdb
-currentDirectory = os.getcwd()
+directory = os.getcwd() + '/Data/profiles.csv'
 
 def getProfile(user):
-    file = open(currentDirectory + '/Functions/Profiles/profiles.csv')
+    file = open(directory)
     for line in file:
         if line.__contains__(user):
             return line
@@ -19,7 +19,7 @@ def getProfile(user):
 
 # creating a new user profile
 def create(user, password, email, emailPassword, discord):
-    file = open(currentDirectory + '/Functions/Profiles/profiles.csv', "a")  # open and read file
+    file = open(directory, "a")  # open and read file
     newProfile = user + ',' + password + ',' + email + ',' + emailPassword + ',' + discord # create new profile
     file.writelines(newProfile)  # save to file
     file.close()
@@ -44,7 +44,7 @@ def create(user, password, email, emailPassword, discord):
 
 
 def isProfile(user):
-    file = open(currentDirectory + '/Functions/Profiles/profiles.csv', "r")
+    file = open(directory, "r")
     fileContent = []
     for line in file:
         fileContent.append(line)
@@ -56,7 +56,7 @@ def isProfile(user):
 
 
 def isProfileDiscord(discordtag):
-    file = open(currentDirectory + '/Functions/Profiles/profiles.csv', "r")
+    file = open(directory, "r")
     fileContent = []
     for line in file:
         fileContent.append(line)
@@ -66,8 +66,9 @@ def isProfileDiscord(discordtag):
             return True
     return False
 
+
 def getProfileDiscord(discordtag):
-    file = open(currentDirectory + '/Functions/Profiles/profiles.csv', "r")
+    file = open(directory, "r")
     fileContent = []
     for line in file:
         fileContent.append(line)

@@ -38,11 +38,9 @@ while True:
         # V2 Format     usr,pass,device:commandID:commandArg1,commandArg2,etc.
         request = Protocols.byteToStr(data)
 
-        # log to console for ease of seeing what's going on
-        print("= The profile " + request[0][0] + " has issued the following command: " + request[1][0])
-        logStr = request[0][0] + "," + request[0][2] + "," + request[1][0]
         requestingDevice = request[0][2]
-        Protocols.debugLog(logStr)
+        # log to console for ease of seeing what's going on
+        Protocols.debugLog(request[0][0], request[1][0], request[0][2])
 
         # User Login
         if not Profile.isProfile(request[0][0]): break

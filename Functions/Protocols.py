@@ -44,11 +44,20 @@ def loadStartupParameters():
     return returnList
 
 
-def debugLog(msg):
+# Logs any issued command to file and prints to console
+def debugLog(user, command, requestDevice):
+    # Print to console
+    print("= User " + user + " has issued the following command: " + command)
+    # compile string of data for file
+    logStr = user + "," + requestDevice + "," + command
+    # open file
     file = open(currentDirectory + '/Functions/Program/log.txt', "a")  # append mode
+    # get date and time of command issued
     x = datetime.datetime.now()
     xy = x.__str__().replace(" ", "")
-    file.write("\n" + xy + "," + msg)
+    # print line with date to file
+    file.write("\n" + xy + "," + logStr)
+    # close file and return
     file.close()
 
 
