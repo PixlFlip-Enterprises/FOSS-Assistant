@@ -1,7 +1,7 @@
 import wikipedia
 import discord
 import os
-from Functions import Profile, Journal, Protocols
+from Functions import Profile, Journal, Protocols, Email
 
 # All key (read top level) variables here
 TOKEN = ""
@@ -28,8 +28,15 @@ class MyClient(discord.Client):
 
         # help command
         if message.content == (PREFIX + 'help'):
-            await message.channel.send('I am Blink. \'t try /forcesubmit')
-            await message.channel.send('I am Blink 2. \'t try /forcesubmit')
+            # open discord help file
+            file = open(currentDirectory + '/Data/discordhelp.txt')
+            returnList = ""
+            for line in file:
+                returnList += line
+            await message.channel.send(returnList)
+
+        # timer command
+
 
         # ============================  Troll Commands  ============================
         if message.content == (PREFIX + 'submit'):
@@ -38,6 +45,30 @@ class MyClient(discord.Client):
         if message.content == (PREFIX + 'forcesubmit'):
             await message.channel.send('You\'re an idiot.')
 
+        # ============================      Email     ==============================
+        if message.content.startswith(PREFIX + 'email'):
+            # set channel to same as one command issued in
+            channel = message.channel
+            # warn them about security but send it anyway
+            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shorlty after send.\n Also for security it is recommended you do this in DM.')
+            # sub command value at 7
+
+            # 1 entered meaning they want to view inbox.
+            if (message.content[7]) == '1':
+                # verify permissions and get email + password
+                if Profile.isProfileDiscord(str(message.author)):
+                     # get profile
+                     profile = Profile.getProfileDiscord(str(message.author))
+                     # get inbox
+                     inbox = Email.userViewGetInbox(profile[0], profile[1])
+                     # Return the entry and related information and delete after 120 seconds for security
+                     await channel.send(" " + inbox, delete_after=120)
+                else:
+                    # Failed to find profile
+                    await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
+            else:
+                # no valid option chosen
+                await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Inbox\n 2 | Send Email')
 
 
 
@@ -55,9 +86,9 @@ class MyClient(discord.Client):
                 # check if a profile exists
                 if Profile.isProfileDiscord(str(message.author)):
                     # check if the entry exists
-                    if Journal.isEntry(date, Profile.getProfileDiscord(str(message.author))):
+                    if Journal.isEntry(date, Profile.getProfileUsernameDiscord(str(message.author))):
                         # Get the entry
-                        entry = Journal.getFullEntry(date, Profile.getProfileDiscord(str(message.author)))
+                        entry = Journal.getFullEntry(date, Profile.getProfileUsernameDiscord(str(message.author)))
                         # Return the entry and related information and delete after 120 seconds for security
                         await channel.send('Entry for the Date ' + date + ': \n' + entry[1], delete_after=120)
                     else:
@@ -74,7 +105,7 @@ class MyClient(discord.Client):
                 # check if a profile exists
                 if Profile.isProfileDiscord(str(message.author)):
                     # add the entry
-                    Journal.addBasicEntry(entry, "DiscordClient", Profile.getProfileDiscord(str(message.author)))
+                    Journal.addBasicEntry(entry, "DiscordClient", Profile.getProfileUsernameDiscord(str(message.author)))
                     # tell the user the entry was recorded
                     await channel.send('Entry Recorded.')
                 else:
@@ -84,10 +115,6 @@ class MyClient(discord.Client):
             # send message to channel if no other data given
             else:
                 await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Entry\n 2 | Add Entry')
-
-
-
-
 
         # ===================== Greet =====================
         if message.content.startswith('/greet'):
@@ -109,6 +136,8 @@ class MyClient(discord.Client):
                 await message.channel.send('Wikipedia Top Result: ' + summary)
             except:
                 await message.channel.send('No Data Found From Wikipedia')
+
+        # DYNAMIC COMMANDS (READING INTENT WITH NEUTRAL NET AND/OR KEYWORDS)
 
 
 client = MyClient()

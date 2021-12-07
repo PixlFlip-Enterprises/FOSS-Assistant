@@ -8,11 +8,7 @@ from email.mime.base import MIMEBase
 from bs4 import BeautifulSoup as bs
 
 
-username = "email"
-password = "the email password"
-
-
-def getAllInbox():
+def getAllInbox(username, password):
     M = imaplib.IMAP4_SSL('imap.gmail.com')
     M.login(username, password)
 
@@ -30,7 +26,7 @@ def getAllInbox():
     M.logout()
 
 
-def userViewGetInbox():
+def userViewGetInbox(username, password):
     import imaplib
     import email
     from email.header import decode_header

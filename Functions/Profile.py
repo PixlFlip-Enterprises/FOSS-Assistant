@@ -67,7 +67,7 @@ def isProfileDiscord(discordtag):
     return False
 
 
-def getProfileDiscord(discordtag):
+def getProfileUsernameDiscord(discordtag):
     file = open(directory, "r")
     fileContent = []
     for line in file:
@@ -76,4 +76,16 @@ def getProfileDiscord(discordtag):
     for line in fileContent:
         if line.__contains__(discordtag):
             return line.split(',')[0]
+    return "Dump"
+
+
+def getProfileDiscord(discordtag):
+    file = open(directory, "r")
+    fileContent = []
+    for line in file:
+        fileContent.append(line)
+
+    for line in fileContent:
+        if line.__contains__(discordtag):
+            return line.split(',')
     return "Dump"

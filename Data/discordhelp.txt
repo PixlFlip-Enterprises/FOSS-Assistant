@@ -1,0 +1,13 @@
+I am Blink, PixlFlip's Smart Assistant, Version 1.1
+==========================================
+Base Level Commands:
+/help        | how did you get here if you didn't read this??
+/ping        | gets and returns current ping
+/submit      | troll command
+/wiki <args> | gets wikipedia information for the specified argument
+==========================================
+Security Clearance Level 2 Commands:
+/journal <option> <args>     | Personal Journal with military level security and absolute privacy.
+==========================================
+Other Abilities:
+Dynamic Moderation | I block content on a server to server basis based on rules set for me
