@@ -153,3 +153,12 @@ def firstTimeSetup():
     with open(currentDirectory + '/Functions/Profiles/' + profileParams[0], 'w') as f:
         for line in profileParams:
             f.write(line)
+
+# export all datasheets, settings, etc to another instance. Should save me headaches moving between host devices
+def exportAll():
+    # get all data from mysql databases
+    # reconcile with file data
+    # get all data from files
+    # create a master file for the export (or a zip)
+    # put to directory of choice or default and return
+    print("Nothing here yet!")

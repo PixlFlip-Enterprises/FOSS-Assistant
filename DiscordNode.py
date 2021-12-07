@@ -4,7 +4,7 @@ import os
 from Functions import Profile, Journal, Protocols
 
 # All key (read top level) variables here
-TOKEN = "ug"
+TOKEN = "Nzc5MTAzMDYzNzc5ODM1OTM0.X7bqRQ.dlPvE7DpcqruV5cijU49UU6WTl4"
 PREFIX = '/'
 currentDirectory = os.getcwd()
 # End Key Variables ======================
@@ -77,17 +77,9 @@ class MyClient(discord.Client):
                     # Failed to find profile
                     await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
 
-            # 3 entered meaning delete entry
-            elif (message.content[9]) == '3':
-                await channel.send('Command Not Finished')
-
-            # 4 entered meaning export journal
-            elif (message.content[9]) == '4':
-                await channel.send('Command Not Finished')
-
             # send message to channel if no other data given
             else:
-                await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Entry\n 2 | Add Entry\n 3 | Delete Entry\n 4 | Export Journal')
+                await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Entry\n 2 | Add Entry')
 
 
 
@@ -109,7 +101,7 @@ class MyClient(discord.Client):
         if message.content.startswith(PREFIX + 'wiki'):
             # substring extract user query, pass to wikipedia, and return summary
             try:
-                summary = wikipedia.summary(message.content[-6:], 7)
+                summary = wikipedia.summary(message.content[6:], 7)
                 await message.channel.send('Wikipedia Top Result: ' + summary)
             except:
                 await message.channel.send('No Data Found From Wikipedia')
