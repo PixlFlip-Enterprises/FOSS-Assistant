@@ -4,7 +4,7 @@ import os
 from Functions import Profile, Journal, Protocols
 
 # All key (read top level) variables here
-TOKEN = "Nzc5MTAzMDYzNzc5ODM1OTM0.X7bqRQ.dlPvE7DpcqruV5cijU49UU6WTl4"
+TOKEN = ""
 PREFIX = '/'
 currentDirectory = os.getcwd()
 # End Key Variables ======================
@@ -21,9 +21,15 @@ class MyClient(discord.Client):
         if message.author == self.user:
             return
 
-        # ============================ Ping ============================
+        # ============================ Basics ============================
+        # ping command
         if message.content == (PREFIX + 'ping'):
             await message.channel.send('pong', delete_after=10)
+
+        # help command
+        if message.content == (PREFIX + 'help'):
+            await message.channel.send('I am Blink. \'t try /forcesubmit')
+            await message.channel.send('I am Blink 2. \'t try /forcesubmit')
 
         # ============================  Troll Commands  ============================
         if message.content == (PREFIX + 'submit'):
@@ -36,8 +42,6 @@ class MyClient(discord.Client):
 
 
         # ============================      Journal     ==============================
-        # shelved for now. Needs to scan contact database for a matching discord to contact, then load their journal
-        # and return or post whatever sub command is issued.
         if message.content.startswith(PREFIX + 'journal'):
             # set channel to same as one command issued in
             channel = message.channel
