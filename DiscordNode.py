@@ -1,7 +1,7 @@
 import wikipedia
 import discord
 import os
-from Functions import Profile, Journal, Protocols, Email
+from Functions import User, Journal, Protocols, Email
 
 # All key (read top level) variables here
 TOKEN = ""
@@ -20,6 +20,9 @@ class MyClient(discord.Client):
         # don't respond to ourselves
         if message.author == self.user:
             return
+        # log the command and who did it for diagnosis
+        if message.content.startswith(PREFIX):
+            Protocols.debugLog(User.getProfileUsernameDiscord(str(message.author)), (message.content.split(" ")[0]), "Discord")
 
         # ============================ Basics ============================
         # ping command
@@ -50,19 +53,49 @@ class MyClient(discord.Client):
             # set channel to same as one command issued in
             channel = message.channel
             # warn them about security but send it anyway
-            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shorlty after send.\n Also for security it is recommended you do this in DM.')
+            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shorlty after send.\n Also for security it is recommended you do this in DM.', delete_after=120)
             # sub command value at 7
 
+            # TODO Fix error handling for no variable at char 7 and fix inbox issue as a whole
             # 1 entered meaning they want to view inbox.
             if (message.content[7]) == '1':
                 # verify permissions and get email + password
-                if Profile.isProfileDiscord(str(message.author)):
+                if User.isProfileDiscord(str(message.author)):
                      # get profile
-                     profile = Profile.getProfileDiscord(str(message.author))
+                     profile = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
                      # get inbox
-                     inbox = Email.userViewGetInbox(profile[0], profile[1])
+                     inbox = str(Email.userViewGetInbox(profile.defaultEmail, profile.defaultEmailPassword))
                      # Return the entry and related information and delete after 120 seconds for security
                      await channel.send(" " + inbox, delete_after=120)
+                else:
+                    # Failed to find profile
+                    await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
+
+            # 2 entered meaning they want to send an email.
+            elif (message.content[7]) == '2':
+                # verify permissions and get email + password
+                if User.isProfileDiscord(str(message.author)):
+                    # get profile
+                    profile = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
+                    # split the entire freaking thing to get what we want
+                    stuffWeNeed = message.content.split(" ")
+                    # format should be receiver email, subject, then body
+                    recieverEmail = stuffWeNeed[2]
+                    emailSubject = stuffWeNeed[3]
+                    # the rest is body so we can just stitch it back together. What a mess
+                    body = ""
+                    # pop out the junk
+                    stuffWeNeed.pop(0)
+                    stuffWeNeed.pop(0)
+                    stuffWeNeed.pop(0)
+                    stuffWeNeed.pop(0)
+                    # combine the rest with spaces
+                    for uselessAlone in stuffWeNeed:
+                        body += (uselessAlone + " ")
+                    # finally send the email
+                    Email.sendEmail(profile.defaultEmail, profile.defaultEmailPassword, profile.defaultEmail, recieverEmail, emailSubject, body)
+                    # tell the user we managed to somehow do our job
+                    await channel.send("Email sent. Consider deleting your message to preserve your privacy and keep it off Discord's servers.", delete_after=120)
                 else:
                     # Failed to find profile
                     await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
@@ -84,11 +117,11 @@ class MyClient(discord.Client):
                 # return entry of matching user and date
                 date = message.content[11:]
                 # check if a profile exists
-                if Profile.isProfileDiscord(str(message.author)):
+                if User.isProfileDiscord(str(message.author)):
                     # check if the entry exists
-                    if Journal.isEntry(date, Profile.getProfileUsernameDiscord(str(message.author))):
+                    if Journal.isEntry(date, User.getProfileUsernameDiscord(str(message.author))):
                         # Get the entry
-                        entry = Journal.getFullEntry(date, Profile.getProfileUsernameDiscord(str(message.author)))
+                        entry = Journal.getFullEntry(date, User.getProfileUsernameDiscord(str(message.author)))
                         # Return the entry and related information and delete after 120 seconds for security
                         await channel.send('Entry for the Date ' + date + ': \n' + entry[1], delete_after=120)
                     else:
@@ -103,9 +136,9 @@ class MyClient(discord.Client):
                 # format all remaining information in the message and store in variable
                 entry = message.content[11:]
                 # check if a profile exists
-                if Profile.isProfileDiscord(str(message.author)):
+                if User.isProfileDiscord(str(message.author)):
                     # add the entry
-                    Journal.addBasicEntry(entry, "DiscordClient", Profile.getProfileUsernameDiscord(str(message.author)))
+                    Journal.addBasicEntry(entry, "DiscordClient", User.getProfileUsernameDiscord(str(message.author)))
                     # tell the user the entry was recorded
                     await channel.send('Entry Recorded.')
                 else:

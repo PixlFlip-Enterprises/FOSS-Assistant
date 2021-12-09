@@ -1,13 +1,59 @@
 # profile file syntax:
-# contact ID (for retrieval in Contact.csv
-# primary email password
-# secondary email password
-# third email password
+# contact ID (for retrieval in Contact.csv)
+# password for ID
+# primary email
+# email password
+# discord ID
 # Sequence of events on startup coded as three char IDs. Example: SLK (sherlock username), RIC (rickroll),
 # DTE (date and time), etc.
+
+# TODO restructure this to accomodate tons of new fields, settings for users, and make it easier to get info from (no more stupid array returns and knowing the spot to call)
 import os
 # import MySQLdb
 directory = os.getcwd() + '/Data/profiles.csv'
+
+
+# ==========================================================================================================
+# NOTE: this method should NEVER be called if you are unsure an account exists as there is no error handling
+class Profile(object):
+    def __init__(self, ID):
+        # assign ID
+        self.ID = ID
+        # open file
+        file = open(directory)
+        temp = []
+        # find profile
+        for line in file:
+            if line.__contains__(ID):
+                # save profile to temp
+                temp = line.split(",")
+        # assign variables
+        self._password = temp[1]
+        self._defaultEmail = temp[2]
+        self._defaultEmailPassword = temp[3]
+        self._discord = temp[4]
+
+    @property
+    def password(self):
+        # get password
+        return self._password
+
+    @property
+    def defaultEmail(self):
+        # get default email
+        return self._defaultEmail
+
+    @property
+    def defaultEmailPassword(self):
+        # get default email password
+        return self._defaultEmailPassword
+
+    @property
+    def discord(self):
+        # get discord
+        return self._discord
+# ==========================================================================================================
+
 
 def getProfile(user):
     file = open(directory)

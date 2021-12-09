@@ -26,6 +26,7 @@ def getAllInbox(username, password):
     M.logout()
 
 
+# TODO make this return a uniform, concice array of strings, each string being a message or something similar.
 def userViewGetInbox(username, password):
     import imaplib
     import email

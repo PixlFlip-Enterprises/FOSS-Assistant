@@ -1,5 +1,5 @@
 import socket
-from Functions import Profile, Journal, Protocols, Email, Music
+from Functions import User, Journal, Protocols, Email, Music
 import wikipedia
 import time
 import shutil
@@ -11,7 +11,7 @@ import os
 currentDirectory = os.getcwd()
 
 startupParams = Protocols.loadStartupParameters()
-# Music.playVoice("/Functions/Program/Voice/startup.wav")
+# Music.playVoice("/Functions/ProgramData/Voice/startup.wav")
 print("============================================================================")
 print("                          FOSS Assistant V" + startupParams[0])
 print("============================================================================")
@@ -43,9 +43,9 @@ while True:
         Protocols.debugLog(request[0][0], request[1][0], request[0][2])
 
         # User Login
-        if not Profile.isProfile(request[0][0]): break
+        if not User.isProfile(request[0][0]): break
         # password
-        profile = Profile.getProfile(request[0][0])
+        profile = User.getProfile(request[0][0])
         # if not profile[1].__contains__(request[0][1]): break
 
         # Process Request

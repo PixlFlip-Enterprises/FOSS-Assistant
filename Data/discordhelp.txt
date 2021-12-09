@@ -7,7 +7,8 @@ Base Level Commands:
 /wiki <args> | gets wikipedia information for the specified argument
 ==========================================
 Security Clearance Level 2 Commands:
-/journal <option> <args>     | Personal Journal with military level security and absolute privacy.
+/journal <option> <entry>     | Personal Journal with military level security and absolute privacy.
+/email <option> <one word subject> <body of email>  | Email from the comfort of Discord. Not for secure transmission but for practical use.
 ==========================================
 Other Abilities:
 Dynamic Moderation | I block content on a server to server basis based on rules set for me

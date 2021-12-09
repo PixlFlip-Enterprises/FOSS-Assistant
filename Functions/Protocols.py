@@ -32,12 +32,12 @@ def byteToStr(bytesToConvert):
 
 def loadStartupParameters():
     # check/verify all needed parameters exist
-    if not os.path.isfile(currentDirectory + '/Functions/Program/startup.txt'):
+    if not os.path.isfile(currentDirectory + '/Functions/ProgramData/startup.txt'):
         print("Failed Startup. Initializing Setup Protocol")
         firstTimeSetup()  # run first time setup
 
     # once verified go ahead and startup
-    file = open(currentDirectory + '/Functions/Program/startup.txt')
+    file = open(currentDirectory + '/Functions/ProgramData/startup.txt')
     returnList = []
     for line in file:
         returnList.append(line)
@@ -51,7 +51,7 @@ def debugLog(user, command, requestDevice):
     # compile string of data for file
     logStr = user + "," + requestDevice + "," + command
     # open file
-    file = open(currentDirectory + '/Functions/Program/log.txt', "a")  # append mode
+    file = open(currentDirectory + '/Functions/ProgramData/log.txt', "a")  # append mode
     # get date and time of command issued
     x = datetime.datetime.now()
     xy = x.__str__().replace(" ", "")
@@ -144,8 +144,8 @@ def firstTimeSetup():
     profileParams.append(input("= Enter this device's classification (mobile, work): "))
 
     # create startup file
-    open(currentDirectory + '/Functions/Program/startup.txt', 'x')
-    with open(currentDirectory + '/Functions/Program/startup.txt', 'w') as f:
+    open(currentDirectory + '/Functions/ProgramData/startup.txt', 'x')
+    with open(currentDirectory + '/Functions/ProgramData/startup.txt', 'w') as f:
         for line in startupParams:
             f.write(line)
     # create startup file
