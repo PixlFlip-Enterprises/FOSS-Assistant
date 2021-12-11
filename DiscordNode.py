@@ -6,8 +6,8 @@ from Functions import User, Journal, Protocols, Email
 # All key (read top level) variables here
 SETTINGS = Protocols.Settings()
 TOKEN = SETTINGS.discordBotToken
-PREFIX = '/'
-currentDirectory = os.getcwd()
+PREFIX = SETTINGS.discordBotPrefix
+currentDirectory = SETTINGS.currentDirectory
 # End Key Variables ======================
 
 

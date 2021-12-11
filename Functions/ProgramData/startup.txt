@@ -6,3 +6,5 @@ foss-assistant
 # sql username
 # sql password
 # discord bot token
+# discord bot prefix
+

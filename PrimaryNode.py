@@ -6,14 +6,12 @@ import shutil
 import os
 
 # TODO Add a setup condition check. If first time booting run a command line setup and store to file. Else read + load
-# I hope this works
-# startupParams = version,MusicDirectory,
-currentDirectory = os.getcwd()
+SETTINGS = Protocols.Settings()
+currentDirectory = SETTINGS.currentDirectory
 
-startupParams = Protocols.loadStartupParameters()
 # Music.playVoice("/Functions/ProgramData/Voice/startup.wav")
 print("============================================================================")
-print("                          FOSS Assistant V" + startupParams[0])
+print("                          FOSS Assistant V" + SETTINGS.version)
 print("============================================================================")
 
 port = 8008
@@ -101,7 +99,7 @@ while True:
             res = bytes(returnToClient, 'utf-8')
             conn.send(res)
             conn.close()
-            queue = Music.queueAll(startupParams[1])
+            queue = Music.queueAll(SETTINGS.musicDirectory)
             Music.playQueue(queue)
             break
 

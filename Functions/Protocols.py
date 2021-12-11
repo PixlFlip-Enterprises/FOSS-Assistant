@@ -138,6 +138,8 @@ def firstTimeSetup():
     startupParams.append(input("= Enter mysql Database you want me to use: "))
     startupParams.append(input("= Enter mysql username for me to use: "))
     startupParams.append(input("= Enter mysql password for me to use: "))
+    startupParams.append(input("= Enter Discord bot token: "))
+    startupParams.append(input("= Enter Discord bot prefix: "))
     print("=========================================================================")
     print("Setup of base functions complete. Enter info for admin profile please. ")
     profileParams.append(input("= Enter your Username: ").lower().replace(' ', ''))
@@ -186,6 +188,8 @@ class Settings(object):
         self._sqlUsername = returnList[5]
         self._sqlPassword = returnList[6]
         self._discordBotToken = returnList[7]
+        self._discordBotPrefix = returnList[8]
+        self._currentDirectory = os.getcwd()
 
     @property
     def version(self):
@@ -226,4 +230,14 @@ class Settings(object):
     def discordBotToken(self):
         # get bot token for discord
         return self._discordBotToken
+
+    @property
+    def discordBotPrefix(self):
+        # get version
+        return self._discordBotPrefix
+
+    @property
+    def currentDirectory(self):
+        # get version
+        return self._currentDirectory
 # ==========================================================================================================
