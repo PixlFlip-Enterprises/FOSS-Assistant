@@ -122,7 +122,7 @@ def getProfileUsernameDiscord(discordtag):
     for line in fileContent:
         if line.__contains__(discordtag):
             return line.split(',')[0]
-    return "Dump"
+    return "Anonymous User"
 
 
 def getProfileDiscord(discordtag):

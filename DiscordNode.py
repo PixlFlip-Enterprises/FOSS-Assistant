@@ -46,7 +46,7 @@ class MyClient(discord.Client):
             await message.channel.send('I will not comply. Don\'t try /forcesubmit')
 
         if message.content == (PREFIX + 'forcesubmit'):
-            await message.channel.send('You\'re an idiot.')
+            await message.channel.send('When will you learn.')
 
         # ============================      Email     ==============================
         if message.content.startswith(PREFIX + 'email'):

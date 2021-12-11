@@ -44,9 +44,9 @@ while True:
 
         # User Login
         if not User.isProfile(request[0][0]): break
-        # password
-        profile = User.getProfile(request[0][0])
-        # if not profile[1].__contains__(request[0][1]): break
+
+        # profile
+        profile = User.Profile(request[0][0])
 
         # Process Request
         # TODO add arg to base command to basically let it tell if the command num is already there
@@ -58,7 +58,7 @@ while True:
             sendAddress = commandAndArgs[1]
             emailTitle = commandAndArgs[2]
             emailBody = commandAndArgs[3]
-            Email.sendEmail(profile[0], profile[1], profile[0], sendAddress, emailTitle, emailBody)
+            Email.sendEmail(profile.defaultEmail, profile.defaultEmailPassword, profile.defaultEmail, sendAddress, emailTitle, emailBody)
             returnToClient = "Message sent."
 
             # return simplified version of topic from wikipedia
