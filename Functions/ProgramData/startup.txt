@@ -2,4 +2,7 @@
 # Music Directory
 # Video Directory
 foss-assistant
-none
+# sql database to use
+# sql username
+# sql password
+# discord bot token

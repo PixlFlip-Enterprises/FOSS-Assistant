@@ -127,28 +127,31 @@ def findIntentFromText(messageArray):
 
 # setup entire smart assistant
 def firstTimeSetup():
-    print("================ Best Enterprise Assistant Server Setup ================")
+    print("===================== FOSS Assistant Server Setup ======================")
     startupParams = []
     profileParams = []
     # get info from user
     startupParams.append(input("= Please Give me a Name: "))
     startupParams.append(input("= Enter the full directory path to the folder you keep Music in: "))
     startupParams.append(input("= Enter the full directory path to the folder you keep Video in: "))
-    startupParams.append(input("= Enter the full directory path to the folder you keep your Journal in: "))
+    startupParams.append(input("= Enter name of your instance of FOSS Assistant: "))
+    startupParams.append(input("= Enter mysql Database you want me to use: "))
+    startupParams.append(input("= Enter mysql username for me to use: "))
+    startupParams.append(input("= Enter mysql password for me to use: "))
     print("=========================================================================")
     print("Setup of base functions complete. Enter info for admin profile please. ")
-    profileParams.append(input("= Enter your First Name: ").lower().replace(' ', ''))
+    profileParams.append(input("= Enter your Username: ").lower().replace(' ', ''))
     profileParams.append(input("= Enter your Password: "))
     profileParams.append(input("= Enter your Email Address: "))
     profileParams.append(input("= Enter your Password for Email Above: "))
-    profileParams.append(input("= Enter this device's classification (mobile, work): "))
+    profileParams.append(input("= Enter Discord ID (put NONE if no ID): "))
 
     # create startup file
     open(currentDirectory + '/Functions/ProgramData/startup.txt', 'x')
     with open(currentDirectory + '/Functions/ProgramData/startup.txt', 'w') as f:
         for line in startupParams:
             f.write(line)
-    # create startup file
+    # create profile file
     open(currentDirectory + '/Functions/Profiles/' + profileParams[0], 'x')
     with open(currentDirectory + '/Functions/Profiles/' + profileParams[0], 'w') as f:
         for line in profileParams:
@@ -162,3 +165,65 @@ def exportAll():
     # create a master file for the export (or a zip)
     # put to directory of choice or default and return
     print("Nothing here yet!")
+
+
+# ==========================================================================================================
+# Class for All Startup Settings
+class Settings(object):
+    def __init__(self):
+        # open file
+        # once verified go ahead and startup
+        file = open(currentDirectory + '/Functions/ProgramData/startup.txt')
+        returnList = []
+        for line in file:
+            returnList.append(line)
+        # assign variables
+        self._version = returnList[0]
+        self._musicDirectory = returnList[1]
+        self._videoDirectory = returnList[2]
+        self._assistantName = returnList[3]
+        self._sqlDatabase = returnList[4]
+        self._sqlUsername = returnList[5]
+        self._sqlPassword = returnList[6]
+        self._discordBotToken = returnList[7]
+
+    @property
+    def version(self):
+        # get version
+        return self._version
+
+    @property
+    def musicDirectory(self):
+        # get music directory
+        return self._musicDirectory
+
+    @property
+    def videoDirectory(self):
+        # get video directory
+        return self._videoDirectory
+
+    @property
+    def assistantName(self):
+        # get custom assistant name
+        return self._assistantName
+
+    @property
+    def sqlDatabase(self):
+        # get database name
+        return self._sqlDatabase
+
+    @property
+    def sqlUsername(self):
+        # get sql username
+        return self._sqlUsername
+
+    @property
+    def sqlPassword(self):
+        # get database password
+        return self._sqlPassword
+
+    @property
+    def discordBotToken(self):
+        # get bot token for discord
+        return self._discordBotToken
+# ==========================================================================================================

@@ -66,7 +66,7 @@ def getProfile(user):
 # creating a new user profile
 def create(user, password, email, emailPassword, discord):
     file = open(directory, "a")  # open and read file
-    newProfile = user + ',' + password + ',' + email + ',' + emailPassword + ',' + discord # create new profile
+    newProfile = user + ',' + password + ',' + email + ',' + emailPassword + ',' + discord  # create new profile
     file.writelines(newProfile)  # save to file
     file.close()
 

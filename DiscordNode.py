@@ -4,7 +4,8 @@ import os
 from Functions import User, Journal, Protocols, Email
 
 # All key (read top level) variables here
-TOKEN = ""
+SETTINGS = Protocols.Settings()
+TOKEN = SETTINGS.discordBotToken
 PREFIX = '/'
 currentDirectory = os.getcwd()
 # End Key Variables ======================
@@ -158,6 +159,15 @@ class MyClient(discord.Client):
                 return m.content == 'hello' and m.channel == channel
 
             msg = await client.wait_for('message', check=check)
+            await channel.send('Hello {.author}!'.format(msg))
+
+        # ===================== Pass Test =====================
+        # TODO THIS WORKS FOR MULTIPLE LINE CODE!!!
+        if message.content.startswith('/pass'):
+            channel = message.channel
+            await channel.send('Say hello!')
+
+            msg = await client.wait_for('message')
             await channel.send('Hello {.author}!'.format(msg))
 
         # ===================== Wikipedia =====================
