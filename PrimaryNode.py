@@ -5,7 +5,8 @@ import time
 import shutil
 import os
 
-# TODO Add a setup condition check. If first time booting run a command line setup and store to file. Else read + load
+# Top level variables
+Protocols.loadStartupParameters()
 SETTINGS = Protocols.Settings()
 currentDirectory = SETTINGS.currentDirectory
 
@@ -48,7 +49,7 @@ while True:
 
         # Process Request
         # TODO add arg to base command to basically let it tell if the command num is already there
-        command = Protocols.findIntentFromText(request[1])
+        command = Protocols.findIntentFromText(request[1][0])
         # yeah... i kinda cut corners here but it all still works so whatever
         commandAndArgs = [""] + request[2]
 

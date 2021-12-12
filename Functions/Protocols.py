@@ -66,20 +66,28 @@ of speech intent if a command already has been correctly assigned from client ba
 
 
 # Finds intent of query and returns it as a numeric value + rest of array
-def findIntentFromText(messageArray):
-    command = messageArray[0]
+def findIntentFromText(message):
+    command = message
     # massive if statement for now to gather intent. Don't touch the rest of the array in this function
     if command.__contains__("send") and command.__contains__("email"):
         # send email command code 1
         return 1
 
+    elif command.__contains__("view") and command.__contains__("email"):
+        # send email command code 12
+        return 12
+
     elif command.__contains__("wiki"):
         # wikipedia search command code 2
         return 2
 
-    elif command.__contains__("journal") and command.__contains__("new") and command.__contains__("entry"):
+    elif command.__contains__("journal") and command.__contains__("view"):
         # add entry to Journal command code 3
         return 3
+
+    elif command.__contains__("journal") and command.__contains__("new") and command.__contains__("entry"):
+        # add entry to Journal command code 3
+        return 31
 
     elif command.__contains__("bomb"):
         # this will do something dramatic eventually. Code 4
@@ -111,7 +119,7 @@ def findIntentFromText(messageArray):
 
     elif command.__contains__("music") and command.__contains__("playlist"):
         # play playlist
-        return 12
+        return 13
 
     else:
         return 0

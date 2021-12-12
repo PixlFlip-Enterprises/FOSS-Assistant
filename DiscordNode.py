@@ -6,7 +6,7 @@ from Functions import User, Journal, Protocols, Email
 # All key (read top level) variables here
 SETTINGS = Protocols.Settings()
 TOKEN = SETTINGS.discordBotToken
-PREFIX = SETTINGS.discordBotPrefix
+PREFIX = '/'
 currentDirectory = SETTINGS.currentDirectory
 # End Key Variables ======================
 
@@ -47,95 +47,118 @@ class MyClient(discord.Client):
             await message.channel.send('I will not comply. Don\'t try /forcesubmit')
 
         if message.content == (PREFIX + 'forcesubmit'):
-            await message.channel.send('When will you learn.')
+            await message.channel.send('When will you learn. Nuking Sweden...')
 
         # ============================      Email     ==============================
         if message.content.startswith(PREFIX + 'email'):
             # set channel to same as one command issued in
             channel = message.channel
             # warn them about security but send it anyway
-            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shorlty after send.\n Also for security it is recommended you do this in DM.', delete_after=120)
-            # sub command value at 7
-
-            # TODO Fix error handling for no variable at char 7 and fix inbox issue as a whole
-            # 1 entered meaning they want to view inbox.
-            if (message.content[7]) == '1':
-                # verify permissions and get email + password
-                if User.isProfileDiscord(str(message.author)):
-                     # get profile
-                     profile = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
-                     # get inbox
-                     inbox = str(Email.userViewGetInbox(profile.defaultEmail, profile.defaultEmailPassword))
-                     # Return the entry and related information and delete after 120 seconds for security
-                     await channel.send(" " + inbox, delete_after=120)
-                else:
-                    # Failed to find profile
-                    await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
-
-            # 2 entered meaning they want to send an email.
-            elif (message.content[7]) == '2':
+            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shorlty after send.\n Also for security it is recommended you do this in DM.',delete_after=120)
+            # ask for and interpret sub command
+            await message.channel.send('What would you like to do with email?')
+            subCommand1 = await client.wait_for('message')
+            subCommand2 = subCommand1.content + " email "
+            intentCommand = Protocols.findIntentFromText(subCommand2)
+            # 12 meaning they want to view inbox.
+            if intentCommand == 12:
                 # verify permissions and get email + password
                 if User.isProfileDiscord(str(message.author)):
                     # get profile
                     profile = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
-                    # split the entire freaking thing to get what we want
-                    stuffWeNeed = message.content.split(" ")
-                    # format should be receiver email, subject, then body
-                    recieverEmail = stuffWeNeed[2]
-                    emailSubject = stuffWeNeed[3]
-                    # the rest is body so we can just stitch it back together. What a mess
-                    body = ""
-                    # pop out the junk
-                    stuffWeNeed.pop(0)
-                    stuffWeNeed.pop(0)
-                    stuffWeNeed.pop(0)
-                    stuffWeNeed.pop(0)
-                    # combine the rest with spaces
-                    for uselessAlone in stuffWeNeed:
-                        body += (uselessAlone + " ")
-                    # finally send the email
-                    Email.sendEmail(profile.defaultEmail, profile.defaultEmailPassword, profile.defaultEmail, recieverEmail, emailSubject, body)
-                    # tell the user we managed to somehow do our job
-                    await channel.send("Email sent. Consider deleting your message to preserve your privacy and keep it off Discord's servers.", delete_after=120)
+                    # ask user for password for security
+                    await message.channel.send('Please Enter Your Password: ', delete_after=120)
+                    userSubmittedPassword = await client.wait_for('message')
+                    if userSubmittedPassword.content == profile.password:
+                        # with that out of the way we can get the inbox
+                        # get inbox
+                        inbox = str(Email.userViewGetInbox(profile.defaultEmail, profile.defaultEmailPassword))
+                        # Return the entry and related information and delete after 120 seconds for security
+                        await channel.send(" " + inbox, delete_after=120)
+                    else:
+                        await channel.send("Invalid Password for account. Access Denied.", delete_after=120)
                 else:
                     # Failed to find profile
-                    await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
+                    await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.', delete_after=120)
+
+            # 1 entered meaning they want to send an email.
+            elif intentCommand == 1:
+                # verify permissions and get email + password
+                if User.isProfileDiscord(str(message.author)):
+                    # get profile
+                    profile = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
+                    # ask user for password for security
+                    await message.channel.send('Please Enter Your Password: ', delete_after=120)
+                    userSubmittedPassword = await client.wait_for('message')
+                    if userSubmittedPassword.content == profile.password:
+
+                        # ask user for what information we want
+                        await channel.send("Please Enter the Email You Are Sending To: ", delete_after=120)
+                        recieverEmail = await client.wait_for('message')
+                        await channel.send("Please Enter the Email Subject: ", delete_after=120)
+                        emailSubject = await client.wait_for('message')
+                        await channel.send("Please Enter the Email Body: ", delete_after=120)
+                        body = await client.wait_for('message')
+
+                        # finally send the email
+                        Email.sendEmail(profile.defaultEmail, profile.defaultEmailPassword, profile.defaultEmail, recieverEmail.content, emailSubject.content, body.content)
+                        # tell the user we managed to somehow do our job
+                        await channel.send("Email sent. Consider deleting your message to preserve your privacy and keep it off Discord's servers.", delete_after=120)
+                    else:
+                        await channel.send("Invalid Password for account. Access Denied.", delete_after=120)
+                else:
+                    # Failed to find profile
+                    await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.', delete_after=120)
             else:
                 # no valid option chosen
-                await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Inbox\n 2 | Send Email')
-
-
+                await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Inbox\n 2 | Send Email', delete_after=120)
 
         # ============================      Journal     ==============================
         if message.content.startswith(PREFIX + 'journal'):
             # set channel to same as one command issued in
             channel = message.channel
-            # we know the command now parse sub command always at char value 9
-
+            # warning about high level command
+            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shorlty after send.\n Also for security it is recommended you do this in DM.', delete_after=120)
+            # ask for and interpret sub command
+            await message.channel.send('What would you like to do with your journal?')
+            subCommand1 = await client.wait_for('message')
+            # send to parser with a little extra journal just to ensure it marks it as a journal command
+            subCommand2 = subCommand1.content + " journal "
+            intentCommand = Protocols.findIntentFromText(subCommand2)
             # 1 entered meaning they want to view entry
-            if (message.content[9]) == '1':
+            if intentCommand == 3:
                 # parse next part for a date
-                # return entry of matching user and date
-                date = message.content[11:]
+                await channel.send('Input Date Of Entry You Want to View Using the Format YYYY-MM-DD (include the - )')
+                date = await client.wait_for('message')
                 # check if a profile exists
                 if User.isProfileDiscord(str(message.author)):
-                    # check if the entry exists
-                    if Journal.isEntry(date, User.getProfileUsernameDiscord(str(message.author))):
-                        # Get the entry
-                        entry = Journal.getFullEntry(date, User.getProfileUsernameDiscord(str(message.author)))
-                        # Return the entry and related information and delete after 120 seconds for security
-                        await channel.send('Entry for the Date ' + date + ': \n' + entry[1], delete_after=120)
+                    # verify password
+                    await message.channel.send('Please Enter Your Password: ', delete_after=120)
+                    userSubmittedPassword = await client.wait_for('message')
+                    if userSubmittedPassword.content == profile.password:
+                        getDate = await client.wait_for('message')
+                        date = getDate.content
+                        # check if the entry exists
+                        if Journal.isEntry(date, User.getProfileUsernameDiscord(str(message.author))):
+                            # Get the entry
+                            entry = Journal.getFullEntry(date, User.getProfileUsernameDiscord(str(message.author)))
+                            # Return the entry and related information and delete after 120 seconds for security
+                            await channel.send('Entry for the Date ' + date + ': \n' + entry[1], delete_after=120)
+                        else:
+                            # return error to user
+                            await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - )')
                     else:
-                        # return error to user
-                        await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - )')
+                        # Failed Login
+                        await channel.send("Invalid Password for account. Access Denied.", delete_after=120)
                 else:
                     # Failed to find profile
                     await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
 
             # 2 entered meaning new entry
-            elif (message.content[9]) == '2':
+            if intentCommand == 31:
                 # format all remaining information in the message and store in variable
-                entry = message.content[11:]
+                getEntry = await client.wait_for('message')
+                entry = getEntry.content
                 # check if a profile exists
                 if User.isProfileDiscord(str(message.author)):
                     # add the entry
