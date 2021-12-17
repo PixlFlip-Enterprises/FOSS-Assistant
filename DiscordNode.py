@@ -162,7 +162,7 @@ class MyClient(discord.Client):
                 # check if a profile exists
                 if User.isProfileDiscord(str(message.author)):
                     # add the entry
-                    Journal.addBasicEntry(entry, "DiscordClient", User.getProfileUsernameDiscord(str(message.author)))
+                    Journal.add_entry(entry, "DiscordClient", User.getProfileUsernameDiscord(str(message.author)))
                     # tell the user the entry was recorded
                     await channel.send('Entry Recorded.')
                 else:

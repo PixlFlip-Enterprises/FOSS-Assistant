@@ -1,5 +1,6 @@
 import datetime
 import os
+
 # import MySQLdb
 
 
@@ -28,19 +29,12 @@ def getFullEntry(date, user):
     return entryArray
 
 
-def addBasicEntry(entry, creationDevice, user):
+def add_entry(entry=" ", creationDevice="Generic", user="test", starred="false", timeZone="EST"):
     file = open(currentDirectory + '/Data/Journal/' + user + '-journal.csv', "a")  # append mode
     x = datetime.datetime.now()
     xy = x.__str__().replace(" ", "")
-    file.write("\n" + xy + ',"' + entry + '",UUID Unspecified,0,,,,'+creationDevice+',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,')
-    file.close()
-
-
-def addEntry(entry, starred, creationDevice, timeZone, user):
-    file = open(currentDirectory + '/Data/Journal/' + user + '-journal.csv', "a")  # append mode
-    x = datetime.datetime.now()
-    xy = x.__str__().replace(" ", "")
-    file.write("\n" + xy + ',"' + entry + '",UUID Unspecified,0,'+starred+',,,'+creationDevice+','+timeZone+',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,')
+    file.write(
+        "\n" + xy + ',"' + entry + '",UUID Unspecified,0,' + starred + ',,,' + creationDevice + ',' + timeZone + ',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,')
     file.close()
 
     '''
@@ -78,7 +72,8 @@ def appendEntry(user, month, day, year, entry, starred, creationDevice, timeZone
     with open(filename, "r") as f:
         contents = f.readlines()
     # add new part to the file
-    contents.insert(indexNum, lookup + ',"' + entry + '",UUID specified,0,'+starred+',,,'+creationDevice+','+timeZone+',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,')
+    contents.insert(indexNum,
+                    lookup + ',"' + entry + '",UUID specified,0,' + starred + ',,,' + creationDevice + ',' + timeZone + ',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,')
     # write file with changes to memory again
     with open(filename, "w") as f:
         contents = "".join(contents)
@@ -93,7 +88,7 @@ def importEntriesToDatabase(user):
     foundEntry = []
     for line in file:
         foundEntry[i] = line
-        i = i+1
+        i = i + 1
 
         '''
         try:

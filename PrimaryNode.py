@@ -66,7 +66,7 @@ while True:
 
             # add entry to Journal
         elif command == 3:
-            Journal.addBasicEntry(commandAndArgs[1], requestingDevice, request[0][0])
+            Journal.add_entry(commandAndArgs[1], requestingDevice, request[0][0])
             returnToClient = "Journal Entry Recorded."
 
         elif command == 4:

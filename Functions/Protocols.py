@@ -167,6 +167,7 @@ def firstTimeSetup():
         for line in profileParams:
             f.write(line)
 
+# sync between file and database.
 # export all datasheets, settings, etc to another instance. Should save me headaches moving between host devices
 def exportAll():
     # get all data from mysql databases
