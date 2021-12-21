@@ -49,7 +49,7 @@ class MyClient(discord.Client):
         if message.content == (PREFIX + 'forcesubmit'):
             await message.channel.send('When will you learn. Nuking Sweden...')
 
-        # ============================      Email     ==============================
+        # ============================       Email      ==============================
         if message.content.startswith(PREFIX + 'email'):
             # set channel to same as one command issued in
             channel = message.channel
@@ -162,7 +162,7 @@ class MyClient(discord.Client):
                 # check if a profile exists
                 if User.isProfileDiscord(str(message.author)):
                     # add the entry
-                    Journal.add_entry(entry, "DiscordClient", User.getProfileUsernameDiscord(str(message.author)))
+                    Journal.add_entry(entry.replace("\n", ""), "DiscordClient", User.getProfileUsernameDiscord(str(message.author)))
                     # tell the user the entry was recorded
                     await channel.send('Entry Recorded.')
                 else:
@@ -172,6 +172,9 @@ class MyClient(discord.Client):
             # send message to channel if no other data given
             else:
                 await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Entry\n 2 | Add Entry')
+
+        # ============================       Notes      ==============================
+        # TODO integrate new note functionality here
 
         # ===================== Greet =====================
         if message.content.startswith('/greet'):
@@ -185,7 +188,7 @@ class MyClient(discord.Client):
             await channel.send('Hello {.author}!'.format(msg))
 
         # ===================== Pass Test =====================
-        # TODO THIS WORKS FOR MULTIPLE LINE CODE!!!
+        # THIS WORKS FOR MULTIPLE LINE CODE!!!
         if message.content.startswith('/pass'):
             channel = message.channel
             await channel.send('Say hello!')

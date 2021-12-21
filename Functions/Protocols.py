@@ -1,7 +1,7 @@
 # file for any and all protocols used
 import os
 import datetime
-
+import MySQLdb
 # import pytube
 # from pytube import YouTube
 currentDirectory = os.getcwd()
@@ -16,6 +16,12 @@ def vex(path, passes=7):
             delfile.write(os.urandom(length))
     os.remove(path)
 
+# return num lines in file (useful to assign unique IDs to stuff)
+def linesInFile(directory):
+    count = 0
+    with open(directory) as f:
+        count = sum(1 for _ in f)
+    return count
 
 # Returns String array of Byte array provided
 def byteToStr(bytesToConvert):
@@ -149,7 +155,7 @@ def firstTimeSetup():
     startupParams.append(input("= Enter Discord bot token: "))
     startupParams.append(input("= Enter Discord bot prefix: "))
     print("=========================================================================")
-    print("Setup of base functions complete. Enter info for admin profile please. ")
+    print("Setup of base functions complete. Enter info for admin profile. ")
     profileParams.append(input("= Enter your Username: ").lower().replace(' ', ''))
     profileParams.append(input("= Enter your Password: "))
     profileParams.append(input("= Enter your Email Address: "))
@@ -167,6 +173,7 @@ def firstTimeSetup():
         for line in profileParams:
             f.write(line)
 
+
 # sync between file and database.
 # export all datasheets, settings, etc to another instance. Should save me headaches moving between host devices
 def exportAll():
@@ -176,6 +183,19 @@ def exportAll():
     # create a master file for the export (or a zip)
     # put to directory of choice or default and return
     print("Nothing here yet!")
+
+
+# get correct ID for a new entry in a datatable
+def new_database_entry_id(user, password, database, table):
+    # username, password and database
+    db = MySQLdb.connect("localhost", user, password, database)
+    # get cursor object
+    cursor = db.cursor()
+    # get number of rows in a table and give your table
+    # name in the query
+    number_of_rows = cursor.execute("SELECT * FROM " + table)
+    # return number of rows
+    return number_of_rows
 
 
 # ==========================================================================================================
