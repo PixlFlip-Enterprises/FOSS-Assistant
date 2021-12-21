@@ -14,7 +14,7 @@ SQLDATABASE = SETTINGS.sqlDatabase
 SQLUSERNAME = SETTINGS.sqlUsername
 SQLPASSWORD = SETTINGS.sqlPassword
 currentDirectory = SETTINGS.currentDirectory
-# End Key Variables ======================
+# End Key Variables =======================
 
 
 # Notebook Class
