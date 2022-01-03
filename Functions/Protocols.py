@@ -197,6 +197,9 @@ def new_database_entry_id(user, password, database, table):
     # return number of rows
     return number_of_rows
 
+# TODO method that merges everything in separate database instances, and I do mean everything
+def establish_parady():
+    return "nerd"
 
 # ==========================================================================================================
 # Class for All Startup Settings

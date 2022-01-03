@@ -28,7 +28,7 @@ class Notes(object):
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("SELECT * FROM " + userID + "-JOURNAL")
+            cursor.execute("SELECT * FROM " + userID + "-NOTE")
             # get all records
             records = cursor.fetchall()
             # add all to array
@@ -42,8 +42,8 @@ class Notes(object):
         db.close()
         self._entries = tempEntries
 
-    # date, entry, UUID Unspecified, starred, creationDevice, timeZone
-    def add_entry(self, entry=" ", creationDevice="Generic", starred="false", timeZone="EST"):
+    # noteID, noteDateCreated, noteDateLastModified, noteTitle, noteBody, noteCreationDevice, noteStarred, noteLocked
+    def add_note(self, entry=" ", creationDevice="Generic", starred="false", timeZone="EST"):
 
         x = datetime.datetime.now()
         xy = x.__str__().replace(" ", "")
@@ -150,6 +150,10 @@ class Journal(object):
 
     # TODO implement logic
     def remove_entry(self):
+        return ""
+
+    # TODO implement logic
+    def is_entry(self):
         return ""
 
     # returns array of all Entry objects. maybe could make this a string array someday.
