@@ -53,9 +53,9 @@ try:
     # Create Profile Table
     cursor.execute("CREATE TABLE PROFILES(USER VARCHAR(50) NOT NULL, PASSWORD VARCHAR(50) NOT NULL, EMAIL VARCHAR(50), EMAILPASS VARCHAR(50), DISCORD VARCHAR(20));")
     # Create Default User Journal
-    cursor.execute("CREATE TABLE " + profileParams[0] + "-JOURNAL (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE)")
+    cursor.execute("CREATE TABLE " + profileParams[0] + "-JOURNAL(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE)")
     # Create Default User Notes
-    cursor.execute("CREATE TABLE " + profileParams[0] + "-NOTES (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE)")
+    cursor.execute("CREATE TABLE " + profileParams[0] + "-NOTES(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE)")
     db.commit()
 except:
     # Rollback in case there is any error
