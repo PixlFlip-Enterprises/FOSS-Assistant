@@ -1,8 +1,0 @@
-0.3
-# Music Directory
-# Video Directory
-foss-assistant
-# sql database to use
-# sql username
-# sql password
-# discord token

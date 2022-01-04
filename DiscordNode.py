@@ -30,6 +30,10 @@ class MyClient(discord.Client):
         if message.content == (PREFIX + 'ping'):
             await message.channel.send('pong', delete_after=10)
 
+        if message.content == (PREFIX + 'parady'):
+            Protocols.establish_parady_user(User.getProfileUsernameDiscord(str(message.author)), SETTINGS.sqlUsername, SETTINGS.sqlPassword, SETTINGS.sqlDatabase)
+            await message.channel.send('parady achieved', delete_after=10)
+
         # help command
         if message.content == (PREFIX + 'help'):
             # open discord help file

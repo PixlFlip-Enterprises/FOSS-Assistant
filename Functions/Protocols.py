@@ -1,6 +1,8 @@
 # file for any and all protocols used
 import os
 import datetime
+from os.path import exists
+
 import MySQLdb
 # import pytube
 # from pytube import YouTube
@@ -156,9 +158,42 @@ def new_database_entry_id(user, password, database, table):
     # return number of rows
     return number_of_rows
 
-# TODO method that merges everything in separate database instances, and I do mean everything
+# TODO method that merges everything from file to database, and I do mean everything
 def establish_parady():
+    # first cycle through and compile an array of all usernames from database
+    # scan through the data folder for any matching files to a specific user
+    # if found scan all the information from the file into the database for that user
+    # repeat
+    # end
     return "nerd"
+
+# Gets all available file information with userID and adds to the database
+def establish_parady_user(userID, sqluser, sqlpass, sqldatabase):
+    # journal parady
+    if exists(currentDirectory + '/Data/' + userID + '-journal.csv'):
+        # get all entries from file
+        file = open(currentDirectory + '/Data/' + userID + '-journal.csv')
+        entries = []
+        for line in file:
+            entries.append(line)
+        # add each entry to database
+        for e in entries:
+            entry = e.split(",")
+            entryID = new_database_entry_id(sqluser, sqlpass, sqldatabase, userID + "_JOURNAL")
+            try:
+                # open the database
+                db = MySQLdb.connect("localhost", sqluser, sqlpass, sqldatabase)
+                cursor = db.cursor()
+                # Execute the SQL command
+                cursor.execute("INSERT INTO " + userID + "_JOURNAL(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(" + entry[0] + ", " + entry[1] + "," + entryID + "," + entry[4] + ", " + entry[7] + ", " + entry[8] + " );")
+                # Commit your changes in the database
+                db.commit()
+            except:
+                # Rollback in case there is any error
+                db.rollback()
+
+                # disconnect from server
+            db.close()
 
 # ==========================================================================================================
 # Class for All Startup Settings

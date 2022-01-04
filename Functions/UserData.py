@@ -28,7 +28,7 @@ class Notes(object):
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("SELECT * FROM " + userID + "-NOTES")
+            cursor.execute("SELECT * FROM " + userID + "_NOTES")
             # get all records
             records = cursor.fetchall()
             # add all to array
@@ -54,7 +54,7 @@ class Notes(object):
             cursor = db.cursor()
             # Execute the SQL command
             cursor.execute(
-                "INSERT INTO " + self._ID + "-JOURNAL(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(" + xy + ", " + entry + "," + entryID + "," + starred + ", " + creationDevice + ", " + timeZone + " );")
+                "INSERT INTO " + self._ID + "_JOURNAL(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(" + xy + ", " + entry + "," + entryID + "," + starred + ", " + creationDevice + ", " + timeZone + " );")
             # Commit your changes in the database
             db.commit()
         except:
@@ -99,7 +99,7 @@ class Journal(object):
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("SELECT * FROM " + userID + "-JOURNAL")
+            cursor.execute("SELECT * FROM " + userID + "_JOURNAL")
             # get all records
             records = cursor.fetchall()
             # add all to array
@@ -118,13 +118,13 @@ class Journal(object):
 
         x = datetime.datetime.now()
         xy = x.__str__().replace(" ", "")
-        entryID = Protocols.new_database_entry_id(SQLUSERNAME, SQLPASSWORD, SQLDATABASE, self._ID + "-JOURNAL")
+        entryID = Protocols.new_database_entry_id(SQLUSERNAME, SQLPASSWORD, SQLDATABASE, self._ID + "_JOURNAL")
         try:
             # open the database
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("INSERT INTO " + self._ID + "-JOURNAL(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(" + xy + ", " + entry + "," + entryID + "," + starred + ", " + creationDevice + ", " + timeZone + " );")
+            cursor.execute("INSERT INTO " + self._ID + "_JOURNAL(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(" + xy + ", " + entry + "," + entryID + "," + starred + ", " + creationDevice + ", " + timeZone + " );")
             # Commit your changes in the database
             db.commit()
         except:
@@ -158,7 +158,7 @@ class Journal(object):
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("SELECT * FROM " + self._ID + "-JOURNAL")
+            cursor.execute("SELECT * FROM " + self._ID + "_JOURNAL")
             # get all records
             records = cursor.fetchall()
             # temp var
