@@ -1,7 +1,6 @@
 import socket
 from Functions import User, Journal, Protocols, Email, Music
 import wikipedia
-import time
 import shutil
 import os
 
@@ -9,6 +8,10 @@ import os
 Protocols.loadStartupParameters()
 SETTINGS = Protocols.Settings()
 currentDirectory = SETTINGS.currentDirectory
+
+"""All of the code in this entire file has to be reworked and I do mean all. Integrate database use, add new
+method for getting user input before running, move to a json format(?), streamline the error handling, 
+modify the variable calls, and make all of it use multitasking like discord node."""
 
 # Music.playVoice("/Functions/ProgramData/Voice/startup.wav")
 print("============================================================================")

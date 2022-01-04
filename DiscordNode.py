@@ -1,7 +1,7 @@
 import wikipedia
 import discord
 import os
-from Functions import User, Journal, Protocols, Email
+from Functions import User, Protocols, Email, UserData
 
 # All key (read top level) variables here
 SETTINGS = Protocols.Settings()
@@ -118,14 +118,16 @@ class MyClient(discord.Client):
             # set channel to same as one command issued in
             channel = message.channel
             # warning about high level command
-            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shorlty after send.\n Also for security it is recommended you do this in DM.', delete_after=120)
+            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shortly after send.\n Also for security it is recommended you do this in DM.', delete_after=120)
             # ask for and interpret sub command
             await message.channel.send('What would you like to do with your journal?')
             subCommand1 = await client.wait_for('message')
             # send to parser with a little extra journal just to ensure it marks it as a journal command
             subCommand2 = subCommand1.content + " journal "
             intentCommand = Protocols.findIntentFromText(subCommand2)
-            # 1 entered meaning they want to view entry
+            # import journal object for use
+            userJournal = UserData.Journal(User.getProfileUsernameDiscord(str(message.author)))
+            # 3 entered meaning they want to view entry
             if intentCommand == 3:
                 # parse next part for a date
                 await channel.send('Input Date Of Entry You Want to View Using the Format YYYY-MM-DD (include the - )')
@@ -139,9 +141,9 @@ class MyClient(discord.Client):
                         getDate = await client.wait_for('message')
                         date = getDate.content
                         # check if the entry exists
-                        if Journal.isEntry(date, User.getProfileUsernameDiscord(str(message.author))):
+                        if userJournal.is_entry(date):
                             # Get the entry
-                            entry = Journal.getFullEntry(date, User.getProfileUsernameDiscord(str(message.author)))
+                            entry = userJournal.get_entry(date)
                             # Return the entry and related information and delete after 120 seconds for security
                             await channel.send('Entry for the Date ' + date + ': \n' + entry[1], delete_after=120)
                         else:
@@ -162,7 +164,7 @@ class MyClient(discord.Client):
                 # check if a profile exists
                 if User.isProfileDiscord(str(message.author)):
                     # add the entry
-                    Journal.add_entry(entry.replace("\n", ""), "DiscordClient", User.getProfileUsernameDiscord(str(message.author)))
+                    userJournal.add_entry(entry.replace("\n", ""), "DiscordClient")
                     # tell the user the entry was recorded
                     await channel.send('Entry Recorded.')
                 else:

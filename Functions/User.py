@@ -76,15 +76,6 @@ class Profile(object):
         return self._discord
 # ==========================================================================================================
 
-
-def getProfile(user):
-    file = open(directory)
-    for line in file:
-        if line.__contains__(user):
-            return line
-    return "NO USER"
-
-
 # creating a new user profile
 def create(user, password, email, emailPassword, discord):
     file = open(directory, "a")  # open and read file
@@ -110,50 +101,70 @@ def create(user, password, email, emailPassword, discord):
     # disconnect from server
     db.close()'''
 
-
 def isProfile(user):
-    file = open(directory, "r")
-    fileContent = []
-    for line in file:
-        fileContent.append(line)
-
-    for line in fileContent:
-        if line.__contains__(user):
-            return True
+    try:
+        # open the database
+        db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+        cursor = db.cursor()
+        # Execute the SQL command
+        cursor.execute("SELECT * FROM PROFILES")
+        # get all records
+        records = cursor.fetchall()
+        # temp var
+        temp = " "
+        # add all to array
+        for row in records:
+            if row.__contains__(user):
+                return True
+    except:
+        # Rollback in case there is any error
+        db.rollback()
+        # disconnect from server
+    db.close()
     return False
 
-
+# returns boolean from mysql search
 def isProfileDiscord(discordtag):
-    file = open(directory, "r")
-    fileContent = []
-    for line in file:
-        fileContent.append(line)
-
-    for line in fileContent:
-        if line.__contains__(discordtag):
-            return True
+    try:
+        # open the database
+        db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+        cursor = db.cursor()
+        # Execute the SQL command
+        cursor.execute("SELECT * FROM PROFILES")
+        # get all records
+        records = cursor.fetchall()
+        # temp var
+        temp = " "
+        # add all to array
+        for row in records:
+            if row.__contains__(discordtag):
+                return True
+    except:
+        # Rollback in case there is any error
+        db.rollback()
+    # disconnect from server
+    db.close()
     return False
 
-
+# returns userID from mysql search
 def getProfileUsernameDiscord(discordtag):
-    file = open(directory, "r")
-    fileContent = []
-    for line in file:
-        fileContent.append(line)
-
-    for line in fileContent:
-        if line.__contains__(discordtag):
-            return line.split(',')[0]
+    try:
+        # open the database
+        db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+        cursor = db.cursor()
+        # Execute the SQL command
+        cursor.execute("SELECT * FROM PROFILES")
+        # get all records
+        records = cursor.fetchall()
+        # temp var
+        temp = " "
+        # add all to array
+        for row in records:
+            if row.__contains__(discordtag):
+                return row.split(',')[0]
+    except:
+        # Rollback in case there is any error
+        db.rollback()
+    # disconnect from server
+    db.close()
     return "Anonymous User"
-
-
-def getProfileDiscord(discordtag):
-    file = open(directory, "r")
-    fileContent = []
-    for line in file:
-        fileContent.append(line)
-
-    for line in fileContent:
-        if line.__contains__(discordtag):
-            return line.split(',')
-    return "Dump"

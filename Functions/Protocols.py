@@ -37,12 +37,7 @@ def byteToStr(bytesToConvert):
 
 
 def loadStartupParameters():
-    # check/verify all needed parameters exist
-    if not os.path.isfile(currentDirectory + '/Functions/ProgramData/startup.txt'):
-        print("Failed Startup. Initializing Setup Protocol")
-        firstTimeSetup()  # run first time setup
-
-    # once verified go ahead and startup
+    # startup
     file = open(currentDirectory + '/Functions/ProgramData/startup.txt')
     returnList = []
     for line in file:
