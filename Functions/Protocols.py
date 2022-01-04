@@ -138,42 +138,6 @@ def findIntentFromText(message):
         stream = yt.streams.first()
         stream.download()"""
 
-
-# setup entire smart assistant
-def firstTimeSetup():
-    print("===================== FOSS Assistant Server Setup ======================")
-    startupParams = []
-    profileParams = []
-    # get info from user
-    startupParams.append(input("= Please Give me a Name: "))
-    startupParams.append(input("= Enter the full directory path to the folder you keep Music in: "))
-    startupParams.append(input("= Enter the full directory path to the folder you keep Video in: "))
-    startupParams.append(input("= Enter name of your instance of FOSS Assistant: "))
-    startupParams.append(input("= Enter mysql Database you want me to use: "))
-    startupParams.append(input("= Enter mysql username for me to use: "))
-    startupParams.append(input("= Enter mysql password for me to use: "))
-    startupParams.append(input("= Enter Discord bot token: "))
-    startupParams.append(input("= Enter Discord bot prefix: "))
-    print("=========================================================================")
-    print("Setup of base functions complete. Enter info for admin profile. ")
-    profileParams.append(input("= Enter your Username: ").lower().replace(' ', ''))
-    profileParams.append(input("= Enter your Password: "))
-    profileParams.append(input("= Enter your Email Address: "))
-    profileParams.append(input("= Enter your Password for Email Above: "))
-    profileParams.append(input("= Enter Discord ID (put NONE if no ID): "))
-
-    # create startup file
-    open(currentDirectory + '/Functions/ProgramData/startup.txt', 'x')
-    with open(currentDirectory + '/Functions/ProgramData/startup.txt', 'w') as f:
-        for line in startupParams:
-            f.write(line)
-    # create profile file
-    open(currentDirectory + '/Functions/Profiles/' + profileParams[0], 'x')
-    with open(currentDirectory + '/Functions/Profiles/' + profileParams[0], 'w') as f:
-        for line in profileParams:
-            f.write(line)
-
-
 # sync between file and database.
 # export all datasheets, settings, etc to another instance. Should save me headaches moving between host devices
 def exportAll():

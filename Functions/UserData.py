@@ -28,7 +28,7 @@ class Notes(object):
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("SELECT * FROM " + userID + "-NOTE")
+            cursor.execute("SELECT * FROM " + userID + "-NOTES")
             # get all records
             records = cursor.fetchall()
             # add all to array

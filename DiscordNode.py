@@ -54,7 +54,7 @@ class MyClient(discord.Client):
             # set channel to same as one command issued in
             channel = message.channel
             # warn them about security but send it anyway
-            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shorlty after send.\n Also for security it is recommended you do this in DM.',delete_after=120)
+            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shortly after send.\n Also for security it is recommended you do this in DM.',delete_after=120)
             # ask for and interpret sub command
             await message.channel.send('What would you like to do with email?')
             subCommand1 = await client.wait_for('message')

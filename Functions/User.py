@@ -10,23 +10,45 @@
 # TODO restructure this to accomodate tons of new fields, settings for users, and make it easier to get info from (no more stupid array returns and knowing the spot to call)
 import os
 # import MySQLdb
+import MySQLdb
+
+from Functions import Protocols
+
 directory = os.getcwd() + '/Data/profiles.csv'
+# All key (read top level) variables here
+SETTINGS = Protocols.Settings()
+SQLDATABASE = SETTINGS.sqlDatabase
+SQLUSERNAME = SETTINGS.sqlUsername
+SQLPASSWORD = SETTINGS.sqlPassword
+currentDirectory = SETTINGS.currentDirectory
+# End Key Variables =======================
 
 
 # ==========================================================================================================
 # NOTE: this method should NEVER be called if you are unsure an account exists as there is no error handling
 class Profile(object):
     def __init__(self, ID):
-        # assign ID
-        self.ID = ID
-        # open file
-        file = open(directory)
-        temp = []
-        # find profile
-        for line in file:
-            if line.__contains__(ID):
-                # save profile to temp
-                temp = line.split(",")
+        self._ID = ID
+        try:
+            # open the database
+            db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+            cursor = db.cursor()
+            # Execute the SQL command
+            cursor.execute("SELECT * FROM PROFILES")
+            # get all records
+            records = cursor.fetchall()
+            # temp var
+            temp = " "
+            # add all to array
+            for row in records:
+                if row.__contains__(ID):
+                    # save profile to temp
+                    temp = row.split(",")
+        except:
+            # Rollback in case there is any error
+            db.rollback()
+        # disconnect from server
+        db.close()
         # assign variables
         self._password = temp[1]
         self._defaultEmail = temp[2]
