@@ -220,50 +220,50 @@ class Settings(object):
     @property
     def version(self):
         # get version
-        return self._version
+        return self._version.replace("\n", "")
 
     @property
     def musicDirectory(self):
         # get music directory
-        return self._musicDirectory
+        return self._musicDirectory.replace("\n", "")
 
     @property
     def videoDirectory(self):
         # get video directory
-        return self._videoDirectory
+        return self._videoDirectory.replace("\n", "")
 
     @property
     def assistantName(self):
         # get custom assistant name
-        return self._assistantName
+        return self._assistantName.replace("\n", "")
 
     @property
     def sqlDatabase(self):
         # get database name
-        return self._sqlDatabase
+        return self._sqlDatabase.replace("\n", "")
 
     @property
     def sqlUsername(self):
         # get sql username
-        return self._sqlUsername
+        return self._sqlUsername.replace("\n", "")
 
     @property
     def sqlPassword(self):
         # get database password
-        return self._sqlPassword
+        return self._sqlPassword.replace("\n", "")
 
     @property
     def discordBotToken(self):
         # get bot token for discord
-        return self._discordBotToken
+        return self._discordBotToken.replace("\n", "")
 
     @property
     def discordBotPrefix(self):
         # get version
-        return self._discordBotPrefix
+        return self._discordBotPrefix.replace("\n", "")
 
     @property
     def currentDirectory(self):
         # get version
-        return self._currentDirectory
+        return self._currentDirectory.replace("\n", "")
 # ==========================================================================================================
