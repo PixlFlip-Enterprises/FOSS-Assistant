@@ -63,5 +63,23 @@ except:
     print("ERROR. MYSQL DATABASE TABLE CREATION FAILED. I GOT NOTHING FOR YOU IF THE CREATION WORKED WY WOULDNT THIS??")
 # disconnect from server
 db.close()
+
+# Add user to database
+try:
+    # open the database
+    db = MySQLdb.connect("localhost", startupParams[5], startupParams[6], startupParams[4])
+    cursor = db.cursor()
+    # Execute the SQL command
+    cursor.execute(
+        "INSERT INTO PROFILES(USER, PASSWORD, EMAIL, EMAILPASS, DISCORD) VALUES(" + profileParams[0] + ", " + profileParams[1] + "," + profileParams[2] + "," + profileParams[3] + ", " + profileParams[4] + " );")
+    # Commit your changes in the database
+    db.commit()
+except:
+    # Rollback in case there is any error
+    db.rollback()
+
+    # disconnect from server
+db.close()
+
 # Done! Wrap it up and put a pretty bow on it!
 print("Setup successful! Your FOSS Assistant instance is ready to go. To run use the Nodes.")
