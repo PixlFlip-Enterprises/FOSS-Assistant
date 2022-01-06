@@ -30,7 +30,7 @@ class Profile(object):
     def __init__(self, ID):
         self._ID = ID
         # temp var
-        temp = " "
+        temp = []
         try:
             # open the database
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
