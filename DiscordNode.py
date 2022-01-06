@@ -141,6 +141,8 @@ class MyClient(discord.Client):
                     # verify password
                     await message.channel.send('Please Enter Your Password: ', delete_after=120)
                     userSubmittedPassword = await client.wait_for('message')
+                    # get profile
+                    profile = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
                     if userSubmittedPassword.content == profile.password:
                         getDate = await client.wait_for('message')
                         date = getDate.content
