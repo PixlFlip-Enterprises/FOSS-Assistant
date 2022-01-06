@@ -124,7 +124,9 @@ class Journal(object):
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("INSERT INTO " + self._ID + "_JOURNAL(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(" + xy + ", " + entry + "," + entryID + "," + starred + ", " + creationDevice + ", " + timeZone + " );")
+            sql = "INSERT INTO " + self._ID + "_JOURNAL (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s)"
+            val = (xy, entry, entryID, starred, creationDevice, timeZone)
+            cursor.execute(sql, val)
             # Commit your changes in the database
             db.commit()
         except:

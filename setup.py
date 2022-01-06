@@ -70,16 +70,18 @@ try:
     db = MySQLdb.connect("localhost", startupParams[5], startupParams[6], startupParams[4])
     cursor = db.cursor()
     # Execute the SQL command
-    cursor.execute(
-        "INSERT INTO PROFILES(USER, PASSWORD, EMAIL, EMAILPASS, DISCORD) VALUES(" + profileParams[0] + ", " + profileParams[1] + "," + profileParams[2] + "," + profileParams[3] + ", " + profileParams[4] + " );")
-    # Commit your changes in the database
+    sql = "INSERT INTO PROFILES (USER, PASSWORD, EMAIL, EMAILPASS, DISCORD) VALUES (%s, %s, %s, %s, %s)"
+    val = (profileParams[0], profileParams[1], profileParams[2], profileParams[3], profileParams[4])
+    cursor.execute(sql, val)
+
     db.commit()
+
+    print(cursor.rowcount, "record inserted.")
 except:
     # Rollback in case there is any error
     db.rollback()
+    print("An error occurred and the profile was not saved. Make sure you have ran initial setup.")
 
-    # disconnect from server
-db.close()
 
 # Done! Wrap it up and put a pretty bow on it!
 print("Setup successful! Your FOSS Assistant instance is ready to go. To run use the Nodes.")

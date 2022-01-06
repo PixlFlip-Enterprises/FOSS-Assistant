@@ -7,7 +7,6 @@ SETTINGS = Protocols.Settings()
 SQLDATABASE = SETTINGS.sqlDatabase
 SQLUSERNAME = SETTINGS.sqlUsername
 SQLPASSWORD = SETTINGS.sqlPassword
-currentDirectory = SETTINGS.currentDirectory
 # End Key Variables =======================
 
 profileParams = []
@@ -23,10 +22,13 @@ try:
     db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
     cursor = db.cursor()
     # Execute the SQL command
-    cursor.execute(
-        "INSERT INTO PROFILES(USER, PASSWORD, EMAIL, EMAILPASS, DISCORD) VALUES(" + profileParams[0] + ", " + profileParams[1] + "," + profileParams[2] + "," + profileParams[3] + ", " + profileParams[4] + " );")
-    # Commit your changes in the database
+    sql = "INSERT INTO PROFILES (USER, PASSWORD, EMAIL, EMAILPASS, DISCORD) VALUES (%s, %s, %s, %s, %s)"
+    val = (profileParams[0], profileParams[1], profileParams[2], profileParams[3], profileParams[4])
+    cursor.execute(sql, val)
+
     db.commit()
+
+    print(cursor.rowcount, "record inserted.")
 except:
     # Rollback in case there is any error
     db.rollback()
