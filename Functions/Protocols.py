@@ -185,7 +185,9 @@ def establish_parady_user(userID, sqluser, sqlpass, sqldatabase):
                 db = MySQLdb.connect("localhost", sqluser, sqlpass, sqldatabase)
                 cursor = db.cursor()
                 # Execute the SQL command
-                cursor.execute("INSERT INTO " + userID + "_JOURNAL(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(" + entry[0] + ", " + entry[1] + "," + entryID + "," + entry[4] + ", " + entry[7] + ", " + entry[8] + " );")
+                sql = "INSERT INTO " + userID + "_JOURNAL (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s)"
+                val = (entry[0], entry[1], entry[2], entry[3], entry[4], entry[5])
+                cursor.execute(sql, val)
                 # Commit your changes in the database
                 db.commit()
             except:
@@ -193,6 +195,8 @@ def establish_parady_user(userID, sqluser, sqlpass, sqldatabase):
                 db.rollback()
 
                 # disconnect from server
+
+            print(cursor.rowcount, "records inserted.")
             db.close()
 
 # ==========================================================================================================
