@@ -29,6 +29,8 @@ currentDirectory = SETTINGS.currentDirectory
 class Profile(object):
     def __init__(self, ID):
         self._ID = ID
+        # temp var
+        temp = " "
         try:
             # open the database
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
@@ -37,8 +39,7 @@ class Profile(object):
             cursor.execute("SELECT * FROM PROFILES")
             # get all records
             records = cursor.fetchall()
-            # temp var
-            temp = " "
+
             # add all to array
             for row in records:
                 if row.__contains__(ID):
