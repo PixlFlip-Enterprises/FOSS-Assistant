@@ -164,7 +164,7 @@ class Journal(object):
     def is_entry(self, date):
         sort = self._entries
         for entry in sort:
-            if entry[1].__contains__(date):
+            if entry[0].__contains__(date):
                 return True
         return False
 
