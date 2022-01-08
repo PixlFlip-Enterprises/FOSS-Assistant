@@ -1,3 +1,8 @@
+''' DiscordNode.py Version 0.5.
+This update streamlines Profile lookup, prevents unauthorized use, and is now robust
+enough to be used in any server, public or private.
+'''
+
 import wikipedia
 import discord
 import os
@@ -21,19 +26,27 @@ class MyClient(discord.Client):
         # don't respond to ourselves
         if message.author == self.user:
             return
+        # return if no prefix to command. Saves tons of processing power
+        if not message.content.startswith(PREFIX):
+            await message.channel.send('You are not authorized to access my commands. NEW UPDATE LOSER!', delete_after=30)
+            return  # we know its a command now
+        # check if user profile exists and return if no profile
+        if not User.isProfileDiscord(str(message.author)):
+            return  # we know the profile exists now
+        # load the profile of the user into key variable
+        PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
         # log the command and who did it for diagnosis
-        if message.content.startswith(PREFIX):
-            Protocols.debugLog(User.getProfileUsernameDiscord(str(message.author)), (message.content.split(" ")[0]), "Discord")
+        Protocols.debugLog(User.getProfileUsernameDiscord(str(message.author)), (message.content.split(" ")[0]), "Discord")
+
 
         # ============================ Basics ============================
         # ping command
         if message.content == (PREFIX + 'ping'):
             await message.channel.send('pong', delete_after=10)
-
+        # TODO figure out why this doesn't work. Should import all from csv file...
         if message.content == (PREFIX + 'parady'):
             Protocols.establish_parady_user(User.getProfileUsernameDiscord(str(message.author)), SETTINGS.sqlUsername, SETTINGS.sqlPassword, SETTINGS.sqlDatabase)
             await message.channel.send('parady achieved', delete_after=10)
-
         # help command
         if message.content == (PREFIX + 'help'):
             # open discord help file
@@ -42,7 +55,6 @@ class MyClient(discord.Client):
             for line in file:
                 returnList += line
             await message.channel.send(returnList)
-
         # timer command
 
 
@@ -68,15 +80,13 @@ class MyClient(discord.Client):
             if intentCommand == 12:
                 # verify permissions and get email + password
                 if User.isProfileDiscord(str(message.author)):
-                    # get profile
-                    profile = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
                     # ask user for password for security
                     await message.channel.send('Please Enter Your Password: ', delete_after=120)
                     userSubmittedPassword = await client.wait_for('message')
-                    if userSubmittedPassword.content == profile.password:
+                    if userSubmittedPassword.content == PROFILE.password:
                         # with that out of the way we can get the inbox
                         # get inbox
-                        inbox = str(Email.userViewGetInbox(profile.defaultEmail, profile.defaultEmailPassword))
+                        inbox = str(Email.userViewGetInbox(PROFILE.defaultEmail, PROFILE.defaultEmailPassword))
                         # Return the entry and related information and delete after 120 seconds for security
                         await channel.send(" " + inbox, delete_after=120)
                     else:
@@ -90,11 +100,11 @@ class MyClient(discord.Client):
                 # verify permissions and get email + password
                 if User.isProfileDiscord(str(message.author)):
                     # get profile
-                    profile = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
+                    PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
                     # ask user for password for security
                     await message.channel.send('Please Enter Your Password: ', delete_after=120)
                     userSubmittedPassword = await client.wait_for('message')
-                    if userSubmittedPassword.content == profile.password:
+                    if userSubmittedPassword.content == PROFILE.password:
 
                         # ask user for what information we want
                         await channel.send("Please Enter the Email You Are Sending To: ", delete_after=120)
@@ -105,7 +115,7 @@ class MyClient(discord.Client):
                         body = await client.wait_for('message')
 
                         # finally send the email
-                        Email.sendEmail(profile.defaultEmail, profile.defaultEmailPassword, profile.defaultEmail, recieverEmail.content, emailSubject.content, body.content)
+                        Email.sendEmail(PROFILE.defaultEmail, PROFILE.defaultEmailPassword, PROFILE.defaultEmail, recieverEmail.content, emailSubject.content, body.content)
                         # tell the user we managed to somehow do our job
                         await channel.send("Email sent. Consider deleting your message to preserve your privacy and keep it off Discord's servers.", delete_after=120)
                     else:
@@ -142,8 +152,8 @@ class MyClient(discord.Client):
                     await message.channel.send('Please Enter Your Password: ', delete_after=120)
                     userSubmittedPassword = await client.wait_for('message')
                     # get profile
-                    profile = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
-                    if userSubmittedPassword.content == profile.password:
+                    PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
+                    if userSubmittedPassword.content == PROFILE.password:
                         getDate = await client.wait_for('message')
                         date = getDate.content
                         # check if the entry exists
