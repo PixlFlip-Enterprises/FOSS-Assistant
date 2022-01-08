@@ -83,6 +83,11 @@ class Profile(object):
         # get discord
         return self._discord
 
+    @property
+    def journal(self):
+        # get journal
+        return self._journal
+
 # ==========================================================================================================
 
 # creating a new user profile

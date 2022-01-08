@@ -136,57 +136,35 @@ class MyClient(discord.Client):
             # ask for and interpret sub command
             await message.channel.send('What would you like to do with your journal?')
             subCommand1 = await client.wait_for('message')
-            # send to parser with a little extra journal just to ensure it marks it as a journal command
             subCommand2 = subCommand1.content + " journal "
+            # send to parser with a little extra journal just to ensure it marks it as a journal command
             intentCommand = Protocols.findIntentFromText(subCommand2)
             # import journal object for use
-            userJournal = UserData.Journal(User.getProfileUsernameDiscord(str(message.author)))
+            userJournal = PROFILE.journal
             # 3 entered meaning they want to view entry
             if intentCommand == 3:
                 # parse next part for a date
                 await channel.send('Input Date Of Entry You Want to View Using the Format YYYY-MM-DD (include the - )')
-                date = await client.wait_for('message')
-                # check if a profile exists
-                if User.isProfileDiscord(str(message.author)):
-                    # verify password
-                    await message.channel.send('Please Enter Your Password: ', delete_after=120)
-                    userSubmittedPassword = await client.wait_for('message')
-                    # get profile
-                    PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
-                    if userSubmittedPassword.content == PROFILE.password:
-                        getDate = await client.wait_for('message')
-                        date = getDate.content
-                        # check if the entry exists
-                        if userJournal.is_entry(date):
-                            # Get the entry
-                            entry = userJournal.get_entry(date)
-                            # Return the entry and related information and delete after 120 seconds for security
-                            await channel.send('Entry for the Date ' + date + ': \n' + entry[1], delete_after=120)
-                        else:
-                            # return error to user
-                            await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - )')
-                    else:
-                        # Failed Login
-                        await channel.send("Invalid Password for account. Access Denied.", delete_after=120)
+                getDate = await client.wait_for('message')
+                date = getDate.content
+                # check if the entry exists
+                if userJournal.is_entry(date):
+                    # Get the entry
+                    entry = userJournal.get_entry(date)
+                    # Return the entry and related information and delete after 120 seconds for security
+                    await channel.send('Entry for the Date ' + date + ': \n' + entry[1], delete_after=120)
                 else:
-                    # Failed to find profile
-                    await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
-
+                    # return error to user
+                    await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - )')
             # 2 entered meaning new entry
             if intentCommand == 31:
                 # format all remaining information in the message and store in variable
                 getEntry = await client.wait_for('message')
                 entry = getEntry.content
-                # check if a profile exists
-                if User.isProfileDiscord(str(message.author)):
-                    # add the entry
-                    userJournal.add_entry(entry.replace("\n", ""), "DiscordClient")
-                    # tell the user the entry was recorded
-                    await channel.send('Entry Recorded.')
-                else:
-                    # Failed to find profile
-                    await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.')
-
+                # add the entry
+                userJournal.add_entry(entry.replace("\n", ""), "DiscordClient")
+                # tell the user the entry was recorded
+                await channel.send('Entry Recorded.')
             # send message to channel if no other data given
             else:
                 await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Entry\n 2 | Add Entry')
