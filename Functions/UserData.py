@@ -162,25 +162,10 @@ class Journal(object):
         return ""
 
     def is_entry(self, date):
-        try:
-            # open the database
-            db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
-            cursor = db.cursor()
-            # Execute the SQL command
-            cursor.execute("SELECT * FROM " + self._ID + "_JOURNAL")
-            # get all records
-            records = cursor.fetchall()
-            # temp var
-            temp = " "
-            # add all to array
-            for row in records:
-                if row.__contains__(date):
-                    return True
-        except:
-            # Rollback in case there is any error
-            db.rollback()
-        # disconnect from server
-        db.close()
+        sort = self._entries
+        for entry in sort:
+            if entry[1].__contains__(date):
+                return True
         return False
 
     # returns array of all Entry objects. maybe could make this a string array someday.
