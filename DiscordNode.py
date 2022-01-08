@@ -27,8 +27,8 @@ class MyClient(discord.Client):
         if message.author == self.user:
             return
         # return if no prefix to command. Saves tons of processing power
-        if not message.content.startswith(PREFIX):
-            return  # we know its a command now
+        #if not message.content.startswith(PREFIX):
+            #return  # we know its a command now
         # check if user profile exists and return if no profile
         if not User.isProfileDiscord(str(message.author)):
             await message.channel.send('You are not authorized to access my commands. NEW UPDATE LOSER!', delete_after=30)
