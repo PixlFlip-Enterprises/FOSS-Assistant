@@ -152,7 +152,7 @@ class MyClient(discord.Client):
                     # Get the entry
                     entry = userJournal.get_entry(date)
                     # Return the entry and related information and delete after 120 seconds for security
-                    await channel.send('Entry for the Date ' + date + ': \n' + entry[1], delete_after=120)
+                    await channel.send('Entry for the Date ' + date + ': \n' + entry.entry, delete_after=120)
                 else:
                     # return error to user
                     await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - )')
