@@ -153,6 +153,9 @@ def isProfileDiscord(discordtag):
 
 # returns userID from mysql search
 def getProfileUsernameDiscord(discordtag):
+    # temp var
+    temp = []
+    holding = []
     try:
         # open the database
         db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
@@ -161,12 +164,16 @@ def getProfileUsernameDiscord(discordtag):
         cursor.execute("SELECT * FROM PROFILES")
         # get all records
         records = cursor.fetchall()
-        # temp var
-        temp = " "
         # add all to array
         for row in records:
-            if row.__contains__(discordtag):
-                return row.split(',')[0]
+            holding.append(row)
+            # search for profile
+            for i in holding:
+                if i[4].__contains__(discordtag):
+                    # save profile to temp
+                    for j in i:
+                        temp.append(j)
+        return temp[0]
     except:
         # Rollback in case there is any error
         db.rollback()
