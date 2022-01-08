@@ -94,6 +94,7 @@ class Journal(object):
     def __init__(self, userID):
         self._ID = userID
         tempEntries = []
+        holding = []
         try:
             # open the database
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
@@ -104,8 +105,14 @@ class Journal(object):
             records = cursor.fetchall()
             # add all to array
             for row in records:
-                # date, entry, UUID, starred, creationDevice, timeZone
-                tempEntries.append(Entry(row[0], row[1], row[2], row[3], row[4], row[5]))
+                holding.append(row)
+                # add entry to holding variables
+                for i in holding:
+                    # sort tuple to array and append
+                    for j in i:
+                        # date, entry, UUID, starred, creationDevice, timeZone
+                        tempEntries.append(Entry(j[0], j[1], j[2], j[3], j[4], j[5]))
+
         except:
             # Rollback in case there is any error
             db.rollback()

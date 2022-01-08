@@ -11,7 +11,7 @@
 import os
 import MySQLdb
 
-from Functions import Protocols
+from Functions import Protocols, UserData
 
 directory = os.getcwd() + '/Data/profiles.csv'
 # All key (read top level) variables here
@@ -59,6 +59,9 @@ class Profile(object):
         self._defaultEmail = temp[2]
         self._defaultEmailPassword = temp[3]
         self._discord = temp[4]
+        # setup other variables
+        self._journal = UserData.Journal(self._ID)
+
 
     @property
     def password(self):
@@ -79,6 +82,7 @@ class Profile(object):
     def discord(self):
         # get discord
         return self._discord
+
 # ==========================================================================================================
 
 # creating a new user profile
