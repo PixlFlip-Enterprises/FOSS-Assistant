@@ -9,7 +9,6 @@
 
 # TODO restructure this to accomodate tons of new fields, settings for users, and make it easier to get info from (no more stupid array returns and knowing the spot to call)
 import os
-# import MySQLdb
 import MySQLdb
 
 from Functions import Protocols
@@ -31,6 +30,7 @@ class Profile(object):
         self._ID = ID
         # temp var
         temp = []
+        holding = []
         try:
             # open the database
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
@@ -39,12 +39,16 @@ class Profile(object):
             cursor.execute("SELECT * FROM PROFILES")
             # get all records
             records = cursor.fetchall()
-
             # add all to array
             for row in records:
-                if row.__contains__(ID):
-                    # save profile to temp
-                    temp = row.split(",")
+                holding.append(row)
+                # search for profile
+                for i in holding:
+                    if i[0].__contains__(self._ID):
+                        # save profile to temp
+                        for j in i:
+                            temp.append(j)
+
         except:
             # Rollback in case there is any error
             db.rollback()
