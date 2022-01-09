@@ -107,11 +107,9 @@ class Journal(object):
             for row in records:
                 holding.append(row)
                 # add entry to holding variables
-                for i in holding:
+                for j in holding:
                     # sort tuple to array and append
-                    for j in i:
-                        # date, entry, UUID, starred, creationDevice, timeZone
-                        tempEntries.append(Entry(j[0], j[1], j[2], j[3], j[4], j[5]))
+                    tempEntries.append(Entry(j[0], j[1], j[2], j[3], j[4], j[5]))
 
         except:
             # Rollback in case there is any error
@@ -123,7 +121,7 @@ class Journal(object):
     # date, entry, UUID Unspecified, starred, creationDevice, timeZone
     def add_entry(self, entry=" ", creationDevice="Generic", starred="false", timeZone="EST"):
 
-        x = datetime.datetime.now()
+        x = datetime.now()
         xy = x.__str__().replace(" ", "")
         entryID = Protocols.new_database_entry_id(SQLUSERNAME, SQLPASSWORD, SQLDATABASE, self._ID + "_JOURNAL")
         try:

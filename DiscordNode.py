@@ -56,7 +56,7 @@ class MyClient(discord.Client):
                 returnList += line
             await message.channel.send(returnList)
         # test of new journal
-        if message.content.startswith(PREFIX + 'journal view'):
+        if message.content.startswith(PREFIX + 'testing'):
             # set channel to same as one command issued in
             channel = message.channel
             if PROFILE.journal.is_entry("date"):
