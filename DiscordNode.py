@@ -27,8 +27,8 @@ class MyClient(discord.Client):
         if message.author == self.user:
             return
         # return if no prefix to command. Saves tons of processing power
-        #if not message.content.startswith(PREFIX):
-            #return  # we know its a command now
+        if not message.content.startswith(PREFIX):
+            return  # we know its a command now
         # check if user profile exists and return if no profile
         if not User.isProfileDiscord(str(message.author)):
             await message.channel.send('You are not authorized to access my commands. NEW UPDATE LOSER!', delete_after=30)
@@ -36,7 +36,7 @@ class MyClient(discord.Client):
         # load the profile of the user into key variable
         PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
         # log the command and who did it for diagnosis
-        # Protocols.debugLog(User.getProfileUsernameDiscord(str(message.author)), (message.content.split(" ")[0]), "Discord")
+        Protocols.debugLog(User.getProfileUsernameDiscord(str(message.author)), (message.content.split(" ")[0]), "Discord")
 
 
         # ============================ Basics ============================
@@ -57,7 +57,7 @@ class MyClient(discord.Client):
             await message.channel.send(returnList)
         # timer command
 
-
+        # TODO these commands cannot be accessed in its current form. Maybe make a workaround for non users?
         # ============================  Troll Commands  ============================
         if message.content == (PREFIX + 'submit'):
             await message.channel.send('I will not comply. Don\'t try /forcesubmit')
