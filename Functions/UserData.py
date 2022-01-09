@@ -173,8 +173,7 @@ class Journal(object):
         open(currentDirectory + '/Data/' + self._ID + '-journal.csv', 'x')
         with open(currentDirectory + '/Data/' + self._ID + '-journal.csv', 'w') as file:
             for entry in self._entries:
-                file.write("\n" + entry.date + ',"' + entry.entry + '",' + entry.starred + ',' + entry.creationDevice + ',' + entry.timeZone)
-                file.close()
+                file.write(entry.date + ',"' + entry.entry + '",' + entry.starred + ',' + entry.creationDevice + ',' + entry.timeZone + "\n")
         return "Export Complete"
 
 # Sub Class Entry (only should be called inside journal!)
