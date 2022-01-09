@@ -171,7 +171,7 @@ class Journal(object):
         print("User " + self._ID + " Has Exported Their Journal To File.")
         # create export file
         open(currentDirectory + '/Data/' + self._ID + '-journal.csv', 'x')
-        with open(currentDirectory + '/Functions/ProgramData/startup.txt', 'w') as file:
+        with open(currentDirectory + '/Data/' + self._ID + '-journal.csv', 'w') as file:
             for entry in self._entries:
                 file.write("\n" + entry.date + ',"' + entry.entry + '",' + entry.starred + ',' + entry.creationDevice + ',' + entry.timeZone)
                 file.close()
