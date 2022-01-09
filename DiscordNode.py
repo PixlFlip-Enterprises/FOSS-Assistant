@@ -55,7 +55,18 @@ class MyClient(discord.Client):
             for line in file:
                 returnList += line
             await message.channel.send(returnList)
-        # timer command
+        # test of new journal
+        if message.content.startswith(PREFIX + 'journal view'):
+            # set channel to same as one command issued in
+            channel = message.channel
+            if PROFILE.journal.is_entry("date"):
+                # should return the default entry
+                entry = PROFILE.journal.get_entry("date")
+                # Return the entry and related information and delete after 120 seconds for security
+                await channel.send('Entry for the Date is:' + entry.entry, delete_after=10)
+            else:
+                # return error to user
+                await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - )')
 
         # TODO these commands cannot be accessed in its current form. Maybe make a workaround for non users?
         # ============================  Troll Commands  ============================
