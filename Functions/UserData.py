@@ -110,7 +110,6 @@ class Journal(object):
                 for j in holding:
                     # sort tuple to array and append
                     tempEntries.append(Entry(j[0], j[1], j[2], j[3], j[4], j[5]))
-
         except:
             # Rollback in case there is any error
             db.rollback()
@@ -159,6 +158,7 @@ class Journal(object):
     def remove_entry(self):
         return ""
 
+    # returns boolean based on if a matching date is found
     def is_entry(self, date):
         sort = self._entries
         for entry in sort:
@@ -166,9 +166,17 @@ class Journal(object):
                 return True
         return False
 
-    # returns array of all Entry objects. maybe could make this a string array someday.
+    # exports all journal entries of user to file
     def export_all(self):
-        return self._entries
+        print("User " + self._ID + " Has Exported Their Journal To File.")
+        # create export file
+        open(currentDirectory + '/Data/' + self._ID + '-journal.csv', 'x')
+        with open(currentDirectory + '/Functions/ProgramData/startup.txt', 'w') as file:
+            for entry in self._entries:
+                file.write("\n" + entry.date + ',"' + entry.entry + '",' + entry.starred + ',' + entry.creationDevice + ',' + entry.timeZone)
+                file.close()
+        return "Export Complete"
+
 # Sub Class Entry (only should be called inside journal!)
 class Entry(object):
     def __init__(self, date, entry, UUID, starred, creationDevice, timeZone):
@@ -203,4 +211,8 @@ class Entry(object):
     def timeZone(self):
         # get database name
         return self._timeZone
+# ==========================================================================================================
+
+
+# Contact Class
 # ==========================================================================================================

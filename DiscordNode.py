@@ -1,5 +1,10 @@
-''' DiscordNode.py Version 0.5.
-This update streamlines Profile lookup, prevents unauthorized use, and is now robust
+'''
+DiscordNode.py Version 0.5.
+Author: PixlFlip
+Date: Jan 6, 2022
+
+This update streamlines Profile lookup, prevents
+unauthorized use, and is now robust
 enough to be used in any server, public or private.
 '''
 
@@ -47,6 +52,11 @@ class MyClient(discord.Client):
         if message.content == (PREFIX + 'parady'):
             Protocols.establish_parady_user(User.getProfileUsernameDiscord(str(message.author)), SETTINGS.sqlUsername, SETTINGS.sqlPassword, SETTINGS.sqlDatabase)
             await message.channel.send('parady achieved', delete_after=10)
+        # export journal to csv file
+        if message.content == (PREFIX + 'export'):
+            userJournal = PROFILE.journal
+            userJournal.export_all()
+            await message.channel.send('parady achieved', delete_after=10)
         # help command
         if message.content == (PREFIX + 'help'):
             # open discord help file
@@ -55,26 +65,6 @@ class MyClient(discord.Client):
             for line in file:
                 returnList += line
             await message.channel.send(returnList)
-        # test of new journal
-        if message.content.startswith(PREFIX + 'testing'):
-            # set channel to same as one command issued in
-            channel = message.channel
-            if PROFILE.journal.is_entry("date"):
-                # should return the default entry
-                entry = PROFILE.journal.get_entry("date")
-                # Return the entry and related information and delete after 120 seconds for security
-                await channel.send('Entry for the Date is:' + entry.entry, delete_after=10)
-            else:
-                # return error to user
-                await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - )')
-
-        # TODO these commands cannot be accessed in its current form. Maybe make a workaround for non users?
-        # ============================  Troll Commands  ============================
-        if message.content == (PREFIX + 'submit'):
-            await message.channel.send('I will not comply. Don\'t try /forcesubmit')
-
-        if message.content == (PREFIX + 'forcesubmit'):
-            await message.channel.send('When will you learn. Doxxing...')
 
         # ============================       Email      ==============================
         if message.content.startswith(PREFIX + 'email'):
@@ -142,8 +132,6 @@ class MyClient(discord.Client):
         if message.content.startswith(PREFIX + 'journal'):
             # set channel to same as one command issued in
             channel = message.channel
-            # warning about high level command
-            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shortly after send.\n Also for security it is recommended you do this in DM.', delete_after=120)
             # ask for and interpret sub command
             await message.channel.send('What would you like to do with your journal?')
             subCommand1 = await client.wait_for('message')
@@ -194,15 +182,6 @@ class MyClient(discord.Client):
             msg = await client.wait_for('message', check=check)
             await channel.send('Hello {.author}!'.format(msg))
 
-        # ===================== Pass Test =====================
-        # THIS WORKS FOR MULTIPLE LINE CODE!!!
-        if message.content.startswith('/pass'):
-            channel = message.channel
-            await channel.send('Say hello!')
-
-            msg = await client.wait_for('message')
-            await channel.send('Hello {.author}!'.format(msg))
-
         # ===================== Wikipedia =====================
         # takes message, looks for a match on wikipedia, and returns article summary
         if message.content.startswith(PREFIX + 'wiki'):
@@ -213,7 +192,8 @@ class MyClient(discord.Client):
             except:
                 await message.channel.send('No Data Found From Wikipedia')
 
-        # DYNAMIC COMMANDS (READING INTENT WITH NEUTRAL NET AND/OR KEYWORDS)
+        # ===================== Dynamic Command =====================
+        # reads intent from message provided to it using intent manager or neural network.
 
 
 client = MyClient()

@@ -167,6 +167,7 @@ def establish_parady():
     # end
     return "nerd"
 
+# TODO ensure this doesn't add duplicates
 # Gets all available file information with userID and adds to the database
 def establish_parady_user(userID, sqluser, sqlpass, sqldatabase):
     # journal parady
