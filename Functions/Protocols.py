@@ -176,10 +176,8 @@ def establish_parady_user(userID, sqluser, sqlpass, sqldatabase):
         file = open(currentDirectory + '/Data/' + userID + '-journal.csv')
         entries = []
         for line in file:
-            entries.append(line)
-        # add each entry to database
-        for e in entries:
-            entry = e.split(",")
+            # add each entry to database
+            entry = line.split(",")
             entryID = new_database_entry_id(sqluser, sqlpass, sqldatabase, userID + "_JOURNAL")
             try:
                 # open the database
