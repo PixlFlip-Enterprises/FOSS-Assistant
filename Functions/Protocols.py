@@ -187,18 +187,19 @@ def establish_parady_user(userID, sqluser, sqlpass, sqldatabase):
                 cursor = db.cursor()
                 # Execute the SQL command
                 sql = "INSERT INTO " + userID + "_JOURNAL (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s)"
-                val = (entry[0], entry[1], entry[2], entry[3], entry[4], entry[5])
+                val = (entry[0], entry[1], entryID, entry[4], entry[8], entry[9])
                 cursor.execute(sql, val)
                 # Commit your changes in the database
                 db.commit()
+                db.close()
             except:
                 # Rollback in case there is any error
                 db.rollback()
-
+                db.close()
                 # disconnect from server
 
             print(cursor.rowcount, "records inserted.")
-            db.close()
+
 
 # ==========================================================================================================
 # Class for All Startup Settings
