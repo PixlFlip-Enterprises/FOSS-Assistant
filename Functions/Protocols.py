@@ -171,32 +171,47 @@ def establish_parady():
 # Gets all available file information with userID and adds to the database
 def establish_parady_user(userID, sqluser, sqlpass, sqldatabase):
     # journal parady
-    if exists(currentDirectory + '/Data/' + userID + '-journal.csv'):
-        # get all entries from file
-        file = open(currentDirectory + '/Data/' + userID + '-journal.csv')
+    file = open(currentDirectory + '/Data/' + userID + '-journal.csv')
+    # add every entry to a massive array
+    foundEntry = []
+    for line in file:
+        foundEntry.append(line)
 
-        for line in file:
-            # add each entry to database
-            entry = line.split(',')
-            try:
-                # open the database
-                db = MySQLdb.connect("localhost", sqluser, sqlpass, sqldatabase)
-                cursor = db.cursor()
-                # Execute the SQL command
-                sql = "INSERT INTO " + userID + "_JOURNAL (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s)"
-                val = (entry[0], entry[1], entry[2], entry[4], entry[8], entry[9])
-                cursor.execute(sql, val)
-                # Commit your changes in the database
-                db.commit()
-                db.close()
-            except:
-                # Rollback in case there is any error
-                db.rollback()
-                db.close()
-                # disconnect from server
+    # now cycle through entire thing
+    for entryCycle in foundEntry:
+        # split message into parts
+        # first part split using quotes
+        if len(entryCycle) <= 2:
+            break;
+        entryArrayCenter = [x.strip() for x in entryCycle.split('"')]
+        # now split the newly created 0 and 2 spots
+        entryArrayLeft = [x.strip() for x in entryArrayCenter[0].split(',')]
+        entryArrayRight = [x.strip() for x in entryArrayCenter[2].split(',')]
+        # conjoin all three and viola the entry will be correct
+        entryArrayRight.remove(entryArrayLeft[1])
+        entryArrayLeft.remove(entryArrayLeft[1])
+        entryArray = entryArrayLeft
+        entryArray.append(entryArrayCenter[1])
+        entryArray += entryArrayRight
+        # add parsed entry to database (at least in theory)
+        try:
+            # open the database
+            db = MySQLdb.connect("localhost", sqluser, sqlpass, sqldatabase)
+            cursor = db.cursor()
+            # Execute the SQL command
+            sql = "INSERT INTO " + userID + "_JOURNAL (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s)"
+            val = (entryArray[0], entryArray[1], entryArray[2], entryArray[4], entryArray[8], entryArray[9])
+            cursor.execute(sql, val)
+            # Commit your changes in the database
+            db.commit()
+            db.close()
+        except:
+            # Rollback in case there is any error
+            db.rollback()
+            db.close()
+            # disconnect from server
 
-            print(cursor.rowcount, "records inserted.")
-
+        print(cursor.rowcount, "records inserted for the date " + entryArray[0])
 
 # ==========================================================================================================
 # Class for All Startup Settings
