@@ -174,18 +174,17 @@ def establish_parady_user(userID, sqluser, sqlpass, sqldatabase):
     if exists(currentDirectory + '/Data/' + userID + '-journal.csv'):
         # get all entries from file
         file = open(currentDirectory + '/Data/' + userID + '-journal.csv')
-        entries = []
+
         for line in file:
             # add each entry to database
-            entry = line.split(",")
-            entryID = new_database_entry_id(sqluser, sqlpass, sqldatabase, userID + "_JOURNAL")
+            entry = line.split(',')
             try:
                 # open the database
                 db = MySQLdb.connect("localhost", sqluser, sqlpass, sqldatabase)
                 cursor = db.cursor()
                 # Execute the SQL command
                 sql = "INSERT INTO " + userID + "_JOURNAL (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s)"
-                val = (entry[0], entry[1], entryID, entry[4], entry[8], entry[9])
+                val = (entry[0], entry[1], entry[2], entry[4], entry[8], entry[9])
                 cursor.execute(sql, val)
                 # Commit your changes in the database
                 db.commit()
