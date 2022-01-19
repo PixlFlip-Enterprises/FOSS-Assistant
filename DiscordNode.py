@@ -10,7 +10,6 @@ enough to be used in any server, public or private.
 
 import wikipedia
 import discord
-import os
 from Functions import User, Protocols, Email, UserData
 
 # All key (read top level) variables here

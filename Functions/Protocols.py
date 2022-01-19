@@ -1,8 +1,6 @@
 # file for any and all protocols used
 import os
 import datetime
-from os.path import exists
-
 import MySQLdb
 # import pytube
 # from pytube import YouTube
@@ -182,7 +180,7 @@ def establish_parady_user(userID, sqluser, sqlpass, sqldatabase):
         # split message into parts
         # first part split using quotes
         if len(entryCycle) <= 2:
-            break;
+            break
         entryArrayCenter = [x.strip() for x in entryCycle.split('"')]
         # now split the newly created 0 and 2 spots
         entryArrayLeft = [x.strip() for x in entryArrayCenter[0].split(',')]
