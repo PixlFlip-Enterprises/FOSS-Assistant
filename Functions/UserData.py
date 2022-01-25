@@ -168,13 +168,13 @@ class Journal(object):
 
     # exports all journal entries of user to file
     def export_all(self):
-        print("User " + self._ID + " Has Exported Their Journal To File.")
         # create export file
         open(currentDirectory + '/Data/' + self._ID + '-journal.csv', 'x')
-        with open(currentDirectory + '/Data/' + self._ID + '-journal.csv', 'w') as file:
-            for entry in self._entries:
-                file.write(entry.date + ',"' + entry.entry + '",' + entry.starred + ',' + entry.creationDevice + ',' + entry.timeZone + "\n")
-        return "Export Complete"
+        for entry in self._entries:
+            file = open(currentDirectory + '/Data/' + self._ID + '-journal.csv', "a")  # append mode
+            file.write(entry.date + ',"' + entry.entry + '",' + entry.starred + ',' + entry.creationDevice + ',' + entry.timeZone + "\n")
+            file.close()
+        print("User " + self._ID + " Has Exported Their Journal To File.")
 
 # Sub Class Entry (only should be called inside journal!)
 class Entry(object):
