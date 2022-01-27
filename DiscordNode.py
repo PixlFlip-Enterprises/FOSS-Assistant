@@ -1,4 +1,4 @@
-'''
+"""
 DiscordNode.py Version 0.5.
 Author: PixlFlip
 Date: Jan 6, 2022
@@ -6,7 +6,7 @@ Date: Jan 6, 2022
 This update streamlines Profile lookup, prevents
 unauthorized use, and is now robust
 enough to be used in any server, public or private.
-'''
+"""
 
 import wikipedia
 import discord
