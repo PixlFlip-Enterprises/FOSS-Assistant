@@ -40,17 +40,22 @@ from newspaper import Article
 #     print(trend.__str__().replace("'", "").replace("[", "").replace("]", ""))
 # # Google Trend Data Retrieved
 
-site = newspaper.build("https://news.ycombinator.com/news", memoize_articles=False)
-# site = newspaper.build("https://www.wnd.com/", memoize_articles=False)
+
+# Get Tech News
+tech_site = newspaper.build("https://news.ycombinator.com/news", memoize_articles=False)
+tech_article_urls = tech_site.article_urls()
+# Get World News
+news_site = newspaper.build("https://www.wnd.com/", memoize_articles=False)
+news_article_urls = news_site.article_urls()
 # get list of article URLs
-article_urls = site.article_urls()
+
 top_articles = []
 # sort data into array
 for index in range(10):
-    article = site.articles[index]
+    article = tech_site.articles[index]
     article.download()
     article.parse()
     top_articles.append(article)
-    print(article_urls[index])
+    print(tech_article_urls[index])
 # Get Trending Searches
-print(newspaper.hot())
+google_trending_searches = newspaper.hot()
