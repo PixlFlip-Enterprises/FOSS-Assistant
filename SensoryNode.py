@@ -17,45 +17,31 @@ I taking the time to write this???
 #      print("Humidity")
 #      print(humidity)
 
+# top_articles = []
+# sort data into array
+# for index in range(10):
+#     article = tech_site.articles[index]
+#     article.download()
+#     article.parse()
+#     top_articles.append(article)
+#     print(tech_article_urls[index])
+
 
 """Everything in this file is based on timing or preforming an action after or on a specific date/time"""
-import pandas as pd
-import numpy
-from pytrends.request import TrendReq
 # NOTE: must use pip3 import newspaper3k for it to import correctly
 import newspaper
 from newspaper import Article
 
 # # Daily Briefing Builder
-# # setup object
-# pytrend = TrendReq()
-# # Get Google Hot Trends data
-# df = pytrend.trending_searches(pn='united_states')
-# # turn that into array
-# temp_trending = df.values
-# # format array into string so we can actually use it
-# google_trending_searches = []
-# for trend in temp_trending:
-#     google_trending_searches.append(trend.__str__().replace("'", "").replace("[", "").replace("]", ""))
-#     print(trend.__str__().replace("'", "").replace("[", "").replace("]", ""))
-# # Google Trend Data Retrieved
-
-
 # Get Tech News
 tech_site = newspaper.build("https://news.ycombinator.com/news", memoize_articles=False)
 tech_article_urls = tech_site.article_urls()
 # Get World News
 news_site = newspaper.build("https://www.wnd.com/", memoize_articles=False)
 news_article_urls = news_site.article_urls()
-# get list of article URLs
-
-top_articles = []
-# sort data into array
-for index in range(10):
-    article = tech_site.articles[index]
-    article.download()
-    article.parse()
-    top_articles.append(article)
-    print(tech_article_urls[index])
 # Get Trending Searches
 google_trending_searches = newspaper.hot()
+# Add it all to a single string
+newsletter = "Good Morning!\n Here's what you need to know today.\n Top Tech News: \n " + tech_article_urls[0] + "\n" + tech_article_urls[1] + "\n" + tech_article_urls[2] + "\n" + tech_article_urls[3] + "\n" + tech_article_urls[4] + "\n Top World News: \n" + news_article_urls[0] + "\n" + news_article_urls[1] + "\n" + news_article_urls[2] + "\n" + news_article_urls[3] + "\n" + news_article_urls[4] + "\n Trending Searches: \n" + google_trending_searches[0] + "\n" + google_trending_searches[1] + "\n" + google_trending_searches[2] + "\n" + google_trending_searches[3] + "\n" + google_trending_searches[4] + "\n That is the daily briefing for today <name here>."
+print(newsletter)
+
