@@ -25,7 +25,7 @@ I taking the time to write this???
 #     article.parse()
 #     top_articles.append(article)
 #     print(tech_article_urls[index])
-
+from Functions import Email
 
 """Everything in this file is based on timing or preforming an action after or on a specific date/time"""
 # NOTE: must use pip3 import newspaper3k for it to import correctly
@@ -42,6 +42,5 @@ news_article_urls = news_site.article_urls()
 # Get Trending Searches
 google_trending_searches = newspaper.hot()
 # Add it all to a single string
-newsletter = "Good Morning!\n Here's what you need to know today.\n Top Tech News: \n " + tech_article_urls[0] + "\n" + tech_article_urls[1] + "\n" + tech_article_urls[2] + "\n" + tech_article_urls[3] + "\n" + tech_article_urls[4] + "\n Top World News: \n" + news_article_urls[0] + "\n" + news_article_urls[1] + "\n" + news_article_urls[2] + "\n" + news_article_urls[3] + "\n" + news_article_urls[4] + "\n Trending Searches: \n" + google_trending_searches[0] + "\n" + google_trending_searches[1] + "\n" + google_trending_searches[2] + "\n" + google_trending_searches[3] + "\n" + google_trending_searches[4] + "\n That is the daily briefing for today <name here>."
+newsletter = "Good Morning!\nHere's what you need to know today.\nTop Tech News: \n" + tech_article_urls[0] + "\n" + tech_article_urls[1] + "\n" + tech_article_urls[2] + "\n" + tech_article_urls[3] + "\n" + tech_article_urls[4] + "\nTop World News: \n" + news_article_urls[0] + "\n" + news_article_urls[1] + "\n" + news_article_urls[2] + "\n" + news_article_urls[3] + "\n" + news_article_urls[4] + "\nTrending Searches: \n" + google_trending_searches[0] + "\n" + google_trending_searches[1] + "\n" + google_trending_searches[2] + "\n" + google_trending_searches[3] + "\n" + google_trending_searches[4] + "\nThat is the daily briefing for today <name here>."
 print(newsletter)
-
