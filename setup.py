@@ -29,7 +29,7 @@ profileParams.append(input("= Enter Discord ID (put NONE if no ID): "))
 open(currentDirectory + '/Functions/ProgramData/startup.txt', 'x')
 with open(currentDirectory + '/Functions/ProgramData/startup.txt', 'w') as f:
     for line in startupParams:
-        f.write(line)
+        f.write(line + '\n')
 
 # init database (or try to!)
 try:
