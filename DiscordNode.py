@@ -51,11 +51,6 @@ class MyClient(discord.Client):
         if message.content == (PREFIX + 'parady'):
             Protocols.establish_parady_user(User.getProfileUsernameDiscord(str(message.author)), SETTINGS.sqlUsername, SETTINGS.sqlPassword, SETTINGS.sqlDatabase)
             await message.channel.send('parady achieved', delete_after=10)
-        # export journal to csv file
-        if message.content == (PREFIX + 'export'):
-            userJournal = PROFILE.journal
-            userJournal.export_all()
-            await message.channel.send('Journal Export Complete. ', delete_after=10)
         # help command
         if message.content == (PREFIX + 'help'):
             # open discord help file

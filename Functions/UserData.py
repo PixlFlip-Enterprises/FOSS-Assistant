@@ -166,18 +166,6 @@ class Journal(object):
                 return True
         return False
 
-    # exports all journal entries of user to file
-    # TODO WHY WONT THIS WORK??? ENTRIES ARE IMPORTED CORRECTLY THIS SHOULD BE BEHAVING NOMINALLY
-    def export_all(self):
-        # create export file
-        open(currentDirectory + '/Data/' + self._ID + '-journal.csv', 'x')
-        file = open(currentDirectory + '/Data/' + self._ID + '-journal.csv', "a")  # append mode
-        for entry in self._entries:
-            file.writelines(entry.date + ',"' + entry.entry + '",' + entry.starred + ',' + entry.creationDevice + ',' + entry.timeZone)
-
-        file.close()
-        print("User " + self._ID + " Has Exported Their Journal To File.")
-
 # Sub Class Entry (only should be called inside journal!)
 class Entry(object):
     def __init__(self, date, entry, UUID, starred, creationDevice, timeZone):
