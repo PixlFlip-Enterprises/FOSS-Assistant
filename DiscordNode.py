@@ -53,6 +53,8 @@ class MyClient(discord.Client):
             await message.channel.send('parady achieved', delete_after=10)
         # help command
         if message.content == (PREFIX + 'help'):
+            # delete user message
+            await client.delete_message(message)
             # open discord help file
             file = open(currentDirectory + '/Data/discordhelp.txt')
             returnList = ""
