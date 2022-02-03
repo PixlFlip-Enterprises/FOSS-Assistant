@@ -11,9 +11,20 @@ I taking the time to write this???
 # NOTE: must use pip3 import newspaper3k for it to import correctly
 import newspaper
 from newspaper import Article
-import datetime
+from datetime import datetime
+import MySQLdb
+from Functions import Protocols
+# Top Variables
+SETTINGS = Protocols.Settings()
+SQLDATABASE = SETTINGS.sqlDatabase
+SQLUSERNAME = SETTINGS.sqlUsername
+SQLPASSWORD = SETTINGS.sqlPassword
+currentDirectory = SETTINGS.currentDirectory
 # End Condition
 should_end = False
+
+
+# TODO this is clunky and lame. Redo this loop
 # Start Infinite Loop
 while should_end:
     # Start by getting the date and time of day
@@ -35,6 +46,25 @@ google_trending_searches = newspaper.hot()
 newsletter = "Good Morning!\nHere's what you need to know today.\nTop Tech News: \n" + tech_article_urls[0] + "\n" + tech_article_urls[1] + "\n" + tech_article_urls[2] + "\n" + tech_article_urls[3] + "\n" + tech_article_urls[4] + "\nTop World News: \n" + news_article_urls[0] + "\n" + news_article_urls[1] + "\n" + news_article_urls[2] + "\n" + news_article_urls[3] + "\n" + news_article_urls[4] + "\nTrending Searches: \n" + google_trending_searches[0] + "\n" + google_trending_searches[1] + "\n" + google_trending_searches[2] + "\n" + google_trending_searches[3] + "\n" + google_trending_searches[4] + "\nThat is the daily briefing for today <name here>."
 print(newsletter)
 
+# Record Briefing to Database
+x = datetime.now()
+xy = x.__str__().replace(" ", "")
+try:
+    # open the database
+    db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+    cursor = db.cursor()
+    # Execute the SQL command
+    sql = "INSERT INTO DAILY_BRIEFING (DATE, NEWS_LINKS, TECH_LINKS, TRENDING_SEARCHES) VALUES(%s, %s, %s, %s)"
+    val = (xy, news_article_urls.__str__(), tech_article_urls.__str__(), google_trending_searches.__str__())
+    cursor.execute(sql, val)
+    # Commit your changes in the database
+    db.commit()
+except:
+    # Rollback in case there is any error
+    db.rollback()
+
+# disconnect from server
+db.close()
 
 
 
