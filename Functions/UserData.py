@@ -107,9 +107,9 @@ class Journal(object):
             for row in records:
                 holding.append(row)
                 # add entry to holding variables
-                for j in holding:
-                    # sort tuple to array and append
-                    tempEntries.append(Entry(j[0], j[1], j[2], j[3], j[4], j[5]))
+            for j in holding:
+                # sort tuple to array and append
+                tempEntries.append(Entry(j[0], j[1], j[2], j[3], j[4], j[5]))
         except:
             # Rollback in case there is any error
             db.rollback()

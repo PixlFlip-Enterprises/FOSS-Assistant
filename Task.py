@@ -13,6 +13,26 @@ import MySQLdb
 from Functions import Protocols
 
 def briefing(date, usr, pwd, db):
+    # first check for entry to prevent duplicates
+    try:
+        # open the database
+        db = MySQLdb.connect("localhost", usr, pwd, db)
+        cursor = db.cursor()
+        # execute the SQL command
+        cursor.execute("SELECT * FROM DAILY_BRIEFING WHERE REGEXP_INSTR(date,'" + date + "');")
+        # fetch search results
+        records = cursor.fetchall()
+        # return based on result
+        if not records == None:
+            # duplicate found
+            return
+
+    except:
+        # Rollback in case there is any error
+        db.rollback()
+    # disconnect from server
+    db.close()
+
     # Get Tech News
     tech_site = newspaper.build("https://news.ycombinator.com/news", memoize_articles=False)
     tech_article_urls = tech_site.article_urls()

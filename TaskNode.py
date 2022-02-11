@@ -37,6 +37,8 @@ while not should_end:
         # New day from start of operation, so run daily tasks
         print("Daily Task Protocol Initiated")
         Task.briefing(date, SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+        # reset our base date and move on
+        holding_date = date
 
     print("Tick Based Tasks Run")
     # 5 min or 300 sec sleep which makes up one "tick"
