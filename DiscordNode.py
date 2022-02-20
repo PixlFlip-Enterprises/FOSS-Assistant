@@ -10,6 +10,7 @@ enough to be used in any server, public or private.
 
 import wikipedia
 import discord
+import Task
 from Functions import User, Protocols, Email, UserData
 
 # All key (read top level) variables here
@@ -151,6 +152,7 @@ class MyClient(discord.Client):
                     await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - )')
             # 2 entered meaning new entry
             if intentCommand == 31:
+                await channel.send('Enter Your Entry')
                 # format all remaining information in the message and store in variable
                 getEntry = await client.wait_for('message')
                 entry = getEntry.content
@@ -160,10 +162,28 @@ class MyClient(discord.Client):
                 await channel.send('Entry Recorded.')
             # send message to channel if no other data given
             else:
-                await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Entry\n 2 | Add Entry')
+                await channel.send('Invalid Option. Please Message Something Like\n"create a new entry"\nor\n"view journal entry"')
 
         # ============================       Notes      ==============================
         # TODO integrate new note functionality here
+
+        # ============================        News       ==============================
+        if message.content.startswith(PREFIX + 'news'):
+            # set channel to same as one command issued in
+            channel = message.channel
+            # get news summary
+
+            # return summary to client
+            await message.channel.send('This command does nothing at the moment, but will someday.')
+
+        # ============================       Weather       ==============================
+        if message.content.startswith(PREFIX + 'weather'):
+            # set channel to same as one command issued in
+            channel = message.channel
+            # get news summary
+
+            # return summary to client
+            await message.channel.send('This command does nothing at the moment, but will someday.')
 
         # ===================== Greet =====================
         if message.content.startswith('/greet'):

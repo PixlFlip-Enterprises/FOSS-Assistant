@@ -338,28 +338,6 @@ class Contact(object):
         self._discord = discord
         self._personalityRating = personalityRating
         self._trustScore = trustScore
-        # these variables exist for future expansion of the contact class without having to rewrite the entire database
-        # note that these SHOULD NOT be called or used as they are, rather they should be renamed and then used.
-        self._blank1 = blank1
-        self._blank2 = blank2
-        self._blank3 = blank3
-        self._blank4 = blank4
-        self._blank5 = blank5
-        self._blank6 = blank6
-        self._blank7 = blank7
-        self._blank8 = blank8
-        self._blank9 = blank9
-        self._blank10 = blank10
-        self._blank11 = blank11
-        self._blank12 = blank12
-        self._blank13 = blank13
-        self._blank14 = blank14
-        self._blank15 = blank15
-        self._blank16 = blank16
-        self._blank17 = blank17
-        self._blank18 = blank18
-        self._blank19 = blank19
-        self._blank20 = blank20
 
     @property
     def firstName(self):
