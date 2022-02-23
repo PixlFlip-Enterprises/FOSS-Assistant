@@ -215,8 +215,8 @@ class ContactBook(object):
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
             # get all data matching our userID
-            cursor.execute("SELECT * FROM CONTACTS")
-            # get all records
+            cursor.execute("select * from CONTACT where CONTACT_OWNING_USER like '%" + userID + "%';")
+            # get all contacts matching user
             records = cursor.fetchall()
             # add all to array
             for row in records:
@@ -224,7 +224,7 @@ class ContactBook(object):
                 # add entry to holding variables
             for j in holding:
                 # sort tuple to array and append
-                tempEntries.append(Contact(j[0], j[1], j[2], j[3], j[4], j[5], j[6], j[7], j[8], j[9], j[10], j[11], j[12], j[13], j[14], j[15], j[16], j[17], j[18], j[19], j[20], j[21], j[22], j[23], j[24], j[25], j[26], j[27], j[28], j[29], j[30], j[31], j[32], j[33], j[34], j[35], j[36], j[37], j[38], j[39], j[40], j[41], j[42], j[43], j[44], j[45], j[46], j[47], j[48], j[49], j[50], j[51], j[52], j[53], j[54], j[55], j[56], j[57], j[58], j[59], j[60], j[61], j[62], j[63], j[64], j[65]))
+                tempEntries.append(Contact(j[0], j[1], j[2], j[3], j[4], j[5], j[6], j[7], j[8], j[9], j[10], j[11], j[12], j[13], j[14], j[15], j[16], j[17], j[18], j[19], j[20], j[21], j[22], j[23], j[24], j[25], j[26], j[27], j[28], j[29], j[30], j[31], j[32], j[33], j[34], j[35], j[36], j[37], j[38], j[39], j[40], j[41]))
         except:
             # Rollback in case there is any error
             db.rollback()
@@ -232,19 +232,16 @@ class ContactBook(object):
         db.close()
         self._entries = tempEntries
 
-    # date, entry, UUID Unspecified, starred, creationDevice, timeZone
-    def add_entry(self, entry=" ", creationDevice="Generic", starred="false", timeZone="EST"):
-
-        x = datetime.now()
-        xy = x.__str__().replace(" ", "")
-        entryID = Protocols.new_database_entry_id(SQLUSERNAME, SQLPASSWORD, SQLDATABASE, self._ID + "_JOURNAL")
+    # first and last name are always required, but the rest is optional. Also, the few at the end are for fun not real use
+    def create_contact(self, firstName, lastName, displayName="", nickname="", emailAddress="", email2address="", email3address="", homePhone="", businessPhone="", homeFax="", businessFax="", pager="", mobilePhone="", homeStreet="", homeAddress2="", homeCity="", homeState="", homePostalCode="", homeCountry="", businessAddress="", businessAddress2="", businessCity="", businessState="", businessPostalCode="", businessCountry="", countryCode="", relatedName="", jobTitle="", department="", organization="", notes="", birthday="", anniversary="", gender="", webPage="", webPage2="", categories="", sociologicalOptions="", genericSocialMediaHandle="", discord="", personalityRating=0, trustScore=0):
+        entryID = Protocols.new_database_entry_id(SQLUSERNAME, SQLPASSWORD, SQLDATABASE, "CONTACT")
         try:
             # open the database
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            sql = "INSERT INTO " + self._ID + "_JOURNAL (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s)"
-            val = (xy, entry, entryID, starred, creationDevice, timeZone)
+            sql = "INSERT INTO CONTACT (CONTACT_OWNING_USER, F_NAME, L_NAME, DISPLAY_NAME, NICKNAME, EMAIL_ADDRESS, EMAIL_ADDRESS2, EMAIL_ADDRESS3, HOME_PHONE, BUSINESS_PHONE, HOME_FAX, BUSINESS_FAX, PAGER, MOBILE_PHONE, HOME_ADDRESS, HOME_ADDRESS2, HOME_CITY, HOME_STATE, HOME_POSTAL_CODE, HOME_STREET, BUSINESS_ADDRESS, BUSINESS_ADDRESS2, BUSINESS_CITY, BUSINESS_STATE, BUSINESS_POSTAL_CODE, BUSINESS_COUNTRY, COUNTRY_CODE, RELATED_NAMES, JOB, DEPARTMENT, ORGANIZATION, NOTES, BIRTHDAY, ANNIVERSARY, GENDER, WEBSITE, WEBPAGE2, CATEGORIES, SOCIOLOGICAL_OPTIONS, SOCIAL_MEDIA_HANDLE, DISCORD, PERSONALITY_RATING, TRUST_SCORE) VALUES(%s, %s, %s, %s, %s, %s)" #43 variables total...?
+            val = (self._ID, firstName, lastName, displayName, nickname, emailAddress, email2address, email3address, homePhone, businessPhone, homeFax, businessFax, pager, mobilePhone, homeStreet, homeAddress2, homeCity, homeState, homePostalCode, homeCountry, businessAddress, businessAddress2, businessCity, businessState, businessPostalCode, businessCountry, countryCode, relatedName, jobTitle, department, organization, notes, birthday, anniversary, gender, webPage, webPage2, categories, sociologicalOptions, genericSocialMediaHandle, discord, personalityRating, trustScore)
             cursor.execute(sql, val)
             # Commit your changes in the database
             db.commit()
@@ -281,19 +278,10 @@ class ContactBook(object):
                 return True
         return False
 
-    # exports all journal entries of user to file
-    def export_all(self):
-        print("User " + self._ID + " Has Exported Their Journal To File.")
-        # create export file
-        open(currentDirectory + '/Data/' + self._ID + '-journal.csv', 'x')
-        with open(currentDirectory + '/Data/' + self._ID + '-journal.csv', 'w') as file:
-            for entry in self._entries:
-                file.write(entry.date + ',"' + entry.entry + '",' + entry.starred + ',' + entry.creationDevice + ',' + entry.timeZone + "\n")
-        return "Export Complete"
 
 # Sub Class Contact (only should be called inside ContactBook!)
 class Contact(object):
-    def __init__(self, firstName, lastName, displayName, nickname, emailAddress, email2address, email3address, homePhone, businessPhone, homeFax, businessFax, pager, mobilePhone, homeStreet, homeAddress2, homeCity, homeState, homePostalCode, homeCountry, businessAddress, businessAddress2, businessCity, businessState, businessPostalCode, businessCountry, countryCode, relatedName, jobTitle, department, organization, notes, birthday, anniversary, gender, webPage, webPage2, categories, sociologicalOptions, genericSocialMediaHandle, discord, personalityRating, trustScore, blank1, blank2, blank3, blank4, blank5, blank6, blank7, blank8, blank9, blank10, blank11, blank12, blank13, blank14, blank15, blank16, blank17, blank18, blank19, blank20, blank21, blank22, blank23, blank24):
+    def __init__(self, firstName, lastName, displayName, nickname, emailAddress, email2address, email3address, homePhone, businessPhone, homeFax, businessFax, pager, mobilePhone, homeStreet, homeAddress2, homeCity, homeState, homePostalCode, homeCountry, businessAddress, businessAddress2, businessCity, businessState, businessPostalCode, businessCountry, countryCode, relatedName, jobTitle, department, organization, notes, birthday, anniversary, gender, webPage, webPage2, categories, sociologicalOptions, genericSocialMediaHandle, discord, personalityRating, trustScore):
         self._firstName = firstName
         self._lastName = lastName
         self._displayName = displayName
