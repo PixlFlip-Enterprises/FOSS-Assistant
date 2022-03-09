@@ -7,14 +7,13 @@ space in the long run, is more readable for coding, and just will be easier to m
 from datetime import datetime
 import MySQLdb
 from Functions import Protocols
-
-# All key (read top level) variables here
+# All top level variables here =============
 SETTINGS = Protocols.Settings()
 SQLDATABASE = SETTINGS.sqlDatabase
 SQLUSERNAME = SETTINGS.sqlUsername
 SQLPASSWORD = SETTINGS.sqlPassword
 currentDirectory = SETTINGS.currentDirectory
-# End Key Variables =======================
+# End Variables =============================
 
 
 # Notebook Class
@@ -23,18 +22,22 @@ class Notes(object):
     def __init__(self, userID):
         self._ID = userID
         tempEntries = []
+        holding = []
         try:
             # open the database
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
-            # Execute the SQL command
-            cursor.execute("SELECT * FROM " + userID + "_NOTES")
-            # get all records
+            # get all data matching our userID
+            cursor.execute("select * from NOTE where OWNING_USER like '%" + userID + "%';")
+            # get all contacts matching user
             records = cursor.fetchall()
             # add all to array
             for row in records:
-                # date, entry, UUID, starred, creationDevice, timeZone
-                tempEntries.append(Entry(row[0], row[1], row[2], row[3], row[4], row[5]))
+                holding.append(row)
+                # add entry to holding variables
+            for j in holding:
+                # sort tuple to objects and append to array
+                tempEntries.append(Note(j[2], j[3], j[4], j[5], j[6], j[7]))
         except:
             # Rollback in case there is any error
             db.rollback()
@@ -42,19 +45,16 @@ class Notes(object):
         db.close()
         self._entries = tempEntries
 
-    # noteID, noteDateCreated, noteDateLastModified, noteTitle, noteBody, noteCreationDevice, noteStarred, noteLocked
-    def add_note(self, entry=" ", creationDevice="Generic", starred="false", timeZone="EST"):
-
-        x = datetime.datetime.now()
-        xy = x.__str__().replace(" ", "")
-        entryID = Protocols.new_database_entry_id(SQLUSERNAME, SQLPASSWORD, SQLDATABASE, self._ID + "-JOURNAL")
+    # first and last name are always required, but the rest is optional. Also, the few at the end are for fun not real use
+    def create_contact(self, ):
         try:
             # open the database
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute(
-                "INSERT INTO " + self._ID + "_JOURNAL(DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(" + xy + ", " + entry + "," + entryID + "," + starred + ", " + creationDevice + ", " + timeZone + " );")
+            sql = "INSERT INTO CONTACT (CONTACT_OWNING_USER, F_NAME, L_NAME, DISPLAY_NAME, NICKNAME, EMAIL_ADDRESS, EMAIL_ADDRESS2, EMAIL_ADDRESS3, HOME_PHONE, BUSINESS_PHONE, HOME_FAX, BUSINESS_FAX, PAGER, MOBILE_PHONE, HOME_ADDRESS, HOME_ADDRESS2, HOME_CITY, HOME_STATE, HOME_POSTAL_CODE, HOME_STREET, BUSINESS_ADDRESS, BUSINESS_ADDRESS2, BUSINESS_CITY, BUSINESS_STATE, BUSINESS_POSTAL_CODE, BUSINESS_COUNTRY, COUNTRY_CODE, RELATED_NAMES, JOB, DEPARTMENT, ORGANIZATION, NOTES, BIRTHDAY, ANNIVERSARY, GENDER, WEBSITE, WEBPAGE2, CATEGORIES, SOCIOLOGICAL_OPTIONS, SOCIAL_MEDIA_HANDLE, DISCORD, PERSONALITY_RATING, TRUST_SCORE) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"  # 43 variables total...?
+            val = (self._ID, )
+            cursor.execute(sql, val)
             # Commit your changes in the database
             db.commit()
         except:
@@ -85,6 +85,46 @@ class Notes(object):
     # returns array of all Entry objects. maybe could make this a string array someday.
     def export_all(self):
         return self._entries
+# Sub Class Note (only should be called inside journal!)
+class Note(object):
+    # OWNING_USER, DATE, TITLE, BODY, STARRED, CREATION_DEVICE, TIMEZONE
+    def __init__(self, date, title, body, starred, creationDevice, timeZone):
+        self._date = date
+        self._title = title
+        self._body = body
+        self._starred = starred
+        self._creationDevice = creationDevice
+        self._timeZone = timeZone
+
+    @property
+    def date(self):
+        # get version
+        return self._date
+
+    @property
+    def title(self):
+        # get music directory
+        return self._title
+
+    @property
+    def body(self):
+        # get music directory
+        return self._body
+
+    @property
+    def starred(self):
+        # get video directory
+        return self._starred
+
+    @property
+    def creationDevice(self):
+        # get custom assistant name
+        return self._creationDevice
+
+    @property
+    def timeZone(self):
+        # get database name
+        return self._timeZone
 # ==========================================================================================================
 
 
@@ -165,7 +205,6 @@ class Journal(object):
             if entry.date.__contains__(date):
                 return True
         return False
-
 # Sub Class Entry (only should be called inside journal!)
 class Entry(object):
     def __init__(self, date, entry, UUID, starred, creationDevice, timeZone):
@@ -234,13 +273,12 @@ class ContactBook(object):
 
     # first and last name are always required, but the rest is optional. Also, the few at the end are for fun not real use
     def create_contact(self, firstName, lastName, displayName="", nickname="", emailAddress="", email2address="", email3address="", homePhone="", businessPhone="", homeFax="", businessFax="", pager="", mobilePhone="", homeStreet="", homeAddress2="", homeCity="", homeState="", homePostalCode="", homeCountry="", businessAddress="", businessAddress2="", businessCity="", businessState="", businessPostalCode="", businessCountry="", countryCode="", relatedName="", jobTitle="", department="", organization="", notes="", birthday="", anniversary="", gender="", webPage="", webPage2="", categories="", sociologicalOptions="", genericSocialMediaHandle="", discord="", personalityRating=0, trustScore=0):
-        entryID = Protocols.new_database_entry_id(SQLUSERNAME, SQLPASSWORD, SQLDATABASE, "CONTACT")
         try:
             # open the database
             db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            sql = "INSERT INTO CONTACT (CONTACT_OWNING_USER, F_NAME, L_NAME, DISPLAY_NAME, NICKNAME, EMAIL_ADDRESS, EMAIL_ADDRESS2, EMAIL_ADDRESS3, HOME_PHONE, BUSINESS_PHONE, HOME_FAX, BUSINESS_FAX, PAGER, MOBILE_PHONE, HOME_ADDRESS, HOME_ADDRESS2, HOME_CITY, HOME_STATE, HOME_POSTAL_CODE, HOME_STREET, BUSINESS_ADDRESS, BUSINESS_ADDRESS2, BUSINESS_CITY, BUSINESS_STATE, BUSINESS_POSTAL_CODE, BUSINESS_COUNTRY, COUNTRY_CODE, RELATED_NAMES, JOB, DEPARTMENT, ORGANIZATION, NOTES, BIRTHDAY, ANNIVERSARY, GENDER, WEBSITE, WEBPAGE2, CATEGORIES, SOCIOLOGICAL_OPTIONS, SOCIAL_MEDIA_HANDLE, DISCORD, PERSONALITY_RATING, TRUST_SCORE) VALUES(%s, %s, %s, %s, %s, %s)" #43 variables total...?
+            sql = "INSERT INTO CONTACT (CONTACT_OWNING_USER, F_NAME, L_NAME, DISPLAY_NAME, NICKNAME, EMAIL_ADDRESS, EMAIL_ADDRESS2, EMAIL_ADDRESS3, HOME_PHONE, BUSINESS_PHONE, HOME_FAX, BUSINESS_FAX, PAGER, MOBILE_PHONE, HOME_ADDRESS, HOME_ADDRESS2, HOME_CITY, HOME_STATE, HOME_POSTAL_CODE, HOME_STREET, BUSINESS_ADDRESS, BUSINESS_ADDRESS2, BUSINESS_CITY, BUSINESS_STATE, BUSINESS_POSTAL_CODE, BUSINESS_COUNTRY, COUNTRY_CODE, RELATED_NAMES, JOB, DEPARTMENT, ORGANIZATION, NOTES, BIRTHDAY, ANNIVERSARY, GENDER, WEBSITE, WEBPAGE2, CATEGORIES, SOCIOLOGICAL_OPTIONS, SOCIAL_MEDIA_HANDLE, DISCORD, PERSONALITY_RATING, TRUST_SCORE) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" #43 variables total...?
             val = (self._ID, firstName, lastName, displayName, nickname, emailAddress, email2address, email3address, homePhone, businessPhone, homeFax, businessFax, pager, mobilePhone, homeStreet, homeAddress2, homeCity, homeState, homePostalCode, homeCountry, businessAddress, businessAddress2, businessCity, businessState, businessPostalCode, businessCountry, countryCode, relatedName, jobTitle, department, organization, notes, birthday, anniversary, gender, webPage, webPage2, categories, sociologicalOptions, genericSocialMediaHandle, discord, personalityRating, trustScore)
             cursor.execute(sql, val)
             # Commit your changes in the database
@@ -252,19 +290,10 @@ class ContactBook(object):
             # disconnect from server
         db.close()
 
-    # returns Entry object of entry from date
-    def get_entry(self, date):
-        foundEntry = self._entries
-        returnedEntry = Entry
-        for entry in foundEntry:
-            if entry.date.__contains__(date):
-                returnedEntry = entry
-        return returnedEntry
+    # Yeah... this is gonna be a massive method. Basic rundown - append all variables into array, find ones with input and isolate, then form a query based on provided inputs. Will return an array of all matching contacts
+    def find_entry(self, firstName="", lastName="", displayName="", nickname="", emailAddress="", email2address="", email3address="", homePhone="", businessPhone="", homeFax="", businessFax="", pager="", mobilePhone="", homeStreet="", homeAddress2="", homeCity="", homeState="", homePostalCode="", homeCountry="", businessAddress="", businessAddress2="", businessCity="", businessState="", businessPostalCode="", businessCountry="", countryCode="", relatedName="", jobTitle="", department="", organization="", notes="", birthday="", anniversary="", gender="", webPage="", webPage2="", categories="", sociologicalOptions="", genericSocialMediaHandle="", discord="", personalityRating=0, trustScore=0):
 
-    # TODO implement logic
-    def find_entry(self):
-
-        return ""
+        return Contact()
 
     # TODO implement logic
     def remove_entry(self):
@@ -277,8 +306,6 @@ class ContactBook(object):
             if entry.date.__contains__(date):
                 return True
         return False
-
-
 # Sub Class Contact (only should be called inside ContactBook!)
 class Contact(object):
     def __init__(self, firstName, lastName, displayName, nickname, emailAddress, email2address, email3address, homePhone, businessPhone, homeFax, businessFax, pager, mobilePhone, homeStreet, homeAddress2, homeCity, homeState, homePostalCode, homeCountry, businessAddress, businessAddress2, businessCity, businessState, businessPostalCode, businessCountry, countryCode, relatedName, jobTitle, department, organization, notes, birthday, anniversary, gender, webPage, webPage2, categories, sociologicalOptions, genericSocialMediaHandle, discord, personalityRating, trustScore):

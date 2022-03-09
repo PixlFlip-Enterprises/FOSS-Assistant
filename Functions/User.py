@@ -59,6 +59,7 @@ class Profile(object):
         self._defaultEmail = temp[2]
         self._defaultEmailPassword = temp[3]
         self._discord = temp[4]
+        # self._clearanceLevel = temp[5]
         # setup other variables
         self._journal = UserData.Journal(self._ID)
 
@@ -156,8 +157,8 @@ def isProfileDiscord(discordtag):
     except:
         # Rollback in case there is any error
         db.rollback()
-    # disconnect from server
-    db.close()
+        # disconnect from server
+        db.close()
     return False
 
 # returns userID from mysql search
