@@ -117,10 +117,10 @@ def create(user, password, email, emailPassword, discord):
     db.close()'''
 
 def isProfile(user):
+    # open the database
+    db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+    cursor = db.cursor()
     try:
-        # open the database
-        db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
-        cursor = db.cursor()
         # Execute the SQL command
         cursor.execute("SELECT * FROM PROFILES")
         # get all records
@@ -134,7 +134,7 @@ def isProfile(user):
     except:
         # Rollback in case there is any error
         db.rollback()
-        # disconnect from server
+    # disconnect from server
     db.close()
     return False
 
