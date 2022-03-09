@@ -140,10 +140,10 @@ def isProfile(user):
 
 # returns boolean from mysql search
 def isProfileDiscord(discordtag):
+    # open the database
+    db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+    cursor = db.cursor()
     try:
-        # open the database
-        db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
-        cursor = db.cursor()
         # Execute the SQL command
         cursor.execute("SELECT * FROM PROFILES")
         # get all records
@@ -157,8 +157,8 @@ def isProfileDiscord(discordtag):
     except:
         # Rollback in case there is any error
         db.rollback()
-        # disconnect from server
-        db.close()
+    # disconnect from server
+    db.close()
     return False
 
 # returns userID from mysql search
