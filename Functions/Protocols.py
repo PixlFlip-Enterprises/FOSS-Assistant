@@ -4,7 +4,11 @@ import datetime
 import MySQLdb
 # import pytube
 # from pytube import YouTube
+
+# get exact directory
 currentDirectory = os.getcwd()
+if not currentDirectory.__contains__("FOSS"):
+    currentDirectory = currentDirectory + '/FOSS-Assistant'
 
 
 # Burn it all to the ground. Leave nothing
@@ -231,7 +235,7 @@ class Settings(object):
         self._sqlPassword = returnList[6]
         self._discordBotToken = returnList[7]
         self._discordBotPrefix = returnList[8]
-        self._currentDirectory = os.getcwd()
+        self._currentDirectory = currentDirectory
 
     @property
     def version(self):

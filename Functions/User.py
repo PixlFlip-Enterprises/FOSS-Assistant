@@ -7,13 +7,8 @@
 # Sequence of events on startup coded as three char IDs. Example: SLK (sherlock username), RIC (rickroll),
 # DTE (date and time), etc.
 
-# TODO restructure this to accomodate tons of new fields, settings for users, and make it easier to get info from (no more stupid array returns and knowing the spot to call)
-import os
 import MySQLdb
-
 from Functions import Protocols, UserData
-
-directory = os.getcwd() + '/Data/profiles.csv'
 # All key (read top level) variables here
 SETTINGS = Protocols.Settings()
 SQLDATABASE = SETTINGS.sqlDatabase
@@ -93,11 +88,6 @@ class Profile(object):
 
 # creating a new user profile
 def create(user, password, email, emailPassword, discord):
-    file = open(directory, "a")  # open and read file
-    newProfile = user + ',' + password + ',' + email + ',' + emailPassword + ',' + discord  # create new profile
-    file.writelines(newProfile)  # save to file
-    file.close()
-
     '''
     # NOW FOR SQL!
     db = MySQLdb.connect("localhost", PrimaryNode.startupParams[3], PrimaryNode.startupParams[4], "FOSS_ASSISTANT")
@@ -144,13 +134,15 @@ def isProfileDiscord(discordtag):
     db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
     cursor = db.cursor()
     try:
+        # TODO rewrite this to utilize the full potential of SQL query. Could be done in two lines
+
         # Execute the SQL command
         cursor.execute("SELECT * FROM PROFILES")
         # get all records
         records = cursor.fetchall()
         # temp var
         temp = " "
-        # add all to array
+        # search
         for row in records:
             if row.__contains__(discordtag):
                 return True
