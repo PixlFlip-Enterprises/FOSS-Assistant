@@ -10,8 +10,10 @@ import newspaper
 from newspaper import Article
 from datetime import datetime
 import MySQLdb
+import os
 from Functions import Protocols
 
+# Briefing Task
 def briefing(date, usr, pwd, db):
     # first check for entry to prevent duplicates
     try:
@@ -60,3 +62,9 @@ def briefing(date, usr, pwd, db):
 
     # disconnect from server
     db.close()
+
+# Automatic Backup Task
+def full_backup(date, usr, pwd, db):
+    # easy as 3.14159265358979323...
+    os.system('mysqldump -h localhost -u ' + usr + ' -p ' + pwd + ' ' + db + ' > ' + date + '.sql')
+

@@ -35,8 +35,9 @@ while not should_end:
     # check if new day
     if not holding_date.__contains__(date):
         # New day from start of operation, so run daily tasks
-        print("Daily Task Protocol Initiated")
-        Task.briefing(date, SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+        print("Daily Task Protocols Initiated")
+        Task.briefing(date, SQLUSERNAME, SQLPASSWORD, SQLDATABASE)              # compile briefing
+        Task.full_backup(date, SQLUSERNAME, SQLPASSWORD, SQLDATABASE)           # backup database
         # reset our base date and move on
         holding_date = date
 
