@@ -6,7 +6,8 @@ space in the long run, is more readable for coding, and just will be easier to m
 """
 from datetime import datetime
 import MySQLdb
-from Functions import Protocols
+from API_Server.Functions import Protocols
+
 # All top level variables here =============
 SETTINGS = Protocols.Settings()
 SQLDATABASE = SETTINGS.sqlDatabase

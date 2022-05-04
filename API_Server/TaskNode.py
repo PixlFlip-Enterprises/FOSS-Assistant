@@ -8,9 +8,9 @@ First Version!
 # Imports
 import time
 from datetime import datetime
-import MySQLdb
-from Functions import Protocols
-import Task
+from API_Server.Functions import Protocols
+from API_Server.Tasks import Task
+
 # Top Variables
 SETTINGS = Protocols.Settings()
 SQLDATABASE = SETTINGS.sqlDatabase

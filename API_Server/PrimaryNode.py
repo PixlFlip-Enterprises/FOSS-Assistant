@@ -1,8 +1,5 @@
-import socket
-from Functions import User, Journal, Protocols, Email, Music
-import wikipedia
-import shutil
-import os
+import os, shutil, socket, wikipedia, json
+from API_Server.Functions import Protocols, Music, User, Email
 
 # Top level variables
 Protocols.loadStartupParameters()
@@ -11,7 +8,10 @@ currentDirectory = SETTINGS.currentDirectory
 
 """All of the code in this entire file has to be reworked and I do mean all. Integrate database use, add new
 method for getting user input before running, move to a json format(?), streamline the error handling, 
-modify the variable calls, and make all of it use multitasking like discord node."""
+modify the variable calls, and make all of it use multitasking like discord node.
+
+Added note May 3: Moving to a JSON message format, document that new API, and make this the api server that
+all others call. Simple, sleek, and uniform. """
 
 # Music.playVoice("/Functions/ProgramData/Voice/startup.wav")
 print("============================================================================")
@@ -69,7 +69,6 @@ while True:
 
             # add entry to Journal
         elif command == 3:
-            Journal.add_entry(commandAndArgs[1], requestingDevice, request[0][0])
             returnToClient = "Journal Entry Recorded."
 
         elif command == 4:
@@ -124,7 +123,6 @@ while True:
             break
 
         elif command == 10:
-            Journal.importEntriesToDatabase(currentDirectory + '/Data/Journal/Journal.csv')
             break
 
         else:

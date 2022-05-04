@@ -1,6 +1,6 @@
 """ Until Database function is immplimented properly this is a command line script to add a user by hand. """
 import MySQLdb
-from Functions import Protocols
+from API_Server.Functions import Protocols
 
 # All key (read top level) variables here
 SETTINGS = Protocols.Settings()

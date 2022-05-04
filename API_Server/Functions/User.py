@@ -8,7 +8,8 @@
 # DTE (date and time), etc.
 
 import MySQLdb
-from Functions import Protocols, UserData
+from API_Server.Functions import Protocols, UserData
+
 # All key (read top level) variables here
 SETTINGS = Protocols.Settings()
 SQLDATABASE = SETTINGS.sqlDatabase

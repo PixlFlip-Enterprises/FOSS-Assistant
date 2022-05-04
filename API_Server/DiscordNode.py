@@ -10,8 +10,7 @@ enough to be used in any server, public or private.
 
 import wikipedia
 import discord
-import Task
-from Functions import User, Protocols, Email, UserData
+from API_Server.Functions import Protocols, User, Email
 
 # All key (read top level) variables here
 SETTINGS = Protocols.Settings()
