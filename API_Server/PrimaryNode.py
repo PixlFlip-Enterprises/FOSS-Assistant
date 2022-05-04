@@ -8,7 +8,7 @@ currentDirectory = SETTINGS.currentDirectory
 
 """All of the code in this entire file has to be reworked and I do mean all. Integrate database use, add new
 method for getting user input before running, move to a json format(?), streamline the error handling, 
-modify the variable calls, and make all of it use multitasking like discord node.
+modify the variable calls, and makeall of it use multitasking like discord node.
 
 Added note May 3: Moving to a JSON message format, document that new API, and make this the api server that
 all others call. Simple, sleek, and uniform. """
