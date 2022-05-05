@@ -10,6 +10,3 @@ Base Level Commands:
 Security Clearance Level 2 Commands:
 /journal        | Personal Journal with military level security and absolute privacy.
 /email          | Email from the comfort of Discord. Not for secure transmission but for practical use.
-==========================================
-Other Abilities:
-Dynamic Moderation | I block content on a server to server basis based on rules set for me
