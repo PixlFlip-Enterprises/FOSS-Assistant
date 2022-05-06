@@ -47,4 +47,4 @@ $ python setup.py
 5. Follow the setup program inputs.
 
 
-6. Done! Your instance should be fully up and operational!
+6. Done! Your instance should be fully up and operational.
