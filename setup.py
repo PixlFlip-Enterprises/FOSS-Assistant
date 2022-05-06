@@ -1,27 +1,28 @@
 """The goal of this file is a one and done setup. No buts, cuts, or coconuts."""
 
-
-'''
-STARTING STUFF TO BE PUT IN SINGLE UNIFORM SH FILE OR EQUIVALENT
-pip install wikipedia
-pip install discord
-pip install newspaper3k
-pip install pymysql
-'''
-
 import os
 import pymysql as MySQLdb
 
 currentDirectory = os.getcwd()
 # I would like to assume people aren't dumb enough to run this if it isn't their first time, so no check
-print("===================== FOSS Assistant Server Setup ======================")
+
+# Let's get some decoration and naming!
+print(" ________ ________  ________   ________           ________  ________   ________  ___  ________  _________  ________  ________   _________ ")
+print("|\  _____\\\   __  \|\   ____\ |\   ____\         |\   __  \|\   ____\ |\   ____\|\  \|\   ____\|\___   ___\\\   __  \|\   ___  \|\___   ___\ ")
+print("\ \  \__/\ \  \|\  \ \  \___|_\ \  \___|_        \ \  \|\  \ \  \___|_\ \  \___|\ \  \ \  \___|\|___ \  \_\ \  \|\  \ \  \\\ \  \|___ \  \_| ")
+print(" \ \   __\\\ \  \\\\  \ \_____  \\\ \_____  \        \ \   __  \ \_____  \\\ \_____  \ \  \ \_____  \   \ \  \ \ \   __  \ \  \\\ \  \   \ \  \ ")
+print("  \ \  \_| \ \  \\\\  \|____|\  \\\|____|\  \        \ \  \ \  \|____|\  \\\|____|\  \ \  \|____|\  \   \ \  \ \ \  \ \  \ \  \\\ \  \   \ \ \ ")
+print("   \ \__\   \ \_______\____\_\  \ ____\_\  \        \ \__\ \__\____\_\  \ ____\_\  \ \__\____\_\  \   \ \__\ \ \__\ \__\ \__\\\ \__\   \ \__\ ")
+print("    \|__|    \|_______|\_________\\\_________\        \|__|\|__|\_________\\\_________\|__|\_________\   \|__|  \|__|\|__|\|__| \|__|    \|__| ")
+print("                      \|_________\|_________|                 \|_________\|_________|   \|_________|                                         ")
+# init args
 startupParams = []
 profileParams = []
 # get info from user
 startupParams.append(input("= Please Give me a Name: "))
 startupParams.append(input("= Enter the full directory path to the folder you keep Music in: "))
 startupParams.append(input("= Enter the full directory path to the folder you keep Video in: "))
-startupParams.append(input("= Enter name of your instance of FOSS Assistant: "))
+startupParams.append("fossAssistant")
 startupParams.append(input("= Enter mysql Database you want me to use: "))
 startupParams.append(input("= Enter mysql username for me to use: "))
 startupParams.append(input("= Enter mysql password for me to use: "))
