@@ -1,6 +1,16 @@
 """The goal of this file is a one and done setup. No buts, cuts, or coconuts."""
+
+
+'''
+STARTING STUFF TO BE PUT IN SINGLE UNIFORM SH FILE OR EQUIVALENT
+pip install wikipedia
+pip install discord
+pip install newspaper3k
+pip install pymysql
+'''
+
 import os
-import MySQLdb
+import pymysql as MySQLdb
 
 currentDirectory = os.getcwd()
 # I would like to assume people aren't dumb enough to run this if it isn't their first time, so no check
