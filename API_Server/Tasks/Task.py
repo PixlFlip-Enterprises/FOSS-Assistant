@@ -1,7 +1,7 @@
 """
-Task.py Version 0.1.
+Task.py Version 0.2.
 Author: PixlFlip
-Date: Feb 2, 2022
+Date: May 5, 2022
 
 All TaskNode operations are methods here
 """
@@ -9,9 +9,9 @@ All TaskNode operations are methods here
 import newspaper
 from newspaper import Article
 from datetime import datetime
-import MySQLdb
+import pymysql as MySQLdb
 import os
-from Functions import Protocols
+from API_Server.Functions import Protocols
 
 # Briefing Task
 def briefing(date, usr, pwd, db):

@@ -10,8 +10,8 @@ currentDirectory = os.getcwd()
 print(" ________ ________  ________   ________           ________  ________   ________  ___  ________  _________  ________  ________   _________ ")
 print("|\  _____\\\   __  \|\   ____\ |\   ____\         |\   __  \|\   ____\ |\   ____\|\  \|\   ____\|\___   ___\\\   __  \|\   ___  \|\___   ___\ ")
 print("\ \  \__/\ \  \|\  \ \  \___|_\ \  \___|_        \ \  \|\  \ \  \___|_\ \  \___|\ \  \ \  \___|\|___ \  \_\ \  \|\  \ \  \\\ \  \|___ \  \_| ")
-print(" \ \   __\\\ \  \\\\  \ \_____  \\\ \_____  \        \ \   __  \ \_____  \\\ \_____  \ \  \ \_____  \   \ \  \ \ \   __  \ \  \\\ \  \   \ \  \ ")
-print("  \ \  \_| \ \  \\\\  \|____|\  \\\|____|\  \        \ \  \ \  \|____|\  \\\|____|\  \ \  \|____|\  \   \ \  \ \ \  \ \  \ \  \\\ \  \   \ \ \ ")
+print(" \ \   __\\\ \  \\/\\  \ \_____  \\\ \_____  \        \ \   __  \ \_____  \\\ \_____  \ \  \ \_____  \   \ \  \ \ \   __  \ \  \\\ \  \   \ \  \ ")
+print("  \ \  \_| \ \  \\/\\  \|____|\  \\\|____|\  \        \ \  \ \  \|____|\  \\\|____|\  \ \  \|____|\  \   \ \  \ \ \  \ \  \ \  \\\ \  \   \ \ \ ")
 print("   \ \__\   \ \_______\____\_\  \ ____\_\  \        \ \__\ \__\____\_\  \ ____\_\  \ \__\____\_\  \   \ \__\ \ \__\ \__\ \__\\\ \__\   \ \__\ ")
 print("    \|__|    \|_______|\_________\\\_________\        \|__|\|__|\_________\\\_________\|__|\_________\   \|__|  \|__|\|__|\|__| \|__|    \|__| ")
 print("                      \|_________\|_________|                 \|_________\|_________|   \|_________|                                         ")
@@ -35,14 +35,28 @@ profileParams.append(input("= Enter your Password: "))
 profileParams.append(input("= Enter your Email Address: "))
 profileParams.append(input("= Enter your Password for Email Above: "))
 profileParams.append(input("= Enter Discord ID (put NONE if no ID): "))
-
 # create startup file
 open(currentDirectory + '/Functions/ProgramData/startup.txt', 'x')
 with open(currentDirectory + '/Functions/ProgramData/startup.txt', 'w') as f:
     for line in startupParams:
         f.write(line + '\n')
-
-# init database (or try to!)
+# create user and password for mysql
+try:
+    # open the database
+    db = MySQLdb.connect("localhost", "root")
+    cursor = db.cursor()
+    # Create the database
+    cursor.execute("CREATE USER '" + startupParams[5] + "'@'localhost' IDENTIFIED BY '" + startupParams[6] + "';")
+    cursor.execute("GRANT ALL PRIVILEGES ON * . * TO '" + startupParams[5] + "'@'localhost';")
+except:
+    # Rollback in case there is any error
+    db.rollback()
+    print("ERROR. MYSQL USERNAME FAILURE. TERMINATING...")
+    # end program on failure
+    # exit()
+# disconnect from server
+db.close()
+# init database
 try:
     # open the database
     db = MySQLdb.connect("localhost", startupParams[5], startupParams[6])

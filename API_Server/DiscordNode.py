@@ -11,8 +11,10 @@ enough to be used in any server, public or private.
 import wikipedia
 import discord
 from API_Server.Functions import Protocols, User, Email
+from API_Server.Tasks import Task
 
 # All key (read top level) variables here
+
 SETTINGS = Protocols.Settings()
 TOKEN = SETTINGS.discordBotToken
 PREFIX = '/'
@@ -175,12 +177,12 @@ class MyClient(discord.Client):
             # return summary to client
             await message.channel.send('This command does nothing at the moment, but will someday.')
 
-        # ============================       Weather       ==============================
-        if message.content.startswith(PREFIX + 'weather'):
+        # ============================       DB Backup       ==============================
+        if message.content.startswith(PREFIX + 'backup'):
             # set channel to same as one command issued in
             channel = message.channel
-            # get news summary
-
+            # backup database
+            Task.full_backup(date, SETTINGS.sqlUsername, SETTINGS.sqlPassword, SETTINGS.sqlDatabase)
             # return summary to client
             await message.channel.send('This command does nothing at the moment, but will someday.')
 
