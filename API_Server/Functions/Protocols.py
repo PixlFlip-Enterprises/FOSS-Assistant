@@ -2,8 +2,6 @@
 import os
 import datetime
 import MySQLdb
-# import pytube
-# from pytube import YouTube
 
 # get exact directory
 currentDirectory = os.getcwd()
@@ -128,14 +126,6 @@ def findIntentFromText(message):
 
     else:
         return 0
-
-
-# Downloads links provided to Youtube in highest possible resolution... at least in theory
-"""def youtubeVideoDownload(links):
-    for link in links:
-        yt = pytube.YouTube(link)
-        stream = yt.streams.first()
-        stream.download()"""
 
 # sync between file and database.
 # export all datasheets, settings, etc to another instance. Should save me headaches moving between host devices

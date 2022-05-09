@@ -1,12 +1,3 @@
-# profile file syntax:
-# contact ID (for retrieval in Contact.csv)
-# password for ID
-# primary email
-# email password
-# discord ID
-# Sequence of events on startup coded as three char IDs. Example: SLK (sherlock username), RIC (rickroll),
-# DTE (date and time), etc.
-
 import MySQLdb
 from API_Server.Functions import Protocols, UserData
 
