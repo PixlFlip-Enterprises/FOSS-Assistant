@@ -39,12 +39,19 @@ $ pip install pymysql
 $ sudo apt install mariadb-client mariadb-server
 ```
 
-4. Run setup.py
+4. Run the following commands inside the mariadb
+```sql
+create user 'yourusername'@'localhost' identified by "password";
+grant all privileges on * . * to 'yourusername'@'localhost';
+exit;
+```
+
+5. Run setup.py
 ```bash
 $ python setup.py
 ```
 
-5. Follow the setup program inputs.
+6. Follow the setup program inputs.
 
 
-6. Done! Your instance should be fully up and operational.
+7. Done! Your instance should be fully up and operational.

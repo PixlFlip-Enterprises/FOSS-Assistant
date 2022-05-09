@@ -38,4 +38,5 @@ made. This can be done from FOSS Assistant or manually by running a sql dump.
 2. Go to setup.py and add your field to the end of the Profile creation line (currently line 79).
 3. in User.py go to the Profile object constructor and simply add a new variable for you data to be held in and a function to use it with.
 4. Update this file with your new data type as shown in the table above.
-5. Congratulations, you've added a new data field to the Assistant without breaking all the existing code!
+5. Go to the updatedb.py file and follow the steps it gives you.
+6. Congratulations, you've added a new data field to the Assistant without breaking all the existing code!
