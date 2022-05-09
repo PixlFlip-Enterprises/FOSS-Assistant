@@ -1,7 +1,7 @@
 # file for any and all protocols used
 import os
 import datetime
-import MySQLdb
+import pymysql as MySQLdb
 
 # get exact directory
 currentDirectory = os.getcwd()
@@ -141,7 +141,7 @@ def exportAll():
 # get correct ID for a new entry in a datatable
 def new_database_entry_id(user, password, database, table):
     # username, password and database
-    db = MySQLdb.connect("localhost", user, password, database)
+    db = MySQLdb.connect(host="localhost", user=user, password=password, database=database)
     # get cursor object
     cursor = db.cursor()
     # get number of rows in a table and give your table
@@ -188,7 +188,7 @@ def establish_parady_user(userID, sqluser, sqlpass, sqldatabase):
         # add parsed entry to database (at least in theory)
         try:
             # open the database
-            db = MySQLdb.connect("localhost", sqluser, sqlpass, sqldatabase)
+            db = MySQLdb.connect(host="localhost", user=sqluser, password=sqlpass, database=sqldatabase)
             cursor = db.cursor()
             # Execute the SQL command
             sql = "INSERT INTO " + userID + "_JOURNAL (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s)"

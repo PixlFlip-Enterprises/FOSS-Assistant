@@ -5,20 +5,19 @@ Date: May 5, 2022
 
 All TaskNode operations are methods here
 """
-# NOTE: must use pip3 import newspaper3k for it to import correctly
 import newspaper
 from newspaper import Article
 from datetime import datetime
-import pymysql as MySQLdb
+import pymysql
 import os
-from API_Server.Functions import Protocols
+import csv
 
 # Briefing Task
 def briefing(date, usr, pwd, db):
     # first check for entry to prevent duplicates
     try:
         # open the database
-        db = MySQLdb.connect("localhost", usr, pwd, db)
+        db = pymysql.connect(host="localhost", user=usr, password=pwd, database=db)
         cursor = db.cursor()
         # execute the SQL command
         cursor.execute("SELECT * FROM DAILY_BRIEFING WHERE REGEXP_INSTR(date,'" + date + "');")
@@ -48,7 +47,7 @@ def briefing(date, usr, pwd, db):
     # Record Briefing to Database
     try:
         # open the database
-        db = MySQLdb.connect("localhost", usr, pwd, db)
+        db = pymysql.connect(host="localhost", user=usr, password=pwd, database=db)
         cursor = db.cursor()
         # Execute the SQL command
         sql = "INSERT INTO DAILY_BRIEFING (DATE, NEWS_LINKS, TECH_LINKS, TRENDING_SEARCHES) VALUES(%s, %s, %s, %s)"
@@ -64,7 +63,145 @@ def briefing(date, usr, pwd, db):
     db.close()
 
 # Automatic Backup Task
-def full_backup(date, usr, pwd, db):
+def full_backup(usr, pwd, db, currentDirectory):
     # easy as 3.14159265358979323...
-    os.system('mysqldump -h localhost -u ' + usr + ' -p ' + pwd + ' ' + db + ' > ' + date + '.sql')
+
+    # File path and name.
+    filePath = currentDirectory
+    fileName = '_JOURNAL.csv'
+
+    # Database connection variable.
+    connect = None
+
+    # Check if the file path exists.
+    if os.path.exists(filePath):
+
+        try:
+
+            # Connect to database.
+            connect = pymysql.connect(host="localhost", user=usr, password=pwd, database=db)
+
+        except pymysql.DatabaseError as e:
+
+            # Confirm unsuccessful connection and stop program execution.
+            print("Database connection unsuccessful.")
+            quit()
+
+        # Cursor to execute query.
+        cursor = connect.cursor()
+
+        # TODO this is hard coded to my journal since I dont want to lose it again. This will need to be fixed though
+        # SQL to select data from the person table.
+        sqlSelect = \
+            "SELECT * FROM pixl_JOURNAL"
+
+        try:
+
+            # Execute query.
+            cursor.execute(sqlSelect)
+
+            # Fetch the data returned.
+            results = cursor.fetchall()
+
+            # Extract the table headers.
+            headers = [i[0] for i in cursor.description]
+
+            # Add the table headers to the data returned.
+            results = (tuple(headers),) + results
+
+            # Open CSV file for writing.
+            csvFile = csv.writer(open(filePath + fileName, 'w', newline=''),
+                                 delimiter=',', lineterminator='\r\n',
+                                 quoting=csv.QUOTE_ALL, escapechar='\\')
+
+            # Add the headers and data to the CSV file.
+            csvFile.writerows(results)
+
+            # Message stating export successful.
+            print("Data export successful.")
+
+        except pymysql.DatabaseError as e:
+
+            # Message stating export unsuccessful.
+            print("Data export unsuccessful.")
+            quit()
+
+        finally:
+
+            # Close database connection.
+            connect.close()
+
+    else:
+
+        # Message stating file path does not exist.
+        print("File path does not exist.")
+
+    # DAILY BREIFING BACKUP
+    filePath = currentDirectory
+    fileName = '_DAILYBRIEFING.csv'
+
+    # Database connection variable.
+    connect = None
+
+    # Check if the file path exists.
+    if os.path.exists(filePath):
+
+        try:
+
+            # Connect to database.
+            connect = pymysql.connect(host="localhost", user=usr, password=pwd, database=db)
+
+        except pymysql.DatabaseError as e:
+
+            # Confirm unsuccessful connection and stop program execution.
+            print("Database connection unsuccessful.")
+            quit()
+
+        # Cursor to execute query.
+        cursor = connect.cursor()
+
+        # SQL to select data from the person table.
+        sqlSelect = \
+            "SELECT * FROM DAILY_BRIEFING"
+
+        try:
+
+            # Execute query.
+            cursor.execute(sqlSelect)
+
+            # Fetch the data returned.
+            results = cursor.fetchall()
+
+            # Extract the table headers.
+            headers = [i[0] for i in cursor.description]
+
+            # Add the table headers to the data returned.
+            results = (tuple(headers),) + results
+
+            # Open CSV file for writing.
+            csvFile = csv.writer(open(filePath + fileName, 'w', newline=''),
+                                 delimiter=',', lineterminator='\r\n',
+                                 quoting=csv.QUOTE_ALL, escapechar='\\')
+
+            # Add the headers and data to the CSV file.
+            csvFile.writerows(results)
+
+            # Message stating export successful.
+            print("Data export successful.")
+
+        except pymysql.DatabaseError as e:
+
+            # Message stating export unsuccessful.
+            print("Data export unsuccessful.")
+            quit()
+
+        finally:
+
+            # Close database connection.
+            connect.close()
+
+    else:
+
+        # Message stating file path does not exist.
+        print("File path does not exist.")
 

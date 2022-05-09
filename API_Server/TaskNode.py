@@ -1,15 +1,15 @@
 """
-TaskNode.py Version 0.1.
+TaskNode.py Version 0.1.2
 Author: PixlFlip
 Date: Jan 26, 2022
 
-First Version!
+Now with actual backups
 """
 # Imports
 import time
 from datetime import datetime
-from API_Server.Functions import Protocols
-from API_Server.Tasks import Task
+from Functions import Protocols
+from Tasks import Task
 
 # Top Variables
 SETTINGS = Protocols.Settings()
@@ -36,35 +36,15 @@ while not should_end:
     if not holding_date.__contains__(date):
         # New day from start of operation, so run daily tasks
         print("Daily Task Protocols Initiated")
+        print("Task: compile briefing")
         Task.briefing(date, SQLUSERNAME, SQLPASSWORD, SQLDATABASE)              # compile briefing
-        Task.full_backup(date, SQLUSERNAME, SQLPASSWORD, SQLDATABASE)           # backup database
+        print("Task: full database backup")
+        Task.full_backup(SQLUSERNAME, SQLPASSWORD, SQLDATABASE, currentDirectory)           # backup database
+        print("Daily Tasks Complete.")
         # reset our base date and move on
         holding_date = date
 
     print("Tick Based Tasks Run")
     # 5 min or 300 sec sleep which makes up one "tick"
     time.sleep(300)
-
-
-
-
-# Shelved Ideas in comments for a later date
-# import Adafruit_DHT
-# sensor = Adafruit_DHT.DHT22
-# pin = 4
-# while True:
-#      humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-#      print("Temperature")
-#      print(temperature)
-#      print("Humidity")
-#      print(humidity)
-
-# top_articles = []
-# sort data into array
-# for index in range(10):
-#     article = tech_site.articles[index]
-#     article.download()
-#     article.parse()
-#     top_articles.append(article)
-#     print(tech_article_urls[index])
 
