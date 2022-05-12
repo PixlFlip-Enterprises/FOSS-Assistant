@@ -1,17 +1,15 @@
 """
 DiscordNode.py Version 0.5.
 Author: PixlFlip
-Date: Jan 6, 2022
+Date: May 9, 2022
 
-This update streamlines Profile lookup, prevents
-unauthorized use, and is now robust
-enough to be used in any server, public or private.
+One good turn deserves another
 """
 
 import wikipedia
 import discord
-from API_Server.Functions import Protocols, User, Email
-from API_Server.Tasks import Task
+from Functions import Protocols, User, Email
+from Tasks import Task
 
 # All key (read top level) variables here
 

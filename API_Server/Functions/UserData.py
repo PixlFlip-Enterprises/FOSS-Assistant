@@ -5,7 +5,7 @@ space in the long run, is more readable for coding, and just will be easier to m
 
 """
 from datetime import datetime
-import MySQLdb
+import pymysql as MySQLdb
 from API_Server.Functions import Protocols
 
 # All top level variables here =============
@@ -26,7 +26,7 @@ class Notes(object):
         holding = []
         try:
             # open the database
-            db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # get all data matching our userID
             cursor.execute("select * from NOTE where OWNING_USER like '%" + userID + "%';")
@@ -50,7 +50,7 @@ class Notes(object):
     def create_contact(self, ):
         try:
             # open the database
-            db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
             sql = "INSERT INTO CONTACT (CONTACT_OWNING_USER, F_NAME, L_NAME, DISPLAY_NAME, NICKNAME, EMAIL_ADDRESS, EMAIL_ADDRESS2, EMAIL_ADDRESS3, HOME_PHONE, BUSINESS_PHONE, HOME_FAX, BUSINESS_FAX, PAGER, MOBILE_PHONE, HOME_ADDRESS, HOME_ADDRESS2, HOME_CITY, HOME_STATE, HOME_POSTAL_CODE, HOME_STREET, BUSINESS_ADDRESS, BUSINESS_ADDRESS2, BUSINESS_CITY, BUSINESS_STATE, BUSINESS_POSTAL_CODE, BUSINESS_COUNTRY, COUNTRY_CODE, RELATED_NAMES, JOB, DEPARTMENT, ORGANIZATION, NOTES, BIRTHDAY, ANNIVERSARY, GENDER, WEBSITE, WEBPAGE2, CATEGORIES, SOCIOLOGICAL_OPTIONS, SOCIAL_MEDIA_HANDLE, DISCORD, PERSONALITY_RATING, TRUST_SCORE) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"  # 43 variables total...?
@@ -138,7 +138,7 @@ class Journal(object):
         holding = []
         try:
             # open the database
-            db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
             cursor.execute("SELECT * FROM " + userID + "_JOURNAL")
@@ -166,7 +166,7 @@ class Journal(object):
         entryID = Protocols.new_database_entry_id(SQLUSERNAME, SQLPASSWORD, SQLDATABASE, self._ID + "_JOURNAL")
         try:
             # open the database
-            db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
             sql = "INSERT INTO " + self._ID + "_JOURNAL (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s)"
@@ -252,7 +252,7 @@ class ContactBook(object):
         holding = []
         try:
             # open the database
-            db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # get all data matching our userID
             cursor.execute("select * from CONTACT where CONTACT_OWNING_USER like '%" + userID + "%';")
@@ -276,7 +276,7 @@ class ContactBook(object):
     def create_contact(self, firstName, lastName, displayName="", nickname="", emailAddress="", email2address="", email3address="", homePhone="", businessPhone="", homeFax="", businessFax="", pager="", mobilePhone="", homeStreet="", homeAddress2="", homeCity="", homeState="", homePostalCode="", homeCountry="", businessAddress="", businessAddress2="", businessCity="", businessState="", businessPostalCode="", businessCountry="", countryCode="", relatedName="", jobTitle="", department="", organization="", notes="", birthday="", anniversary="", gender="", webPage="", webPage2="", categories="", sociologicalOptions="", genericSocialMediaHandle="", discord="", personalityRating=0, trustScore=0):
         try:
             # open the database
-            db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
             sql = "INSERT INTO CONTACT (CONTACT_OWNING_USER, F_NAME, L_NAME, DISPLAY_NAME, NICKNAME, EMAIL_ADDRESS, EMAIL_ADDRESS2, EMAIL_ADDRESS3, HOME_PHONE, BUSINESS_PHONE, HOME_FAX, BUSINESS_FAX, PAGER, MOBILE_PHONE, HOME_ADDRESS, HOME_ADDRESS2, HOME_CITY, HOME_STATE, HOME_POSTAL_CODE, HOME_STREET, BUSINESS_ADDRESS, BUSINESS_ADDRESS2, BUSINESS_CITY, BUSINESS_STATE, BUSINESS_POSTAL_CODE, BUSINESS_COUNTRY, COUNTRY_CODE, RELATED_NAMES, JOB, DEPARTMENT, ORGANIZATION, NOTES, BIRTHDAY, ANNIVERSARY, GENDER, WEBSITE, WEBPAGE2, CATEGORIES, SOCIOLOGICAL_OPTIONS, SOCIAL_MEDIA_HANDLE, DISCORD, PERSONALITY_RATING, TRUST_SCORE) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" #43 variables total...?

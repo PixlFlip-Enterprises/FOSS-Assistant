@@ -1,4 +1,4 @@
-import MySQLdb
+import pymysql as MySQLdb
 from API_Server.Functions import Protocols, UserData
 
 # All key (read top level) variables here
@@ -20,7 +20,7 @@ class Profile(object):
         holding = []
         try:
             # open the database
-            db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
             cursor.execute("SELECT * FROM PROFILES")
@@ -100,7 +100,7 @@ def create(user, password, email, emailPassword, discord):
 
 def isProfile(user):
     # open the database
-    db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+    db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
     cursor = db.cursor()
     try:
         # Execute the SQL command
@@ -123,7 +123,7 @@ def isProfile(user):
 # returns boolean from mysql search
 def isProfileDiscord(discordtag):
     # open the database
-    db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+    db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
     cursor = db.cursor()
     try:
         # TODO rewrite this to utilize the full potential of SQL query. Could be done in two lines
@@ -152,7 +152,7 @@ def getProfileUsernameDiscord(discordtag):
     holding = []
     try:
         # open the database
-        db = MySQLdb.connect("localhost", SQLUSERNAME, SQLPASSWORD, SQLDATABASE)
+        db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
         cursor = db.cursor()
         # Execute the SQL command
         cursor.execute("SELECT * FROM PROFILES")
