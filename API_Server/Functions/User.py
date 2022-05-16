@@ -46,7 +46,7 @@ class Profile(object):
         self._defaultEmail = temp[2]
         self._defaultEmailPassword = temp[3]
         self._discord = temp[4]
-        # self._clearanceLevel = temp[5]
+        self._clearanceLevel = temp[5]
         # setup other variables
         self._journal = UserData.Journal(self._ID)
 
@@ -72,6 +72,11 @@ class Profile(object):
         return self._discord
 
     @property
+    def clearanceLevel(self):
+        # get clearance level
+        return self._clearanceLevel
+
+    @property
     def journal(self):
         # get journal
         return self._journal
@@ -79,24 +84,24 @@ class Profile(object):
 # ==========================================================================================================
 
 # creating a new user profile
-def create(user, password, email, emailPassword, discord):
-    '''
-    # NOW FOR SQL!
-    db = MySQLdb.connect("localhost", PrimaryNode.startupParams[3], PrimaryNode.startupParams[4], "FOSS_ASSISTANT")
-    cursor = db.cursor()
-
-
+def create(user, password, clearance_level, email="NONE", emailPassword="NONE", discord="NONE"):
+    # add parsed entry to database (at least in theory)
     try:
+        # open the database
+        db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+        cursor = db.cursor()
         # Execute the SQL command
-        cursor.execute("INSERT INTO PROFILES(USER, PASSWORD, EMAIL, EMAILPASS) VALUES(" + user + ", " + password + ", " + email + ", " + emailPassword + " );")
+        sql = "INSERT INTO PROFILES(USER, PASSWORD, EMAIL, EMAILPASS, DISCORD) VALUES(%s, %s, %s, %s, %s, %s)"
+        val = (user, password, email, emailPassword, discord, clearance_level)
+        cursor.execute(sql, val)
         # Commit your changes in the database
         db.commit()
+        db.close()
     except:
         # Rollback in case there is any error
         db.rollback()
-
-    # disconnect from server
-    db.close()'''
+        db.close()
+        # disconnect from server
 
 def isProfile(user):
     # open the database

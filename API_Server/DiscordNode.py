@@ -123,12 +123,16 @@ class MyClient(discord.Client):
                 await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Inbox\n 2 | Send Email', delete_after=120)
 
         # ============================      Journal     ==============================
+        # TODO debug and ensure the check=check functionality works as expected!
         if message.content.startswith(PREFIX + 'journal'):
+            # Check function so we don't reply to strangers
+            def check(m):
+                return m.author == message.author and m.channel == channel
             # set channel to same as one command issued in
             channel = message.channel
             # ask for and interpret sub command
             await message.channel.send('What would you like to do with your journal?')
-            subCommand1 = await client.wait_for('message')
+            subCommand1 = await client.wait_for('message', check=check)
             subCommand2 = subCommand1.content + " journal "
             # send to parser with a little extra journal just to ensure it marks it as a journal command
             intentCommand = Protocols.findIntentFromText(subCommand2)
@@ -138,7 +142,7 @@ class MyClient(discord.Client):
             if intentCommand == 3:
                 # parse next part for a date
                 await channel.send('Input Date Of Entry You Want to View Using the Format YYYY-MM-DD (include the - )')
-                getDate = await client.wait_for('message')
+                getDate = await client.wait_for('message', check=check)
                 date = getDate.content
                 # check if the entry exists
                 if userJournal.is_entry(date):
@@ -153,7 +157,7 @@ class MyClient(discord.Client):
             if intentCommand == 31:
                 await channel.send('Enter Your Entry')
                 # format all remaining information in the message and store in variable
-                getEntry = await client.wait_for('message')
+                getEntry = await client.wait_for('message', check=check)
                 entry = getEntry.content
                 # add the entry
                 userJournal.add_entry(entry.replace("\n", ""), "DiscordClient")
@@ -182,7 +186,7 @@ class MyClient(discord.Client):
             # backup database
             Task.full_backup(date, SETTINGS.sqlUsername, SETTINGS.sqlPassword, SETTINGS.sqlDatabase)
             # return summary to client
-            await message.channel.send('This command does nothing at the moment, but will someday.')
+            await message.channel.send('Full System Backup Complete')
 
         # ===================== Greet =====================
         if message.content.startswith('/greet'):
@@ -205,6 +209,52 @@ class MyClient(discord.Client):
             except:
                 await message.channel.send('No Data Found From Wikipedia')
 
+        # ============================      User Project     ==============================
+        if message.content.startswith(PREFIX + 'project'):
+            # set channel to same as one command issued in
+            channel = message.channel
+            # Check function so we don't reply to strangers
+            def check(m):
+                return m.author == message.author and m.channel == channel
+
+            # TODO first get all available projects from user and ask for a numeric selection, or if they have no projects ask to create one
+
+
+            await message.channel.send('What would you like to do with your project?')
+            subCommand1 = await client.wait_for('message', check=check)
+            subCommand2 = subCommand1.content + " journal "
+            # send to parser with a little extra journal just to ensure it marks it as a journal command
+            intentCommand = Protocols.findIntentFromText(subCommand2)
+            # import journal object for use
+            userJournal = PROFILE.journal
+            # 3 entered meaning they want to view entry
+            if intentCommand == 3:
+                # parse next part for a date
+                await channel.send('Input Date Of Entry You Want to View Using the Format YYYY-MM-DD (include the - )')
+                getDate = await client.wait_for('message', check=check)
+                date = getDate.content
+                # check if the entry exists
+                if userJournal.is_entry(date):
+                    # Get the entry
+                    entry = userJournal.get_entry(date)
+                    # Return the entry and related information and delete after 120 seconds for security
+                    await channel.send('Entry for the Date ' + date + ': \n' + entry.entry, delete_after=120)
+                else:
+                    # return error to user
+                    await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - )')
+            # 2 entered meaning new entry
+            if intentCommand == 31:
+                await channel.send('Enter Your Entry')
+                # format all remaining information in the message and store in variable
+                getEntry = await client.wait_for('message', check=check)
+                entry = getEntry.content
+                # add the entry
+                userJournal.add_entry(entry.replace("\n", ""), "DiscordClient")
+                # tell the user the entry was recorded
+                await channel.send('Entry Recorded.')
+            # send message to channel if no other data given
+            else:
+                await channel.send('Invalid Option. Please Message Something Like\n"create a new entry"\nor\n"view journal entry"')
         # ===================== Dynamic Command =====================
         # reads intent from message provided to it using intent manager or neural network.
 

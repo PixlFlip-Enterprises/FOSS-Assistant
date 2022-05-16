@@ -141,7 +141,7 @@ class Journal(object):
             db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("SELECT * FROM " + userID + "_JOURNAL")
+            cursor.execute("select * from JOURNAL where PROFILE_ID LIKE '" + userID + "';")
             # get all records
             records = cursor.fetchall()
             # add all to array
@@ -150,7 +150,7 @@ class Journal(object):
                 # add entry to holding variables
             for j in holding:
                 # sort tuple to array and append
-                tempEntries.append(Entry(j[0], j[1], j[2], j[3], j[4], j[5]))
+                tempEntries.append(Entry(j[2], j[3], j[4], j[5], j[6], j[7]))
         except:
             # Rollback in case there is any error
             db.rollback()
@@ -160,17 +160,15 @@ class Journal(object):
 
     # date, entry, UUID Unspecified, starred, creationDevice, timeZone
     def add_entry(self, entry=" ", creationDevice="Generic", starred="false", timeZone="EST"):
-
         x = datetime.now()
         xy = x.__str__().replace(" ", "")
-        entryID = Protocols.new_database_entry_id(SQLUSERNAME, SQLPASSWORD, SQLDATABASE, self._ID + "_JOURNAL")
         try:
             # open the database
             db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            sql = "INSERT INTO " + self._ID + "_JOURNAL (DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s)"
-            val = (xy, entry, entryID, starred, creationDevice, timeZone)
+            sql = "INSERT INTO JOURNAL (PROFILE_ID, DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+            val = (self._ID, xy, entry, "UPDATED SO THIS IS AN UNUSED FIELD FOR NOW", starred, creationDevice, timeZone)
             cursor.execute(sql, val)
             # Commit your changes in the database
             db.commit()

@@ -1,9 +1,15 @@
 import os, shutil, socket, wikipedia, json
 from API_Server.Functions import Protocols, Music, User, Email
 
-# Top level variables
+# TODO find out what this does and if I still need it
 Protocols.loadStartupParameters()
+
+
+# Top Variables
 SETTINGS = Protocols.Settings()
+SQLDATABASE = SETTINGS.sqlDatabase
+SQLUSERNAME = SETTINGS.sqlUsername
+SQLPASSWORD = SETTINGS.sqlPassword
 currentDirectory = SETTINGS.currentDirectory
 
 """All of the code in this entire file has to be reworked and I do mean all. Integrate database use, add new
@@ -14,9 +20,17 @@ Added note May 3: Moving to a JSON message format, document that new API, and ma
 all others call. Simple, sleek, and uniform. """
 
 # Music.playVoice("/Functions/ProgramData/Voice/startup.wav")
-print("============================================================================")
-print("                          FOSS Assistant V" + SETTINGS.version)
-print("============================================================================")
+# Let's get some decoration and naming!
+print(" ________ ________  ________   ________           ________  ________   ________  ___  ________  _________  ________  ________   _________ ")
+print("|\  _____\\\   __  \|\   ____\ |\   ____\         |\   __  \|\   ____\ |\   ____\|\  \|\   ____\|\___   ___\\\   __  \|\   ___  \|\___   ___\ ")
+print("\ \  \__/\ \  \|\  \ \  \___|_\ \  \___|_        \ \  \|\  \ \  \___|_\ \  \___|\ \  \ \  \___|\|___ \  \_\ \  \|\  \ \  \\\ \  \|___ \  \_| ")
+print(" \ \   __\\\ \  \\/\\  \ \_____  \\\ \_____  \        \ \   __  \ \_____  \\\ \_____  \ \  \ \_____  \   \ \  \ \ \   __  \ \  \\\ \  \   \ \  \ ")
+print("  \ \  \_| \ \  \\/\\  \|____|\  \\\|____|\  \        \ \  \ \  \|____|\  \\\|____|\  \ \  \|____|\  \   \ \  \ \ \  \ \  \ \  \\\ \  \   \ \ \ ")
+print("   \ \__\   \ \_______\____\_\  \ ____\_\  \        \ \__\ \__\____\_\  \ ____\_\  \ \__\____\_\  \   \ \__\ \ \__\ \__\ \__\\\ \__\   \ \__\ ")
+print("    \|__|    \|_______|\_________\\\_________\        \|__|\|__|\_________\\\_________\|__|\_________\   \|__|  \|__|\|__|\|__| \|__|    \|__| ")
+print("                      \|_________\|_________|                 \|_________\|_________|   \|_________|                                         ")
+print()
+print("Running Version: " + SETTINGS.version)
 
 port = 8008
 # create a server at ip and port listed
@@ -25,7 +39,7 @@ serv.bind(('0.0.0.0', port))
 
 serv.listen()
 # TODO make this display the proper IP being used by the device
-print("= Startup Complete. Listening on port " + str(port) + " at IP 0.0.0.0")
+print("Startup Complete. Listening on port " + str(port) + " at IP 0.0.0.0")
 # run this code forever
 while True:
     # I have no idea what this code does
