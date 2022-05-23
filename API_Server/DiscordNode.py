@@ -40,7 +40,7 @@ class MyClient(discord.Client):
         # load the profile of the user into key variable
         PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
         # log the command and who did it for diagnosis
-        Protocols.debugLog(User.getProfileUsernameDiscord(str(message.author)), (message.content.split(" ")[0]), "Discord")
+        Protocols.debugLog("nothing here", User.getProfileUsernameDiscord(str(message.author)), (message.content.split(" ")[0]), "Discord")
 
 
         # ============================ Basics ============================

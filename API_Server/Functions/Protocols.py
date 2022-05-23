@@ -25,18 +25,6 @@ def linesInFile(directory):
         count = sum(1 for _ in f)
     return count
 
-# Returns String array of Byte array provided
-def byteToStr(bytesToConvert):
-    # Format data into str from byte
-    convertedBytes = bytesToConvert.decode()
-    # split message into parts
-    request = convertedBytes.split(':')
-    part1 = request[0].split(',')
-    part2 = request[1].split(',')
-    part3 = request[2].split(',')
-    # return multidimensional array
-    return part1, part2, part3
-
 
 def loadStartupParameters():
     # startup
@@ -47,12 +35,12 @@ def loadStartupParameters():
     return returnList
 
 
-# Logs any issued command to file and prints to console
-def debugLog(user, command, requestDevice):
+# Makes logging everything everywhere easier. About freaking time I redid this
+def debug_log(console_printout, user, command, method_of_input):
     # Print to console
-    print("= User " + user + " has issued the following command: " + command)
+    print("= User " + user + " has issued the " + command + " command")
     # compile string of data for file
-    logStr = user + "," + requestDevice + "," + command
+    logStr = user + "," + method_of_input + "," + command
     # open file
     file = open(currentDirectory + '/Functions/ProgramData/log.txt', "a")  # append mode
     # get date and time of command issued
@@ -63,69 +51,6 @@ def debugLog(user, command, requestDevice):
     # close file and return
     file.close()
 
-
-""" Eventually this with tie in to a neural network to make it easier. This method just makes it easier to skip the step
-of speech intent if a command already has been correctly assigned from client based application """
-
-
-# Finds intent of query and returns it as a numeric value + rest of array
-def findIntentFromText(message):
-    command = message
-    # massive if statement for now to gather intent. Don't touch the rest of the array in this function
-    if command.__contains__("send") and command.__contains__("email"):
-        # send email command code 1
-        return 1
-
-    elif command.__contains__("view") and command.__contains__("email"):
-        # send email command code 12
-        return 12
-
-    elif command.__contains__("wiki"):
-        # wikipedia search command code 2
-        return 2
-
-    elif command.__contains__("journal") and command.__contains__("view"):
-        # add entry to Journal command code 3
-        return 3
-
-    elif command.__contains__("journal") and command.__contains__("new") and command.__contains__("entry"):
-        # add entry to Journal command code 3
-        return 31
-
-    elif command.__contains__("bomb"):
-        # this will do something dramatic eventually. Code 4
-        return 4
-
-    elif command.__contains__("youtube") and command.__contains__("download"):
-        # download youtube link to memory. Code 5
-        return 5
-
-    elif command.__contains__("help"):
-        return 6
-
-    # ========================== MUSIC COMMANDS ==========================
-    elif command.__contains__("rickroll"):
-        # rickroll. A classic!
-        return 7
-
-    elif command.__contains__("music") and command.__contains__("all"):
-        # play all music in no order
-        return 8
-
-    elif command.__contains__("backup") and command.__contains__("all"):
-        # backup
-        return 9
-
-    elif command.__contains__("import") and command.__contains__("journal"):
-        # imports journal to sql database (in theory)
-        return 10
-
-    elif command.__contains__("music") and command.__contains__("playlist"):
-        # play playlist
-        return 13
-
-    else:
-        return 0
 
 # sync between file and database.
 # export all datasheets, settings, etc to another instance. Should save me headaches moving between host devices
