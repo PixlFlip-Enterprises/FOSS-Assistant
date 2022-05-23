@@ -255,6 +255,39 @@ class MyClient(discord.Client):
             # send message to channel if no other data given
             else:
                 await channel.send('Invalid Option. Please Message Something Like\n"create a new entry"\nor\n"view journal entry"')
+
+        # ============================       Create User      ==============================
+        if message.content.startswith(PREFIX + 'newuser'):
+            channel = message.channel
+            # Check function so we don't reply to strangers
+            def check(m):
+                return m.author == message.author and m.channel == channel
+            # return if low clearance
+            if not int(PROFILE.clearanceLevel) == 1:
+                await message.channel.send('Insufficient Clearance Level: ' + PROFILE.clearanceLevel + "\nMust be Clearance Level 1 to create new users.")
+                return
+            # ask for user details
+            await message.channel.send('New User Creation. Enter Username:')
+            newusername = await client.wait_for('message', check=check)
+            await channel.send('Enter User Password. Can Be Changed Later By User:')
+            newuserpass = await client.wait_for('message', check=check)
+            await channel.send('Enter User Email. Enter NONE For No Email:')
+            newuseremail = await client.wait_for('message', check=check)
+            await channel.send('Enter User Email Password. Enter NONE If Blank:')
+            newuserepass = await client.wait_for('message', check=check)
+            await channel.send('Enter User Discord:')
+            newuserdiscord = await client.wait_for('message', check=check)
+            await channel.send('Enter User Clearance Level. \nWARNING: HIGHER LEVEL = HIGHER PERMISSIONS. Clearance Level 1 is highest and Clearance Level 3 is lowest.')
+            newuserclearance = await client.wait_for('message', check=check)
+            # verify clearance the rest we don't care about
+            try:
+                clearanceLevel = int(newuserclearance)
+            except:
+                print("failed user account creation")
+                await channel.send('USER CLEARANCE MUST BE A NUMBER FROM 1 TO 3. PROCESS TERMINATED.')
+                return
+            User.create(newusername, newuserpass, newuserclearance, newuseremail, newuserepass, newuserdiscord)
+            await channel.send('New User ' + newusername + ' Created With Level ' + newuserclearance + ' Clearance.')
         # ===================== Dynamic Command =====================
         # reads intent from message provided to it using intent manager or neural network.
 
