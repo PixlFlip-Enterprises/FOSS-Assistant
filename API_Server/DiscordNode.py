@@ -288,6 +288,19 @@ class MyClient(discord.Client):
                 return
             User.create(newusername, newuserpass, newuserclearance, newuseremail, newuserepass, newuserdiscord)
             await channel.send('New User ' + newusername + ' Created With Level ' + newuserclearance + ' Clearance.')
+        # ===================== Music Playing =====================
+        if message.content.startswith(PREFIX + 'play'):
+            channel = message.channel
+            # Check function so we don't reply to strangers
+            def check(m):
+                return m.author == message.author and m.channel == channel
+            # in theory song will be placed in the message
+
+            channel = message.author.voice.channel
+            vc = await channel.connect()
+            await message.channel.send('Playing Music')
+            vc.play(discord.FFmpegPCMAudio('API_Server/Functions/ProgramData/Voice/GLaDOS-320310.wav'), after=lambda e: print('done', e))
+
         # ===================== Dynamic Command =====================
         # reads intent from message provided to it using intent manager or neural network.
 
