@@ -5,17 +5,20 @@ Date: May 9, 2022
 
 One good turn deserves another
 """
+import os
+import time
 
 import wikipedia
 import discord
+import mutagen
+from mutagen.wave import WAVE
 from Functions import Protocols, User, Email
 from Tasks import Task
 
 # All key (read top level) variables here
-
 SETTINGS = Protocols.Settings()
 TOKEN = SETTINGS.discordBotToken
-PREFIX = '/'
+PREFIX = '?'
 currentDirectory = SETTINGS.currentDirectory
 # End Key Variables ======================
 
@@ -33,23 +36,15 @@ class MyClient(discord.Client):
         # return if no prefix to command. Saves tons of processing power
         if not message.content.startswith(PREFIX):
             return  # we know its a command now
-        # check if user profile exists and return if no profile
-        if not User.isProfileDiscord(str(message.author)):
-            await message.channel.send('You are not authorized to access my commands.', delete_after=30)
-            return  # we know the profile exists now
-        # load the profile of the user into key variable
-        PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
-        # log the command and who did it for diagnosis
-        Protocols.debugLog("nothing here", User.getProfileUsernameDiscord(str(message.author)), (message.content.split(" ")[0]), "Discord")
 
-
-        # ============================ Basics ============================
+        # ==============================================================================================================================================
+        # ========================================================== Commands Anyone Can Use ===========================================================
         # ping command
         if message.content == (PREFIX + 'ping'):
             await message.channel.send('pong', delete_after=10)
         # TODO figure out why this doesn't work. Should import all from csv file...
         if message.content == (PREFIX + 'parady'):
-            Protocols.establish_parady_user(User.getProfileUsernameDiscord(str(message.author)), SETTINGS.sqlUsername, SETTINGS.sqlPassword, SETTINGS.sqlDatabase)
+            Protocols.establish_parady_user(User.getProfileUsernameDiscord(str(message.author)),SETTINGS.sqlUsername, SETTINGS.sqlPassword, SETTINGS.sqlDatabase)
             await message.channel.send('parady achieved', delete_after=10)
         # help command
         if message.content == (PREFIX + 'help'):
@@ -59,6 +54,59 @@ class MyClient(discord.Client):
             for line in file:
                 returnList += line
             await message.channel.send(returnList)
+        # ================================================================ Music Playing ===============================================================
+        if message.content.startswith(PREFIX + 'play'):
+            channel = message.channel
+            # check in a voice channel
+            voice_state = message.author.voice
+            if voice_state is None:
+                # Exiting if the user is not in a voice channel
+                return await message.channel.send('You need to be in a voice channel to use this command')
+            # in theory song will be placed in the message
+            channel = message.author.voice.channel
+            # get audio length
+            audio = WAVE("startup.wav")
+            audio_info = audio.info
+            length = int(audio_info.length)
+            # connect to vc
+            vc = await channel.connect()
+            await message.channel.send('Playing Music')
+            vc.play(discord.FFmpegPCMAudio('startup.wav'), after=lambda e: (print('done', e)))
+            time.sleep(length + 5)
+            await vc.disconnect()
+
+        if message.content.startswith(PREFIX + 'laugh'):
+            channel = message.channel
+            # check in a voice channel
+            voice_state = message.author.voice
+            if voice_state is None:
+                # Exiting if the user is not in a voice channel
+                return await message.channel.send('You need to be in a voice channel to use this command')
+            # in theory song will be placed in the message
+            channel = message.author.voice.channel
+            # get audio length
+            audio = WAVE("startup.wav")
+            audio_info = audio.info
+            length = int(audio_info.length)
+            # connect to vc
+            vc = await channel.connect()
+            vc.play(discord.FFmpegPCMAudio(currentDirectory + '/Data/Sounds/laughing.mp3'))
+            time.sleep(length + 1)
+            await vc.disconnect()
+        # ==============================================================================================================================================
+        # ==============================================================================================================================================
+
+
+
+        # check if user profile exists and return if no profile
+        if not User.isProfileDiscord(str(message.author)):
+            await message.channel.send('You are not authorized to access my commands.', delete_after=30)
+            return  # we know the profile exists now
+        # load the profile of the user into key variable
+        PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
+        # log the command and who did it for diagnosis
+        Protocols.debug_log("nothing here", User.getProfileUsernameDiscord(str(message.author)), (message.content.split(" ")[0]), "Discord")
+
 
         # ============================       Email      ==============================
         if message.content.startswith(PREFIX + 'email'):
@@ -288,23 +336,13 @@ class MyClient(discord.Client):
                 return
             User.create(newusername, newuserpass, newuserclearance, newuseremail, newuserepass, newuserdiscord)
             await channel.send('New User ' + newusername + ' Created With Level ' + newuserclearance + ' Clearance.')
-        # ===================== Music Playing =====================
-        if message.content.startswith(PREFIX + 'play'):
-            channel = message.channel
-            # Check function so we don't reply to strangers
-            def check(m):
-                return m.author == message.author and m.channel == channel
-            # in theory song will be placed in the message
-
-            channel = message.author.voice.channel
-            vc = await channel.connect()
-            await message.channel.send('Playing Music')
-            vc.play(discord.FFmpegPCMAudio('API_Server/Functions/ProgramData/Voice/GLaDOS-320310.wav'), after=lambda e: print('done', e))
 
         # ===================== Dynamic Command =====================
         # reads intent from message provided to it using intent manager or neural network.
 
-
+# ffmpeg
+# PyNaCa
+# mutagen
 client = MyClient()
 
 client.run(TOKEN)
