@@ -35,6 +35,10 @@ serv.bind(('0.0.0.0', port))
 serv.listen()
 # TODO make this display the proper IP being used by the device
 print("Startup Complete. Listening on port " + str(port) + " at IP 0.0.0.0")
+
+# holding variable for returned json
+return_json = ""
+
 # run this code forever
 while True:
     # I have no idea what this code does
@@ -56,19 +60,39 @@ while True:
             print("No API Key Provided in Query")
             break
         # both exist so now verify valid api key
-        '''welcome to the code I haven't done yet. This area needs an api table and a few rapid fire calls to sql. It is
-        imperative that the calls be hardened to sql injection so the api cannot be easily exploited. Have fun future me'''
-        # valid api key so begin acting on command_id
+        if User.is_profile_api_key(query['api_key']) == False:
+            print("Invalid API Key Provided in Query")
+            break
+        # valid api key so grab user profile
+        username = User.is_profile_api_key(query['api_key'])
+        PROFILE = User.Profile(username)
+
+        # All commands. Literally all of them
 
         # hello world/testing api command
-        if query['command_id'] == '1':
-            Protocols.debug_log("API is working correctly", "NONE", "1", "API")
-        # journal
-        elif query['command_id'] == '2':
-            print("value 2")
+        if query['command_id'] == '000001':
+            Protocols.debug_log(console_printout="API Test", user=username, command="000001", method_of_input="API")
 
-        res = bytes("string json reply here", 'utf-8')
+
+        # journal view entry
+        elif query['command_id'] == '000020':
+            # log
+            Protocols.debug_log(console_printout="Journal View Entry", user=username, command="000020", method_of_input="API")
+            # verify fields
+            if not 'date' in query:
+                print("Invalid Data in Query")
+                break
+            # ensure exists
+            if not PROFILE.journal.is_entry(query['date']):
+                print("Incorrect Date Format for Command ID 000020")
+                break
+            # Get the entry
+            entry = PROFILE.journal.get_entry(query['date'])
+            # build json to return
+            return_json = '{"date": "' + entry.date + '", "entry": "' + entry.entry + '", "starred":"' + entry.starred + '", "creation_device":"' + entry.creationDevice + '", "timezone":"' + entry.timeZone + '"}'
+
+        res = bytes(return_json, 'utf-8')
         conn.send(res)
     conn.close()
-    print("= Client Successfully Disconnected")
+    print("API Call Completed")
 

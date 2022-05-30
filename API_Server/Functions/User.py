@@ -179,3 +179,26 @@ def getProfileUsernameDiscord(discordtag):
     # disconnect from server
     db.close()
     return "Anonymous User"
+
+
+# returns userID from mysql search
+def is_profile_api_key(key):
+    try:
+        # open the database
+        db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+        cursor = db.cursor()
+        # see if key exists
+        cursor.execute("select * from API_KEYS where API_KEY like '%" + key + "%';")
+        # get all records
+        records = cursor.fetchall()
+        # check
+        if records[0][0] == key:
+            return records[0][1]
+        else:
+            return False
+    except:
+        # Rollback in case there is any error
+        db.rollback()
+    # disconnect from server
+    db.close()
+    return False

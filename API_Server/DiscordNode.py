@@ -42,9 +42,10 @@ class MyClient(discord.Client):
         # ping command
         if message.content == (PREFIX + 'ping'):
             await message.channel.send('pong', delete_after=10)
+
         # TODO figure out why this doesn't work. Should import all from csv file...
         if message.content == (PREFIX + 'parady'):
-            Protocols.establish_parady_user(User.getProfileUsernameDiscord(str(message.author)),SETTINGS.sqlUsername, SETTINGS.sqlPassword, SETTINGS.sqlDatabase)
+            Protocols.establish_parady_user(User.getProfileUsernameDiscord(str(message.author)), SETTINGS.sqlUsername, SETTINGS.sqlPassword, SETTINGS.sqlDatabase)
             await message.channel.send('parady achieved', delete_after=10)
         # help command
         if message.content == (PREFIX + 'help'):

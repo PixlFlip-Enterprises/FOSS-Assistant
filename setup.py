@@ -94,6 +94,9 @@ try:
     # Create Table for saving Daily Briefings. Might be useful someday
     cursor.execute("CREATE TABLE DAILY_BRIEFING(ID INT AUTO_INCREMENT PRIMARY KEY, DATE VARCHAR(50) NOT NULL, NEWS_LINKS MEDIUMTEXT, TECH_LINKS MEDIUMTEXT, TRENDING_SEARCHES MEDIUMTEXT);")
 
+    # Create Table for api keys. These are used to contact the main server
+    cursor.execute("CREATE TABLE API_KEYS(API_KEY VARCHAR(200) PRIMARY KEY, PROFILE_ID VARCHAR(200), DEVICE MEDIUMTEXT);")
+
     # \\\\\\\\\\\\\\\\\\\\\\\\\\
     #   Creating Entity Tables
     # //////////////////////////
