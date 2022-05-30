@@ -49,6 +49,7 @@ while True:
         data = conn.recv(1024)
         # verify data
         if not data: break
+        # todo current version is vulnerable to sql injection attacks. Can be easily fixed so do it here before data is used
         # parse json
         query = json.loads(data.decode())
         # verify api_key exists
@@ -72,7 +73,7 @@ while True:
         # hello world/testing api command
         if query['command_id'] == '000001':
             Protocols.debug_log(console_printout="API Test", user=username, command="000001", method_of_input="API")
-
+            break
 
         # journal view entry
         elif query['command_id'] == '000020':
@@ -84,15 +85,19 @@ while True:
                 break
             # ensure exists
             if not PROFILE.journal.is_entry(query['date']):
-                print("Incorrect Date Format for Command ID 000020")
+                print("Incorrect Date or Format for Command ID 000020")
                 break
             # Get the entry
             entry = PROFILE.journal.get_entry(query['date'])
             # build json to return
             return_json = '{"date": "' + entry.date + '", "entry": "' + entry.entry + '", "starred":"' + entry.starred + '", "creation_device":"' + entry.creationDevice + '", "timezone":"' + entry.timeZone + '"}'
+            break
 
-        res = bytes(return_json, 'utf-8')
-        conn.send(res)
+
+    # encode, send, close connection, reset
+    res = bytes(return_json, 'utf-8')
+    conn.send(res)
     conn.close()
+    return_json = ''
     print("API Call Completed")
 
