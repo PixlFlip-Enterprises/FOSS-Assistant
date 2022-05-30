@@ -5,8 +5,7 @@ Date: May 9, 2022
 
 One good turn deserves another
 """
-import os
-import time
+import time, os, socket, json
 
 import wikipedia
 import discord
@@ -103,6 +102,10 @@ class MyClient(discord.Client):
         if not User.isProfileDiscord(str(message.author)):
             await message.channel.send('You are not authorized to access my commands.', delete_after=30)
             return  # we know the profile exists now
+
+        # load api server connection
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect(('0.0.0.0', 8008))
         # load the profile of the user into key variable
         PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
         # log the command and who did it for diagnosis
@@ -224,9 +227,12 @@ class MyClient(discord.Client):
             # set channel to same as one command issued in
             channel = message.channel
             # get news summary
-
+            client.send(b'{"api_key": "kwy", "command_id": "000020", "date": "2022-05-16"}')
+            from_server = client.recv(4096)
+            client.close()
+            query = json.loads(from_server.decode())
             # return summary to client
-            await message.channel.send('This command does nothing at the moment, but will someday.')
+            await message.channel.send(query['entry'])
 
         # ============================       DB Backup       ==============================
         if message.content.startswith(PREFIX + 'backup'):
