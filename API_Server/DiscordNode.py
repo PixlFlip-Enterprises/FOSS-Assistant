@@ -19,6 +19,10 @@ SETTINGS = Protocols.Settings()
 TOKEN = SETTINGS.discordBotToken
 PREFIX = '?'
 currentDirectory = SETTINGS.currentDirectory
+# API Server
+address = '0.0.0.0'
+port = 8008
+API_KEY = ''
 # End Key Variables ======================
 
 
@@ -95,21 +99,28 @@ class MyClient(discord.Client):
             await vc.disconnect()
         # ==============================================================================================================================================
         # ==============================================================================================================================================
+        # load api server connection
+        api_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
-
+        # get profile from api (if it exists)
+        api_client.connect((address, port))
+        profile_json_request = '{"api_key": "' + API_KEY + '", "command_id": "000011", "discord_id": "' + str(message.author) + '"}'
+        api_client.send(bytes(profile_json_request, 'utf-8'))
+        from_server = api_client.recv(4096)
+        api_client.close()
+        isProfile = json.loads(from_server.decode())
         # check if user profile exists and return if no profile
-        if not User.isProfileDiscord(str(message.author)):
+        if not isProfile['is_valid_id']:
             await message.channel.send('You are not authorized to access my commands.', delete_after=30)
             return  # we know the profile exists now
 
-        # load api server connection
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect(('0.0.0.0', 8008))
+
         # load the profile of the user into key variable
-        PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
+        # PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
+        PROFILE = User.Profile(isProfile['user'])
         # log the command and who did it for diagnosis
-        Protocols.debug_log("nothing here", User.getProfileUsernameDiscord(str(message.author)), (message.content.split(" ")[0]), "Discord")
+        Protocols.debug_log("nothing here", isProfile['user'], (message.content.split(" ")[0]), "Discord")
 
 
         # ============================       Email      ==============================
@@ -122,9 +133,8 @@ class MyClient(discord.Client):
             await message.channel.send('What would you like to do with email?')
             subCommand1 = await client.wait_for('message')
             subCommand2 = subCommand1.content + " email "
-            intentCommand = Protocols.findIntentFromText(subCommand2)
             # 12 meaning they want to view inbox.
-            if intentCommand == 12:
+            if subCommand2.__contains__("view") and subCommand2.__contains__("email"):
                 # verify permissions and get email + password
                 if User.isProfileDiscord(str(message.author)):
                     # ask user for password for security
@@ -143,7 +153,7 @@ class MyClient(discord.Client):
                     await channel.send('Profile for Discord Tag ' + (str(message.author)) + ' not found. You must be authorized to use this command.', delete_after=120)
 
             # 1 entered meaning they want to send an email.
-            elif intentCommand == 1:
+            elif subCommand2.__contains__("send") and subCommand2.__contains__("email"):
                 # verify permissions and get email + password
                 if User.isProfileDiscord(str(message.author)):
                     # get profile
@@ -186,12 +196,10 @@ class MyClient(discord.Client):
             await message.channel.send('What would you like to do with your journal?')
             subCommand1 = await client.wait_for('message', check=check)
             subCommand2 = subCommand1.content + " journal "
-            # send to parser with a little extra journal just to ensure it marks it as a journal command
-            intentCommand = Protocols.findIntentFromText(subCommand2)
             # import journal object for use
             userJournal = PROFILE.journal
-            # 3 entered meaning they want to view entry
-            if intentCommand == 3:
+            # view entry
+            if subCommand2.__contains__("view") and subCommand2.__contains__("entry"):
                 # parse next part for a date
                 await channel.send('Input Date Of Entry You Want to View Using the Format YYYY-MM-DD (include the - )')
                 getDate = await client.wait_for('message', check=check)
@@ -206,7 +214,7 @@ class MyClient(discord.Client):
                     # return error to user
                     await channel.send('Invalid Date. Try again using the format YYYY-MM-DD (include the - )')
             # 2 entered meaning new entry
-            if intentCommand == 31:
+            if subCommand2.__contains__("new") and subCommand2.__contains__("entry"):
                 await channel.send('Enter Your Entry')
                 # format all remaining information in the message and store in variable
                 getEntry = await client.wait_for('message', check=check)

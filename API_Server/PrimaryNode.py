@@ -71,8 +71,26 @@ while True:
         # All commands. Literally all of them
 
         # hello world/testing api command
-        if query['command_id'] == '000001':
+        if query['command_id'] == '000010':
             Protocols.debug_log(console_printout="API Test", user=username, command="000001", method_of_input="API")
+            break
+
+        # verify identity from discord application
+        elif query['command_id'] == '000011':
+            # log
+            Protocols.debug_log(console_printout="ID Check", user=username, command="000011", method_of_input="API")
+            # verify fields
+            if not 'discord_id' in query:
+                print("Invalid Data in Query")
+                break
+            # check discord id
+            if not User.isProfileDiscord(query['discord_id']):
+                return_json = '{"status": "Completed", "is_valid_id": "False"}'
+                break
+            # valid id so return relevant information
+            user_key = User.get_profile_api_key(User.getProfileUsernameDiscord(query['discord_id']))
+            # returned json
+            return_json = '{"status": "Completed", "is_valid_id": "True", "api_key": "' + user_key + '", "user": "' + User.getProfileUsernameDiscord(query['discord_id']) + '"}'
             break
 
         # journal view entry

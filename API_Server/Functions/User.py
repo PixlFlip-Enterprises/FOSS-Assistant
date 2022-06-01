@@ -202,3 +202,23 @@ def is_profile_api_key(key):
     # disconnect from server
     db.close()
     return False
+
+
+# returns a user's api key
+def get_profile_api_key(profile_id):
+    try:
+        # open the database
+        db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+        cursor = db.cursor()
+        # see if key exists
+        cursor.execute("select * from API_KEYS where PROFILE_ID like '%" + profile_id + "%';")
+        # get all records
+        records = cursor.fetchall()
+        # check
+        return records[0][0]
+    except:
+        # Rollback in case there is any error
+        db.rollback()
+    # disconnect from server
+    db.close()
+    return False
