@@ -10,3 +10,16 @@
 
 <h2>API Server Documentation</h2>
 
+Example API Call
+
+
+Example Error JSON
+```
+{"status": "Error", "error_info": "Not Specified"}
+```
+
+Example API Command Call
+```
+{"api_key": "API_KEY", "command_id": "000010", "argument1": "value1"}
+```
+

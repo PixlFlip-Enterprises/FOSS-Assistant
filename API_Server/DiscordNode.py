@@ -127,8 +127,6 @@ class MyClient(discord.Client):
         if message.content.startswith(PREFIX + 'email'):
             # set channel to same as one command issued in
             channel = message.channel
-            # warn them about security but send it anyway
-            await message.channel.send('This is a Level 2 Command meaning potentially sensitive data is involved.\n For your security this message will be deleted shortly after send.\n Also for security it is recommended you do this in DM.',delete_after=120)
             # ask for and interpret sub command
             await message.channel.send('What would you like to do with email?')
             subCommand1 = await client.wait_for('message')
@@ -185,7 +183,6 @@ class MyClient(discord.Client):
                 await channel.send('Invalid Option. Please Specify Sub Command:\n 1 | View Inbox\n 2 | Send Email', delete_after=120)
 
         # ============================      Journal     ==============================
-        # TODO debug and ensure the check=check functionality works as expected!
         if message.content.startswith(PREFIX + 'journal'):
             # Check function so we don't reply to strangers
             def check(m):
@@ -321,6 +318,7 @@ class MyClient(discord.Client):
 
         # ============================       Create User      ==============================
         if message.content.startswith(PREFIX + 'newuser'):
+            # todo change this up so it uses the api server and also allows someone to grant a discord account the ability to just make their own account.
             channel = message.channel
             # Check function so we don't reply to strangers
             def check(m):

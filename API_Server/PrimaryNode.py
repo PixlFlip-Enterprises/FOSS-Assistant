@@ -1,12 +1,11 @@
 """
-DiscordNode.py Version 0.8
+DiscordNode.py Version 0.8.1
 Author: PixlFlip
-Date: May 23, 2022
+Date: June 2, 2022
 
-Basically a 2.0 but regardless here it is.
-Queries in JSON (finally) and major revamp in general.
+Getting very close to a full on Alpha.
 """
-import os, shutil, socket, wikipedia, json
+import os, shutil, socket, wikipedia, json, ssl
 from Functions import Protocols, User, Email
 
 # Top variables
@@ -27,17 +26,21 @@ print("                      \|_________\|_________|                 \|_________
 print()
 print("Running Version: " + SETTINGS.version)
 
+h_name = socket.gethostname()
+IP_addres = socket.gethostbyname(h_name)
+
+# todo have the port be one of the configurable settings?
 port = 8008
 # create a server at ip and port listed
 serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serv.bind(('0.0.0.0', port))
 
 serv.listen()
-# TODO make this display the proper IP being used by the device
-print("Startup Complete. Listening on port " + str(port) + " at IP 0.0.0.0")
+print("Host Name is:   " + h_name)
+print("Hosting At Address:   " + IP_addres + ":" + str(port))
 
 # holding variable for returned json
-return_json = ""
+return_json = '{"status": "Error", "error_info": "Not Specified"}'
 
 # run this code forever
 while True:
@@ -116,6 +119,6 @@ while True:
     res = bytes(return_json, 'utf-8')
     conn.send(res)
     conn.close()
-    return_json = ''
+    return_json = '{"status": "Error", "error_info": "Not Specified"}'
     print("API Call Completed")
 
