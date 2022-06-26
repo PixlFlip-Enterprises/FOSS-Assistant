@@ -54,7 +54,11 @@ while True:
         if not data: break
         # todo current version is vulnerable to sql injection attacks. Can be easily fixed so do it here before data is used
         # parse json
-        query = json.loads(data.decode())
+        try:
+            query = json.loads(data.decode())
+        except:
+            return_json = '{"status": "Error", "error_info": "Invalid JSON Unable To Parse"}'
+            break
         # verify api_key exists
         if not 'api_key' in query:
             print("No API Key Provided in Query")
@@ -76,6 +80,7 @@ while True:
         # hello world/testing api command
         if query['command_id'] == '000010':
             Protocols.debug_log(console_printout="API Test", user=username, command="000001", method_of_input="API")
+            return_json = '{"status": "Completed"}'
             break
 
         # verify identity from discord application
@@ -112,6 +117,41 @@ while True:
             entry = PROFILE.journal.get_entry(query['date'])
             # build json to return
             return_json = '{"date": "' + entry.date + '", "entry": "' + entry.entry + '", "starred":"' + entry.starred + '", "creation_device":"' + entry.creationDevice + '", "timezone":"' + entry.timeZone + '"}'
+            break
+
+        # add base contact information
+        elif query['command_id'] == '000030':
+            # log
+            Protocols.debug_log(console_printout="Add Base Contact", user=username, command="000030", method_of_input="API")
+            # verify fields (all of them)
+            verifable_fields = ['f_name', 'l_name', 'display_name', 'nickname', 'email_address', 'email_address2',
+                                'email_address3', 'home_phone', 'business_phone', 'home_fax', 'business_fax',
+                                'pager', 'mobile_phone', 'home_address', 'home_address2', 'home_city', 'home_state',
+                                'home_postal_code', 'home_street', 'business_address', 'business_address2',
+                                'business_city', 'business_state', 'business_postal', 'business_country', 'country_code',
+                                'related_names', 'job', 'department', 'organization', 'notes', 'birthday', 'anniversary',
+                                'gender', 'website', 'website2', 'categories', 'sociological_options', 'social_media',
+                                'discord', 'personality_rating', 'trust_score', 'known_since']
+            no_field_kill = False
+            for field in verifable_fields:
+                if not field in query:
+                    print("Invalid Data in Query")
+                    no_field_kill = True
+            if no_field_kill:
+                break
+            # save contact to database
+            PROFILE.contacts.create_contact(query['f_name'], query['l_name'], query['display_name'], query['nickname'], query['email_address'],
+                                            query['email_address2'], query['email_address3'], query['home_phone'], query['business_phone'],
+                                            query['home_fax'], query['business_fax'], query['pager'], query['mobile_phone'], query['home_address'],
+                                            query['home_address2'], query['home_city'], query['home_state'], query['home_postal_code'],
+                                            query['home_street'], query['business_address'], query['business_address2'], query['business_city'],
+                                            query['business_state'], query['business_postal'], query['business_country'], query['country_code'],
+                                            query['related_names'], query['job'], query['department'], query['organization'], query['notes'],
+                                            query['birthday'], query['anniversary'], query['gender'], query['website'], query['website2'],
+                                            query['categories'], query['sociological_options'], query['social_media'], query['discord'],
+                                            query['personality_rating'], query['trust_score'], query['known_since'])
+            # build json to return
+            return_json = '{"status": "Completed"}'
             break
 
 

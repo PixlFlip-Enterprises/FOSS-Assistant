@@ -49,6 +49,7 @@ class Profile(object):
         self._clearanceLevel = temp[5]
         # setup other variables
         self._journal = UserData.Journal(self._ID)
+        self._contacts = UserData.ContactBook(self._ID)
 
 
     @property
@@ -80,6 +81,11 @@ class Profile(object):
     def journal(self):
         # get journal
         return self._journal
+
+    @property
+    def contacts(self):
+        # get contacts
+        return self._contacts
 
 # ==========================================================================================================
 
