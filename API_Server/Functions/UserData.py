@@ -14,6 +14,8 @@ SQLDATABASE = SETTINGS.sqlDatabase
 SQLUSERNAME = SETTINGS.sqlUsername
 SQLPASSWORD = SETTINGS.sqlPassword
 currentDirectory = SETTINGS.currentDirectory
+
+
 # End Variables =============================
 
 
@@ -54,7 +56,7 @@ class Notes(object):
             cursor = db.cursor()
             # Execute the SQL command
             sql = "INSERT INTO CONTACT (CONTACT_OWNING_USER, F_NAME, L_NAME, DISPLAY_NAME, NICKNAME, EMAIL_ADDRESS, EMAIL_ADDRESS2, EMAIL_ADDRESS3, HOME_PHONE, BUSINESS_PHONE, HOME_FAX, BUSINESS_FAX, PAGER, MOBILE_PHONE, HOME_ADDRESS, HOME_ADDRESS2, HOME_CITY, HOME_STATE, HOME_POSTAL_CODE, HOME_STREET, BUSINESS_ADDRESS, BUSINESS_ADDRESS2, BUSINESS_CITY, BUSINESS_STATE, BUSINESS_POSTAL_CODE, BUSINESS_COUNTRY, COUNTRY_CODE, RELATED_NAMES, JOB, DEPARTMENT, ORGANIZATION, NOTES, BIRTHDAY, ANNIVERSARY, GENDER, WEBSITE, WEBPAGE2, CATEGORIES, SOCIOLOGICAL_OPTIONS, SOCIAL_MEDIA_HANDLE, DISCORD, PERSONALITY_RATING, TRUST_SCORE) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"  # 43 variables total...?
-            val = (self._ID, )
+            val = (self._ID,)
             cursor.execute(sql, val)
             # Commit your changes in the database
             db.commit()
@@ -86,6 +88,8 @@ class Notes(object):
     # returns array of all Entry objects. maybe could make this a string array someday.
     def export_all(self):
         return self._entries
+
+
 # Sub Class Note (only should be called inside journal!)
 class Note(object):
     # OWNING_USER, DATE, TITLE, BODY, STARRED, CREATION_DEVICE, TIMEZONE
@@ -126,6 +130,8 @@ class Note(object):
     def timeZone(self):
         # get database name
         return self._timeZone
+
+
 # ==========================================================================================================
 
 
@@ -204,6 +210,8 @@ class Journal(object):
             if entry.date.__contains__(date):
                 return True
         return False
+
+
 # Sub Class Entry (only should be called inside journal!)
 class Entry(object):
     def __init__(self, date, entry, UUID, starred, creationDevice, timeZone):
@@ -238,6 +246,8 @@ class Entry(object):
     def timeZone(self):
         # get database name
         return self._timeZone
+
+
 # ==========================================================================================================
 
 
@@ -262,7 +272,11 @@ class ContactBook(object):
                 # add entry to holding variables
             for j in holding:
                 # sort tuple to array and append
-                tempEntries.append(Contact(j[0], j[1], j[2], j[3], j[4], j[5], j[6], j[7], j[8], j[9], j[10], j[11], j[12], j[13], j[14], j[15], j[16], j[17], j[18], j[19], j[20], j[21], j[22], j[23], j[24], j[25], j[26], j[27], j[28], j[29], j[30], j[31], j[32], j[33], j[34], j[35], j[36], j[37], j[38], j[39], j[40], j[41], j[42]))
+                tempEntries.append(
+                    Contact(j[0], j[1], j[2], j[3], j[4], j[5], j[6], j[7], j[8], j[9], j[10], j[11], j[12], j[13],
+                            j[14], j[15], j[16], j[17], j[18], j[19], j[20], j[21], j[22], j[23], j[24], j[25], j[26],
+                            j[27], j[28], j[29], j[30], j[31], j[32], j[33], j[34], j[35], j[36], j[37], j[38], j[39],
+                            j[40], j[41], j[42]))
         except:
             # Rollback in case there is any error
             db.rollback()
@@ -271,14 +285,27 @@ class ContactBook(object):
         self._entries = tempEntries
 
     # first and last name are always required, but the rest is optional. Also, the few at the end are for fun not real use
-    def create_contact(self, firstName, lastName, displayName="", nickname="", emailAddress="", email2address="", email3address="", homePhone="", businessPhone="", homeFax="", businessFax="", pager="", mobilePhone="", homeStreet="", homeAddress2="", homeCity="", homeState="", homePostalCode="", homeCountry="", businessAddress="", businessAddress2="", businessCity="", businessState="", businessPostalCode="", businessCountry="", countryCode="", relatedName="", jobTitle="", department="", organization="", notes="", birthday="", anniversary="", gender="", webPage="", webPage2="", categories="", sociologicalOptions="", genericSocialMediaHandle="", discord="", personalityRating=0, trustScore=0, knownSince=""):
+    def create_contact(self, firstName, lastName, displayName="", nickname="", emailAddress="", email2address="",
+                       email3address="", homePhone="", businessPhone="", homeFax="", businessFax="", pager="",
+                       mobilePhone="", homeStreet="", homeAddress2="", homeCity="", homeState="", homePostalCode="",
+                       homeCountry="", businessAddress="", businessAddress2="", businessCity="", businessState="",
+                       businessPostalCode="", businessCountry="", countryCode="", relatedName="", jobTitle="",
+                       department="", organization="", notes="", birthday="", anniversary="", gender="", webPage="",
+                       webPage2="", categories="", sociologicalOptions="", genericSocialMediaHandle="", discord="",
+                       personalityRating=0, trustScore=0, knownSince=""):
         try:
             # open the database
             db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            sql = "INSERT INTO CONTACT (CONTACT_OWNING_USER, F_NAME, L_NAME, DISPLAY_NAME, NICKNAME, EMAIL_ADDRESS, EMAIL_ADDRESS2, EMAIL_ADDRESS3, HOME_PHONE, BUSINESS_PHONE, HOME_FAX, BUSINESS_FAX, PAGER, MOBILE_PHONE, HOME_ADDRESS, HOME_ADDRESS2, HOME_CITY, HOME_STATE, HOME_POSTAL_CODE, HOME_STREET, BUSINESS_ADDRESS, BUSINESS_ADDRESS2, BUSINESS_CITY, BUSINESS_STATE, BUSINESS_POSTAL_CODE, BUSINESS_COUNTRY, COUNTRY_CODE, RELATED_NAMES, JOB, DEPARTMENT, ORGANIZATION, NOTES, BIRTHDAY, ANNIVERSARY, GENDER, WEBSITE, WEBPAGE2, CATEGORIES, SOCIOLOGICAL_OPTIONS, SOCIAL_MEDIA_HANDLE, DISCORD, PERSONALITY_RATING, TRUST_SCORE) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" #44 variables total...?
-            val = (self._ID, firstName, lastName, displayName, nickname, emailAddress, email2address, email3address, homePhone, businessPhone, homeFax, businessFax, pager, mobilePhone, homeStreet, homeAddress2, homeCity, homeState, homePostalCode, homeCountry, businessAddress, businessAddress2, businessCity, businessState, businessPostalCode, businessCountry, countryCode, relatedName, jobTitle, department, organization, notes, birthday, anniversary, gender, webPage, webPage2, categories, sociologicalOptions, genericSocialMediaHandle, discord, personalityRating, trustScore, knownSince)
+            sql = "INSERT INTO CONTACT (CONTACT_OWNING_USER, F_NAME, L_NAME, DISPLAY_NAME, NICKNAME, EMAIL_ADDRESS, EMAIL_ADDRESS2, EMAIL_ADDRESS3, HOME_PHONE, BUSINESS_PHONE, HOME_FAX, BUSINESS_FAX, PAGER, MOBILE_PHONE, HOME_ADDRESS, HOME_ADDRESS2, HOME_CITY, HOME_STATE, HOME_POSTAL_CODE, HOME_STREET, BUSINESS_ADDRESS, BUSINESS_ADDRESS2, BUSINESS_CITY, BUSINESS_STATE, BUSINESS_POSTAL_CODE, BUSINESS_COUNTRY, COUNTRY_CODE, RELATED_NAMES, JOB, DEPARTMENT, ORGANIZATION, NOTES, BIRTHDAY, ANNIVERSARY, GENDER, WEBSITE, WEBPAGE2, CATEGORIES, SOCIOLOGICAL_OPTIONS, SOCIAL_MEDIA_HANDLE, DISCORD, PERSONALITY_RATING, TRUST_SCORE, KNOWN_SINCE) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"  # 44 variables total
+            val = (
+            self._ID, firstName, lastName, displayName, nickname, emailAddress, email2address, email3address, homePhone,
+            businessPhone, homeFax, businessFax, pager, mobilePhone, homeStreet, homeAddress2, homeCity, homeState,
+            homePostalCode, homeCountry, businessAddress, businessAddress2, businessCity, businessState,
+            businessPostalCode, businessCountry, countryCode, relatedName, jobTitle, department, organization, notes,
+            birthday, anniversary, gender, webPage, webPage2, categories, sociologicalOptions, genericSocialMediaHandle,
+            discord, personalityRating, trustScore, knownSince)
             cursor.execute(sql, val)
             # Commit your changes in the database
             db.commit()
@@ -290,7 +317,14 @@ class ContactBook(object):
         db.close()
 
     # Yeah... this is gonna be a massive method. Basic rundown - append all variables into array, find ones with input and isolate, then form a query based on provided inputs. Will return an array of all matching contacts
-    def find_entry(self, firstName="", lastName="", displayName="", nickname="", emailAddress="", email2address="", email3address="", homePhone="", businessPhone="", homeFax="", businessFax="", pager="", mobilePhone="", homeStreet="", homeAddress2="", homeCity="", homeState="", homePostalCode="", homeCountry="", businessAddress="", businessAddress2="", businessCity="", businessState="", businessPostalCode="", businessCountry="", countryCode="", relatedName="", jobTitle="", department="", organization="", notes="", birthday="", anniversary="", gender="", webPage="", webPage2="", categories="", sociologicalOptions="", genericSocialMediaHandle="", discord="", personalityRating=0, trustScore=0):
+    def find_entry(self, firstName="", lastName="", displayName="", nickname="", emailAddress="", email2address="",
+                   email3address="", homePhone="", businessPhone="", homeFax="", businessFax="", pager="",
+                   mobilePhone="", homeStreet="", homeAddress2="", homeCity="", homeState="", homePostalCode="",
+                   homeCountry="", businessAddress="", businessAddress2="", businessCity="", businessState="",
+                   businessPostalCode="", businessCountry="", countryCode="", relatedName="", jobTitle="",
+                   department="", organization="", notes="", birthday="", anniversary="", gender="", webPage="",
+                   webPage2="", categories="", sociologicalOptions="", genericSocialMediaHandle="", discord="",
+                   personalityRating=0, trustScore=0):
 
         return Contact()
 
@@ -305,9 +339,16 @@ class ContactBook(object):
             if entry.date.__contains__(date):
                 return True
         return False
+
+
 # Sub Class Contact (only should be called inside ContactBook!)
 class Contact(object):
-    def __init__(self, firstName, lastName, displayName, nickname, emailAddress, email2address, email3address, homePhone, businessPhone, homeFax, businessFax, pager, mobilePhone, homeStreet, homeAddress2, homeCity, homeState, homePostalCode, homeCountry, businessAddress, businessAddress2, businessCity, businessState, businessPostalCode, businessCountry, countryCode, relatedName, jobTitle, department, organization, notes, birthday, anniversary, gender, webPage, webPage2, categories, sociologicalOptions, genericSocialMediaHandle, discord, personalityRating, trustScore, knownSince):
+    def __init__(self, firstName, lastName, displayName, nickname, emailAddress, email2address, email3address,
+                 homePhone, businessPhone, homeFax, businessFax, pager, mobilePhone, homeStreet, homeAddress2, homeCity,
+                 homeState, homePostalCode, homeCountry, businessAddress, businessAddress2, businessCity, businessState,
+                 businessPostalCode, businessCountry, countryCode, relatedName, jobTitle, department, organization,
+                 notes, birthday, anniversary, gender, webPage, webPage2, categories, sociologicalOptions,
+                 genericSocialMediaHandle, discord, personalityRating, trustScore, knownSince):
         self._firstName = firstName
         self._lastName = lastName
         self._displayName = displayName

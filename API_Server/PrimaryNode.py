@@ -48,8 +48,8 @@ while True:
     conn, addr = serv.accept()
     while True:
         # receive data from client on connect
-        # data = conn.recv(4096)
-        data = conn.recv(1024)
+        data = conn.recv(4096)
+        # data = conn.recv(1024)
         # verify data
         if not data: break
         # todo current version is vulnerable to sql injection attacks. Can be easily fixed so do it here before data is used

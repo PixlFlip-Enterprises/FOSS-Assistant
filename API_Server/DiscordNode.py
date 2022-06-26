@@ -22,7 +22,7 @@ currentDirectory = SETTINGS.currentDirectory
 # API Server
 address = '0.0.0.0'
 port = 8008
-API_KEY = ''
+API_KEY = '#2AJKLFHW9203NJFC'
 # End Key Variables ======================
 
 
