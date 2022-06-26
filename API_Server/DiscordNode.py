@@ -46,10 +46,6 @@ class MyClient(discord.Client):
         if message.content == (PREFIX + 'ping'):
             await message.channel.send('pong', delete_after=10)
 
-        # TODO figure out why this doesn't work. Should import all from csv file...
-        if message.content == (PREFIX + 'parady'):
-            Protocols.establish_parady_user(User.getProfileUsernameDiscord(str(message.author)), SETTINGS.sqlUsername, SETTINGS.sqlPassword, SETTINGS.sqlDatabase)
-            await message.channel.send('parady achieved', delete_after=10)
         # help command
         if message.content == (PREFIX + 'help'):
             # open discord help file
@@ -101,8 +97,6 @@ class MyClient(discord.Client):
         # ==============================================================================================================================================
         # load api server connection
         api_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-
         # get profile from api (if it exists)
         api_client.connect((address, port))
         profile_json_request = '{"api_key": "' + API_KEY + '", "command_id": "000011", "discord_id": "' + str(message.author) + '"}'
@@ -112,7 +106,6 @@ class MyClient(discord.Client):
         isProfile = json.loads(from_server.decode())
         # check if user profile exists and return if no profile
         if not isProfile['is_valid_id']:
-            await message.channel.send('You are not authorized to access my commands.', delete_after=30)
             return  # we know the profile exists now
 
 
@@ -217,7 +210,12 @@ class MyClient(discord.Client):
                 getEntry = await client.wait_for('message', check=check)
                 entry = getEntry.content
                 # add the entry
-                userJournal.add_entry(entry.replace("\n", ""), "DiscordClient")
+                api_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                api_client.connect((address, port))
+                json_request = '{"api_key": "' + API_KEY + '", "command_id": "000021", "date": "DUMMY DATA FIX BEFORE DATE API UPDATE", "entry": "' + entry.replace("\n", "") + '", "creation_device": "DiscordClient", "starred": "false", "timezone": "EST"}'
+                api_client.send(bytes(json_request, 'utf-8'))
+                from_server = api_client.recv(4096)
+                api_client.close()
                 # tell the user the entry was recorded
                 await channel.send('Entry Recorded.')
             # send message to channel if no other data given

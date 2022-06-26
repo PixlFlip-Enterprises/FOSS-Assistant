@@ -119,6 +119,26 @@ while True:
             return_json = '{"date": "' + entry.date + '", "entry": "' + entry.entry + '", "starred":"' + entry.starred + '", "creation_device":"' + entry.creationDevice + '", "timezone":"' + entry.timeZone + '"}'
             break
 
+        # journal view entry
+        elif query['command_id'] == '000021':
+            # log
+            Protocols.debug_log(console_printout="Journal Create Entry", user=username, command="000021", method_of_input="API")
+            # verify fields
+            # todo for now date is unused, but should be someday preferably
+            verifable_fields = ['date', 'entry', 'creation_device', 'starred', 'timezone']
+            no_field_kill = False
+            for field in verifable_fields:
+                if not field in query:
+                    print("Invalid Data in Query")
+                    no_field_kill = True
+            if no_field_kill:
+                break
+            # save journal entry to database
+            PROFILE.journal.add_entry(query['entry'], query['creation_device'], query['starred'], query['timezone'])
+            # build json to return
+            return_json = '{"status": "Completed"}'
+            break
+
         # add base contact information
         elif query['command_id'] == '000030':
             # log
