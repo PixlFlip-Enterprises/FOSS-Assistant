@@ -1,11 +1,12 @@
 """
-DiscordNode.py Version 0.8.1
+DiscordNode.py Version 0.8.2
 Author: PixlFlip
-Date: June 2, 2022
+Date: June 26, 2022
 
 Getting very close to a full on Alpha.
+Contacts, Journals, and SQL oh my.
 """
-import os, shutil, socket, wikipedia, json, ssl
+import os, shutil, socket, json, ssl
 from Functions import Protocols, User, Email
 
 # Top variables
@@ -101,6 +102,12 @@ while True:
             return_json = '{"status": "Completed", "is_valid_id": "True", "api_key": "' + user_key + '", "user": "' + User.getProfileUsernameDiscord(query['discord_id']) + '"}'
             break
 
+        # simple wikipedia information grab
+        elif query['command_id'] == '000012':
+            # log
+            Protocols.debug_log(console_printout="Wikipedia Search", user=username, command="000011", method_of_input="API")
+            # todo finish this code
+
         # journal view entry
         elif query['command_id'] == '000020':
             # log
@@ -174,6 +181,9 @@ while True:
             return_json = '{"status": "Completed"}'
             break
 
+        # get news from database
+        elif query['command_id'] == '000040':
+            print("will get news someday")
 
     # encode, send, close connection, reset
     res = bytes(return_json, 'utf-8')
