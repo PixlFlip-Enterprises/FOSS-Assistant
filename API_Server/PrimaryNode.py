@@ -53,7 +53,8 @@ while True:
         # data = conn.recv(1024)
         # verify data
         if not data: break
-        # todo current version is vulnerable to sql injection attacks. Can be easily fixed so do it here before data is used
+        # protect against sql injection
+        query = query.__replace__()
         # parse json
         try:
             query = json.loads(data.decode())
