@@ -10,7 +10,9 @@ from flask import Flask, request
 from flask_restful import Api, Resource, reqparse
 # other imports
 import os, shutil, socket, json, ssl
-from Functions import Protocols, User, Email
+from Functions import Protocols
+from core_utilities.rest_resources import Journal
+
 
 # Top variables
 SETTINGS = Protocols.Settings()
@@ -34,53 +36,7 @@ print("Running Version: " + SETTINGS.version)
 app = Flask(__name__)
 api = Api(app)
 
-########################################################################################################################
-#                                                   JOURNAL RESOURCE
-########################################################################################################################
-# journal get args
-journal_get_args = reqparse.RequestParser()
-journal_get_args.add_argument("username", type=str, help="Username", required=True)
-journal_get_args.add_argument("password", type=str, help="Password. Man I hope this is secure enough...", required=True)
-journal_get_args.add_argument("date", type=str, help="Date of journal entry", required=True)
-# journal put args
-journal_put_args = reqparse.RequestParser()
-journal_put_args.add_argument("username", type=str, help="Username", required=True)
-journal_put_args.add_argument("password", type=str, help="Password. Man I hope this is secure enough...", required=True)
-journal_put_args.add_argument("date", type=str, help="Date of journal entry", required=False)
-journal_put_args.add_argument("entry", type=str, help="Journal entry", required=True)
-journal_put_args.add_argument("creation_device", type=str, help="Device created on", required=True)
-journal_put_args.add_argument("starred", type=bool, help="Favorited or not", required=True)
-journal_put_args.add_argument("timezone", type=str, help="Timezone created in", required=True)
 
-
-# create journal resource
-class Journal(Resource):
-
-    def get(self):
-        # verify fields
-        args = journal_get_args.parse_args()
-        # log
-        Protocols.debug_log(console_printout="Journal View Entry", user=args['username'], command="000020",
-                            method_of_input="REST API")
-        # todo add a password check for what should be obvious reasons
-        PROFILE = User.Profile(args['username'])
-        # Get the entry
-        entry = PROFILE.journal.get_entry(args['date'])
-        # build json to return
-        return {"date": entry.date, "entry": entry.entry, "starred": entry.starred,
-                "creation_device": entry.creationDevice, "timezone": entry.timeZone}, 201
-
-    def put(self):
-        args = journal_put_args.parse_args()
-        # log
-        Protocols.debug_log(console_printout="Journal Create Entry", user=args['username'], command="000021",
-                            method_of_input="REST API")
-        # todo add a password check for what should be obvious reasons
-        PROFILE = User.Profile(args['username'])
-        # save journal entry to database
-        PROFILE.journal.add_entry(args['entry'], args['creation_device'], args['starred'], args['timezone'])
-        # note, you can put a comma and then follow it with a status code of your choice. Handy for some stuff
-        return {"status": "Completed"}, 201
 
 
 # create a resource for our web server to utilize
