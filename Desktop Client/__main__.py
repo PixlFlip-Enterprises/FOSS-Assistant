@@ -7,39 +7,6 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.core.window import Window
 
-# Login Screen
-class LoginPage(App):
-    def build(self):
-        self.title = "Login Screen"
-        Window.size = (500, 800)
-        layout = GridLayout(cols=5, rows=20, padding=10, spacing=10, row_default_height=30)
-
-        usernameinput = TextInput()
-        passwordinput = TextInput(password=True)
-        usernamelbl = Label(text="Username", size_hint_x=None, width=100)
-
-        passwordlbl = Label(text="Password", size_hint_x=None, width=100)
-
-        layout.add_widget(usernamelbl)
-        layout.add_widget(usernameinput)
-        layout.add_widget(passwordlbl)
-        layout.add_widget(passwordinput)
-
-        main_layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
-        main_layout.add_widget(layout)
-
-        # login button
-        loginbutton = Button(text="Login")
-        loginbutton.bind(on_press=self.on_button_press)
-        main_layout.add_widget(loginbutton)
-
-        return main_layout
-
-    def on_button_press(self, secondarg):
-        app.stop()
-        app2 = MainMenu()
-        app2.run()
-
 
 class MainMenu(App):
     def build(self):
