@@ -105,3 +105,13 @@ class Journal(Resource):
         Protocols.debug_log(console_printout="Journal Delete Entry", user=User.is_profile_api_key(args['session_token']), command="000022", method_of_input="REST API")
         return {"status": "Code will go here, but this returned correctly?"}
 
+    def patch(self):
+        # verify fields
+        args = journal_get_args.parse_args()
+        # verify session
+        if User.is_profile_api_key(args['session_token']) == False:
+            return {"status": "failed. Invalid session token"}
+
+        # log
+        Protocols.debug_log(console_printout="Journal Delete Entry", user=User.is_profile_api_key(args['session_token']), command="000023", method_of_input="REST API")
+        return {"status": "Code will go here, but this returned correctly?"}
