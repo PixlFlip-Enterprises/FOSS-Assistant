@@ -6,13 +6,12 @@ Date: May 9, 2022
 One good turn deserves another
 """
 import time, os, socket, json
-
 import wikipedia
 import discord
 import mutagen
 from mutagen.wave import WAVE
-from Functions import Protocols, User, Email
-from Tasks import Task
+from API_Server.Functions import Protocols, User, Email
+from API_Server.Tasks import Task
 
 # All key (read top level) variables here
 SETTINGS = Protocols.Settings()

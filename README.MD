@@ -16,9 +16,8 @@ This repository contains:
 -   [Documentation](/Documentation)
 
 <h2>Contributing</h2>
-As this is more of a testing bed/personal project for me simply submitting pull requests or opening issues is fine.
-Project development is inconsistent and is not meant to be anything more than a simple bot for automating tasks. If
-you want to get in touch or coordinate dev work please join the discord.
+As this is more of a personal project for me simply submitting pull requests or opening issues is fine.
+Project development is inconsistent at best. If you want to get in touch or coordinate dev work please join the discord.
 
 <h2>Setup</h2>
 1. First, pull the repo:
@@ -32,6 +31,8 @@ $ pip install wikipedia
 $ pip install discord
 $ pip install newspaper3k
 $ pip install pymysql
+$ pip install Flask
+$ pip install Flask_RESTful
 ```
 
 3. Install MariaDB (debian linux command shown as example):
@@ -54,4 +55,7 @@ $ python setup.py
 6. Follow the setup program inputs.
 
 
-7. Done! Your instance should be fully up and operational.
+7. Done! Your instance should be fully up and operational. To run the server simply use enter the directory and put the following:
+```bash
+$ python __main__.py
+```
