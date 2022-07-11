@@ -20,12 +20,16 @@ journal_get_args.add_argument("session_token", type=str, help="Token from valid 
 journal_get_args.add_argument("date", type=str, help="Date of journal entry", required=True)
 # journal put args
 journal_put_args = reqparse.RequestParser()
-journal_get_args.add_argument("session_token", type=str, help="Token from valid session. Expired token?", required=True)
+journal_put_args.add_argument("session_token", type=str, help="Token from valid session. Expired token?", required=True)
 journal_put_args.add_argument("date", type=str, help="Date of journal entry", required=False)
 journal_put_args.add_argument("entry", type=str, help="Journal entry", required=True)
 journal_put_args.add_argument("creation_device", type=str, help="Device created on", required=True)
-journal_put_args.add_argument("starred", type=bool, help="Favorited or not", required=True)
-journal_put_args.add_argument("timezone", type=str, help="Timezone created in", required=True)
+journal_put_args.add_argument("starred", type=str, help="Favorited or not", required=True)
+journal_put_args.add_argument("time_zone", type=str, help="Timezone created in", required=True)
+# journal del args
+journal_del_args = reqparse.RequestParser()
+journal_del_args.add_argument("session_token", type=str, help="Token from valid session. Expired token?", required=True)
+journal_del_args.add_argument("date", type=str, help="Date of journal entry to be deleted", required=True)
 
 
 # create journal resource
@@ -67,10 +71,11 @@ class Journal(Resource):
         args = journal_put_args.parse_args()
         # verify session
         if User.is_profile_api_key(args['session_token']) == False:
-            return {"status": "failed. Invalid session token"}
+            return {"status": "Failed. Invalid session token"}
 
+        username = User.is_profile_api_key(args['session_token'])
         # log
-        Protocols.debug_log(console_printout="Journal View Entry", user=User.is_profile_api_key(args['session_token']), command="000021", method_of_input="REST API")
+        Protocols.debug_log(console_printout="Journal View Entry", user=username, command="000021", method_of_input="REST API")
         # todo add a thing in here to allow for arbitrary dates to be added instead of just the second the put is received
         x = datetime.now().__str__().replace(" ", "")
         try:
@@ -79,7 +84,8 @@ class Journal(Resource):
             cursor = db.cursor()
             # Execute the SQL command
             sql = "INSERT INTO JOURNAL (PROFILE_ID, DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s, %s)"
-            val = (User.is_profile_api_key(args['session_token']), x, args['entry'], "UPDATED SO THIS IS AN UNUSED FIELD FOR NOW", args['starred'], args['creation_device'], args['time_zone'])
+            val = (username, x, args['entry'], "UPDATED SO THIS IS AN UNUSED FIELD FOR NOW", args['starred'], args['creation_device'], args['time_zone'])
+            print(val)
             cursor.execute(sql, val)
             # Commit your changes in the database
             db.commit()
@@ -96,14 +102,29 @@ class Journal(Resource):
 
     def delete(self):
         # verify fields
-        args = journal_get_args.parse_args()
+        args = journal_del_args.parse_args()
         # verify session
         if User.is_profile_api_key(args['session_token']) == False:
             return {"status": "failed. Invalid session token"}
-
         # log
         Protocols.debug_log(console_printout="Journal Delete Entry", user=User.is_profile_api_key(args['session_token']), command="000022", method_of_input="REST API")
-        return {"status": "Code will go here, but this returned correctly?"}
+        username = User.is_profile_api_key(args['session_token'])
+
+        try:
+            # open the database
+            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+            cursor = db.cursor()
+            # Execute the SQL command
+            sql = "DELETE FROM JOURNAL WHERE PROFILE_ID = '" + username + "' AND DATE = '" + args['date'] + "%'"
+            cursor.execute(sql)
+            # Commit your changes in the database
+            db.commit()
+        except:
+            # Rollback in case there is any error
+            db.rollback()
+            return {"status": "Failed. Most likely means the entry does not exist or bad input."}
+        return {"status": "Completed"}
+
 
     def patch(self):
         # verify fields
