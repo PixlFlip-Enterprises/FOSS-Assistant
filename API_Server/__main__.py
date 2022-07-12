@@ -11,7 +11,7 @@ from flask_restful import Api, Resource, reqparse
 # other imports
 import os, shutil, socket, json, ssl
 from Functions import Protocols
-from core_utilities.rest_resources import Journal
+from core_utilities.rest_resources import *
 
 
 # Top variables
@@ -54,6 +54,7 @@ class HelloWorld(Resource):
 # add resources to api
 api.add_resource(HelloWorld, "/hello/hello2/<string:name>/<int:age>")
 api.add_resource(Journal, "/journal/")
+api.add_resource(Profile, "/profile/")
 # run program with debug, something you want to disable for production builds
 app.run(debug=True)
 

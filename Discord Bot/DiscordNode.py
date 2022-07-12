@@ -18,10 +18,9 @@ SETTINGS = Protocols.Settings()
 TOKEN = SETTINGS.discordBotToken
 PREFIX = '?'
 currentDirectory = SETTINGS.currentDirectory
-# API Server
-address = '0.0.0.0'
-port = 8008
 API_KEY = '#2AJKLFHW9203NJFC'
+# todo top level var that should later on be customizable so people can reach a web host. For testing this works though
+BASE = 'http://127.0.0.1:5000/'
 # End Key Variables ======================
 
 
