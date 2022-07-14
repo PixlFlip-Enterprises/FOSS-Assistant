@@ -143,7 +143,8 @@ class Journal(Resource):
 # profile get args
 profile_get_args = reqparse.RequestParser()
 profile_get_args.add_argument("session_token", type=str, help="Token from valid session. Expired token?", required=True)
-profile_get_args.add_argument("username", type=str, help="Name of the user profile", required=True)
+profile_get_args.add_argument("username", type=str, help="Name of the user profile", required=False)
+profile_get_args.add_argument("discord", type=str, help="Discord of user", required=False)
 # profile put args
 profile_put_args = reqparse.RequestParser()
 profile_put_args.add_argument("session_token", type=str, help="Token from valid session. Expired token?", required=True)
@@ -171,6 +172,16 @@ class Profile(Resource):
             return {"status": "failed. Invalid session token"}
         # log
         Protocols.debug_log(console_printout="View Profile", user=User.is_profile_api_key(args['session_token']), command="000030", method_of_input="REST API")
+        # if discord id given, see if exists and return data based on clearance level
+        usr = User.is_profile_api_key(args['session_token'])  # starting value
+        for identifier in args.keys():
+            if identifier == 'username':
+                # we know a username was provided
+                usr = args['username']
+            elif identifier == 'discord':
+                # we know a discord id was provided, so a little more legwork is involved
+                usr = User.getProfileUsernameDiscord(args['discord'])
+
         # check clearance level of user
         clearance_level = 3
         try:
@@ -195,14 +206,14 @@ class Profile(Resource):
             db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("select * from PROFILES where USER LIKE '" + args['username'] + "';")
+            cursor.execute("select * from PROFILES where USER LIKE '" + usr + "';")
             # get all records
             records = cursor.fetchall()
             # first is entry
             try:
                 requested_profile = records[0]
             except:
-                return {"status": "Failed. Server error not your fault though"}
+                return {"status": "Failed.", "error_msg": "The profile does not exist."}, 404
         except:
             # Rollback in case there is any error
             db.rollback()

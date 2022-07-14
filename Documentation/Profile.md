@@ -8,7 +8,7 @@
   </a>
 </p>
 
-<h2>User Profile Documentation</h2>
+<h2>Profile Documentation</h2>
 
 This file contains the following information
 - How the Table is structured

@@ -1,3 +1,4 @@
 # API KEY
+# API SERVER BASE URL (Will be defaulted to api.pixlflip)
 # USERNAME
 # PREFIX

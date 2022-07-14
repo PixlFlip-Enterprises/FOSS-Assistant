@@ -5,10 +5,12 @@ Date: May 9, 2022
 
 One good turn deserves another
 """
+import datetime
 import time, os, socket, json
 import wikipedia
 import discord
 import mutagen
+import requests
 from mutagen.wave import WAVE
 from API_Server.Functions import Protocols, User, Email
 from API_Server.Tasks import Task
@@ -47,11 +49,21 @@ class MyClient(discord.Client):
         # help command
         if message.content == (PREFIX + 'help'):
             # open discord help file
-            file = open(currentDirectory + '/Data/discordhelp.txt')
+            file = open(currentDirectory + 'help.txt')
             returnList = ""
             for line in file:
                 returnList += line
             await message.channel.send(returnList)
+
+        # ===================== Wikipedia =====================
+        # takes message, looks for a match on wikipedia, and returns article summary
+        if message.content.startswith(PREFIX + 'wiki'):
+            # substring extract user query, pass to wikipedia, and return summary
+            try:
+                summary = wikipedia.summary(message.content[6:], 7)
+                await message.channel.send('Wikipedia Top Result: ' + summary)
+            except:
+                await message.channel.send('No Data Found From Wikipedia')
         # ================================================================ Music Playing ===============================================================
         if message.content.startswith(PREFIX + 'play'):
             channel = message.channel
@@ -83,35 +95,29 @@ class MyClient(discord.Client):
             # in theory song will be placed in the message
             channel = message.author.voice.channel
             # get audio length
-            audio = WAVE("startup.wav")
+            audio = WAVE(currentDirectory + '/Sound_Effects/laughing.mp3')
             audio_info = audio.info
             length = int(audio_info.length)
             # connect to vc
             vc = await channel.connect()
-            vc.play(discord.FFmpegPCMAudio(currentDirectory + '/Data/Sounds/laughing.mp3'))
+            vc.play(discord.FFmpegPCMAudio(currentDirectory + '/Sound_Effects/laughing.mp3'))
             time.sleep(length + 1)
             await vc.disconnect()
         # ==============================================================================================================================================
         # ==============================================================================================================================================
-        # load api server connection
-        api_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # get profile from api (if it exists)
-        api_client.connect((address, port))
-        profile_json_request = '{"api_key": "' + API_KEY + '", "command_id": "000011", "discord_id": "' + str(message.author) + '"}'
-        api_client.send(bytes(profile_json_request, 'utf-8'))
-        from_server = api_client.recv(4096)
-        api_client.close()
-        isProfile = json.loads(from_server.decode())
+        profile_request = requests.get(BASE + "profile", json={"session_token": "'" + API_KEY + "'", "discord": "'" + str(message.author) + "'"})
+        profile_request = profile_request.json()
         # check if user profile exists and return if no profile
-        if not isProfile['is_valid_id']:
-            return  # we know the profile exists now
+        if profile_request['status'] == 'Failed.':
+            return
+        # we know the profile exists now
 
-
+        # todo depreciated code clean it up move it out
         # load the profile of the user into key variable
-        # PROFILE = User.Profile(User.getProfileUsernameDiscord(str(message.author)))
-        PROFILE = User.Profile(isProfile['user'])
+        PROFILE = profile_request['user']
         # log the command and who did it for diagnosis
-        Protocols.debug_log("nothing here", isProfile['user'], (message.content.split(" ")[0]), "Discord")
+        Protocols.debug_log("nothing here", profile_request['user'], (message.content.split(" ")[0]), "Discord")
 
 
         # ============================       Email      ==============================
@@ -192,6 +198,8 @@ class MyClient(discord.Client):
                 await channel.send('Input Date Of Entry You Want to View Using the Format YYYY-MM-DD (include the - )')
                 getDate = await client.wait_for('message', check=check)
                 date = getDate.content
+
+                # todo cut all this logic out in favor of API call
                 # check if the entry exists
                 if userJournal.is_entry(date):
                     # Get the entry
@@ -207,15 +215,15 @@ class MyClient(discord.Client):
                 # format all remaining information in the message and store in variable
                 getEntry = await client.wait_for('message', check=check)
                 entry = getEntry.content
-                # add the entry
-                api_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                api_client.connect((address, port))
-                json_request = '{"api_key": "' + API_KEY + '", "command_id": "000021", "date": "DUMMY DATA FIX BEFORE DATE API UPDATE", "entry": "' + entry.replace("\n", "") + '", "creation_device": "DiscordClient", "starred": "false", "timezone": "EST"}'
-                api_client.send(bytes(json_request, 'utf-8'))
-                from_server = api_client.recv(4096)
-                api_client.close()
-                # tell the user the entry was recorded
-                await channel.send('Entry Recorded.')
+                x = datetime.now().__str__().replace(" ", "")
+                # add the entry using api
+                api_call = requests.put(BASE + "journal", json={'session_token': "'" + API_KEY + "'", 'date': "'" + x + "'", 'entry': "'" + entry.replace("\n", "") + "'", 'creation_device': 'DiscordClient', 'starred': 'false', 'time_zone': 'EST'})
+                api_call = api_call.json()
+                if api_call['status'] == 'Completed.':
+                    # tell the user the entry was recorded
+                    await channel.send('Entry Recorded.')
+                else:
+                    await channel.send('Internal server error. Error Message: ' + api_call['error_msg'])
             # send message to channel if no other data given
             else:
                 await channel.send('Invalid Option. Please Message Something Like\n"create a new entry"\nor\n"view journal entry"')
@@ -255,15 +263,6 @@ class MyClient(discord.Client):
             msg = await client.wait_for('message', check=check)
             await channel.send('Hello {.author}!'.format(msg))
 
-        # ===================== Wikipedia =====================
-        # takes message, looks for a match on wikipedia, and returns article summary
-        if message.content.startswith(PREFIX + 'wiki'):
-            # substring extract user query, pass to wikipedia, and return summary
-            try:
-                summary = wikipedia.summary(message.content[6:], 7)
-                await message.channel.send('Wikipedia Top Result: ' + summary)
-            except:
-                await message.channel.send('No Data Found From Wikipedia')
 
         # ============================      User Project     ==============================
         if message.content.startswith(PREFIX + 'project'):

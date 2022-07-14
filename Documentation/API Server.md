@@ -10,16 +10,25 @@
 
 <h2>API Server Documentation</h2>
 
-Example API Call
+The API Server runs using the REST Protocol, meaning simple requests can be made to it with the
+usual operators of GET, POST, DELETE, and PATCH. In the case of this project things are categorized
+in such a way that you only have to call a base and page then send a JSON from there (Example:
+yourhost.com/journal is the address to send a journal request to). This makes it easy to follow
+the logical flow of the program, and keeps functional use for both home run instances as well
+as enterprise use.
 
-
-Example Error JSON
+Example API Call (Using Python requests library)
 ```
-{"status": "Error", "error_info": "Not Specified"}
+response = requests.get("http://127.0.0.1:5000/journal", json={"session_token": "active session using REST", "date": "2022-09-16"})
+```
+
+Example Error Return JSON
+```
+{"status": "Failed", "error_msg": "Not Specified"}
 ```
 
 Example API Command Call
 ```
-{"api_key": "API_KEY", "command_id": "000010", "argument1": "value1"}
+{"session_token": "token from login verification. From what I understand REST compliant", "argument1": "value1"}
 ```
 
