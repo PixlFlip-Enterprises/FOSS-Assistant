@@ -1,5 +1,5 @@
 """
-DiscordNode.py Version 0.5.
+__main__.py Version 0.5.
 Author: PixlFlip
 Date: May 9, 2022
 
