@@ -162,6 +162,7 @@ profile_del_args.add_argument("user_password", type=str, help="Password of user 
 # create profile resource
 class Profile(Resource):
 
+    # GET provides information on a profile based on the clearance level of the account
     def get(self):
         # verify fields
         args = profile_get_args.parse_args()
@@ -219,6 +220,8 @@ class Profile(Resource):
             return {"status": "Completed.", "data": {"username": requested_profile[0], "discord": requested_profile[4], "email": requested_profile[2]}}, 201
         return {"status": "Failed.", "error_msg": "...Yeah I've got nothing for you this should be impossible"}, 201
 
+
+    # PUT allows for new user accounts to be created
     def put(self):
         # verify fields
         args = profile_put_args.parse_args()
@@ -253,6 +256,7 @@ class Profile(Resource):
         return {"status": "Completed"}, 201
 
 
+    # DELETE can be used by someone to delete their own account or specific details, or for a level 1 person to delete them
     def delete(self):
         # verify fields
         args = journal_del_args.parse_args()
@@ -279,6 +283,7 @@ class Profile(Resource):
         return {"status": "Completed"}
 
 
+    # PATCH can update any user field and allows level 1 updating of any user information
     def patch(self):
         # verify fields
         args = journal_get_args.parse_args()
