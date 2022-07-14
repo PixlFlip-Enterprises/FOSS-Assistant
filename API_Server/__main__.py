@@ -9,8 +9,6 @@ An Alpha, and one Chad coder to boot!
 from flask import Flask, request
 from flask_restful import Api, Resource, reqparse
 # other imports
-import os, shutil, socket, json, ssl
-from Functions import Protocols
 from core_utilities.rest_resources import *
 
 
@@ -58,37 +56,6 @@ api.add_resource(Profile, "/profile/")
 # run program with debug, something you want to disable for production builds
 app.run(debug=True)
 
-#     # All commands. Literally all of them
-#
-#     # hello world/testing api command
-#     if query['command_id'] == '000010':
-#         Protocols.debug_log(console_printout="API Test", user=username, command="000001", method_of_input="API")
-#         return_json = '{"status": "Completed"}'
-#         break
-#
-#     # verify identity from discord application
-#     elif query['command_id'] == '000011':
-#         # log
-#         Protocols.debug_log(console_printout="ID Check", user=username, command="000011", method_of_input="API")
-#         # verify fields
-#         if not 'discord_id' in query:
-#             print("Invalid Data in Query")
-#             break
-#         # check discord id
-#         if not User.isProfileDiscord(query['discord_id']):
-#             return_json = '{"status": "Completed", "is_valid_id": "False"}'
-#             break
-#         # valid id so return relevant information
-#         user_key = User.get_profile_api_key(User.getProfileUsernameDiscord(query['discord_id']))
-#         # returned json
-#         return_json = '{"status": "Completed", "is_valid_id": "True", "api_key": "' + user_key + '", "user": "' + User.getProfileUsernameDiscord(query['discord_id']) + '"}'
-#         break
-#
-#     # simple wikipedia information grab
-#     elif query['command_id'] == '000012':
-#         # log
-#         Protocols.debug_log(console_printout="Wikipedia Search", user=username, command="000011", method_of_input="API")
-#         # todo finish this code
 #
 #     # add base contact information
 #     elif query['command_id'] == '000030':
@@ -124,14 +91,3 @@ app.run(debug=True)
 #         # build json to return
 #         return_json = '{"status": "Completed"}'
 #         break
-#
-#     # get news from database
-#     elif query['command_id'] == '000040':
-#         print("will get news someday")
-#
-# # encode, send, close connection, reset
-# res = bytes(return_json, 'utf-8')
-# conn.send(res)
-# conn.close()
-# return_json = '{"status": "Error", "error_info": "Not Specified"}'
-# print("API Call Completed")

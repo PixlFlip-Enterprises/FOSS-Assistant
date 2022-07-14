@@ -143,7 +143,7 @@ class Journal(Resource):
 # profile get args
 profile_get_args = reqparse.RequestParser()
 profile_get_args.add_argument("session_token", type=str, help="Token from valid session. Expired token?", required=True)
-profile_get_args.add_argument("username", type=str, help="Date of journal entry", required=False)
+profile_get_args.add_argument("username", type=str, help="Name of the user profile", required=True)
 # profile put args
 profile_put_args = reqparse.RequestParser()
 profile_put_args.add_argument("session_token", type=str, help="Token from valid session. Expired token?", required=True)
@@ -170,32 +170,7 @@ class Profile(Resource):
             return {"status": "failed. Invalid session token"}
         # log
         Protocols.debug_log(console_printout="View Profile", user=User.is_profile_api_key(args['session_token']), command="000030", method_of_input="REST API")
-        # if no username provided, get all information on profile of session token and return
-        if not 'username' in args.keys():
-            # debug print out
-            print('default no username provided so just give data from owner of session key')
-            try:
-                # open the database
-                db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
-                cursor = db.cursor()
-                # Execute the SQL command
-                cursor.execute("select * from PROFILES where PROFILE_ID LIKE '" + User.is_profile_api_key(args['session_token']) + "';")
-                # get all records
-                records = cursor.fetchall()
-                # first is entry
-                try:
-                    profile = records[0]
-                    return {"email": profile[1], "discord": profile[2], "clearance_level": profile[3]}, 201
-                except:
-                    return {"status": "Failed. How did we get here??"}
-            except:
-                # Rollback in case there is any error
-                db.rollback()
-            # disconnect from server
-            db.close()
-            # return since entry doesn't exist
-            return {"status": "Failed. Entry does not exist"}
-        # username provided, so now we check clearance level of user
+        # check clearance level of user
         clearance_level = 3
         try:
             # open the database
@@ -204,27 +179,27 @@ class Profile(Resource):
             # Execute the SQL command
             cursor.execute("select CLEARANCE_LEVEL from PROFILES where USER LIKE '" + User.is_profile_api_key(args['session_token']) + "';")
             # get all records
-            records = cursor.fetchall()
+            record = cursor.fetchone()
             # first is entry
-            clearance_level = int(records)
+            clearance_level = record[0]
         except:
             # Rollback in case there is any error
             db.rollback()
         # disconnect from server
         db.close()
         # get all data on username
-        requested_world = ()
+        requested_profile = ()
         try:
             # open the database
             db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("select * from PROFILES where USER LIKE '" + User.is_profile_api_key(args['session_token']) + "';")
+            cursor.execute("select * from PROFILES where USER LIKE '" + args['username'] + "';")
             # get all records
             records = cursor.fetchall()
             # first is entry
             try:
-                requested_world = records[0]
+                requested_profile = records[0]
             except:
                 return {"status": "Failed. Server error not your fault though"}
         except:
@@ -235,14 +210,14 @@ class Profile(Resource):
         # return data permitted for clearance level
         if clearance_level == 3:
             # basically show them the profile exists and that's about it
-            print('level 3')
+            return {"status": "Completed.", "data": {"username": requested_profile[0]}}, 201
         if clearance_level == 2:
             # basically show them the profile exists and that's about it
-            print('level 2')
+            return {"status": "Completed.", "data": {"username": requested_profile[0], "discord": requested_profile[4]}}, 201
         if clearance_level == 1:
             # basically show them the profile exists and that's about it
-            print('level 2')
-        return {"status": "Completed but this isn't the data of course just testing message"}, 201
+            return {"status": "Completed.", "data": {"username": requested_profile[0], "discord": requested_profile[4], "email": requested_profile[2]}}, 201
+        return {"status": "Failed.", "error_msg": "...Yeah I've got nothing for you this should be impossible"}, 201
 
     def put(self):
         # verify fields
