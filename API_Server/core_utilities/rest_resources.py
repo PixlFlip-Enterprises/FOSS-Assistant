@@ -54,7 +54,7 @@ class Journal(Resource):
             # first is entry
             try:
                 entry = records[0]
-                return {"date": entry[2], "entry": entry[3], "starred": entry[5],"creation_device": entry[6], "timezone": entry[7]}, 201
+                return {"status": "Completed.", "date": entry[2], "entry": entry[3], "starred": entry[5], "creation_device": entry[6], "timezone": entry[7]}, 201
             except:
                 return {"status": "Failed. Entry does not exist"}
         except:
@@ -71,7 +71,7 @@ class Journal(Resource):
         args = journal_put_args.parse_args()
         # verify session
         if User.is_profile_api_key(args['session_token']) == False:
-            return {"status": "Failed. Invalid session token"}
+            return {"status": "Failed.", 'error_msg': " Invalid session token"}
 
         username = User.is_profile_api_key(args['session_token'])
         # log
@@ -242,8 +242,8 @@ class Profile(Resource):
 
         username = User.is_profile_api_key(args['session_token'])
         # log
-        Protocols.debug_log(console_printout="Journal View Entry", user=username, command="000021", method_of_input="REST API")
-        # todo add a thing in here to allow for arbitrary dates to be added instead of just the second the put is received
+        Protocols.debug_log(console_printout="Create Profile", user=username, command="000031", method_of_input="REST API")
+        # todo edit for actual profile data
         x = datetime.now().__str__().replace(" ", "")
         try:
             # open the database
@@ -305,3 +305,21 @@ class Profile(Resource):
         # log
         Protocols.debug_log(console_printout="Update Profile", user=User.is_profile_api_key(args['session_token']), command="000034", method_of_input="REST API")
         return {"status": "Code will go here, but this returned correctly?"}
+
+########################################################################################################################
+#                                                   LOGIN RESOURCE
+########################################################################################################################
+# profile get args
+login_get_args = reqparse.RequestParser()
+login_get_args.add_argument("username", type=str, help="Username of your account.", required=True)
+login_get_args.add_argument("password", type=str, help="Password of your account.", required=True)
+
+
+# create login resource
+class Login(Resource):
+
+    # GET provides session key if username and password are correct
+    def get(self):
+        # verify fields
+        args = profile_get_args.parse_args()
+        # todo must check if username and password match the provided variables, and if they do create and return a session key
