@@ -6,6 +6,12 @@ from kivy.uix.image import Image
 from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.core.window import Window
+import json
+import sys
+import requests
+
+# api server
+BASE = 'http://127.0.0.1:5000/'
 
 
 class MainMenu(App):
@@ -118,6 +124,33 @@ class TestPage(App):
 
 
         return self.window
+
+
+class LoginPage(App):
+    def build(self):
+        main_layout = BoxLayout(orientation="vertical")
+        # username text input
+        self.username = TextInput(multiline=False, readonly=False, halign="center", font_size=50)
+        main_layout.add_widget(self.username)
+        # password text input
+        self.password = TextInput(multiline=False, readonly=False, halign="center", font_size=50)
+        main_layout.add_widget(self.password)
+        # login button
+        button = Button(text="Login", pos_hint={"center_x": 0.5, "center_y": 0.5}, )
+        button.bind(on_press=self.on_button_press)
+        main_layout.add_widget(button)
+
+        return main_layout
+
+    def on_button_press(self, instance):
+        usr = self.username.text
+        pwd = self.password.text
+        # todo later on make this retrieve from api. For now api key is hard coded so move to next screen
+        print(usr + ' ' + pwd)
+        app.stop()
+        app2 = MainMenu()
+        app2.run()
+
 
 
 if __name__ == "__main__":

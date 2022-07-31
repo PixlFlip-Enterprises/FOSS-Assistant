@@ -1,3 +1,5 @@
+from random import randint
+
 from flask_restful import Resource, reqparse
 from datetime import datetime
 import pymysql as MySQLdb
@@ -322,4 +324,28 @@ class Login(Resource):
     def get(self):
         # verify fields
         args = profile_get_args.parse_args()
-        # todo must check if username and password match the provided variables, and if they do create and return a session key
+        profile = ''
+        try:
+            # open the database
+            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+            cursor = db.cursor()
+            # Execute the SQL command
+            cursor.execute("select * from PROFILES where USER LIKE '" + args['username'] + "' AND PASSWORD = '" + args['password'] + "';")
+            # get record
+            profile = cursor.fetchone()
+        except:
+            # Rollback in case there is any error
+            db.rollback()
+        # disconnect from server
+        db.close()
+        print(profile)
+        if not profile[2] == args['password']:
+            return {"status": "Failed", "error_msg": "Incorrect password. Are you a dirty hacker?"}, 201
+        # correct password so return data
+        # todo this needs to be better
+        session_token = 0
+        for i in 50:
+            session_token += randint(1, 100)
+        # update session token list in database and set to expire in 24 hours
+
+        return {"status": "Completed", "session_token": session_token }
