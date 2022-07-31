@@ -12,103 +12,69 @@ import requests
 
 # api server
 BASE = 'http://127.0.0.1:5000/'
+API_KEY = '#2AJKLFHW9203NJFC'
 
 
 class MainMenu(App):
     def build(self):
         main_layout = BoxLayout(orientation="vertical")
-        self.solution = TextInput(multiline=False, readonly=True, halign="right", font_size=55)
-        main_layout.add_widget(self.solution)
-        button = Button(text="C",pos_hint={"center_x": 0.5, "center_y": 0.5},)
-        button.bind(on_press=self.on_button_press)
+        button = Button(text="Journal",pos_hint={"center_x": 0.5, "center_y": 0.5},)
+        button.bind(on_press=self.on_journal_button_press)
         main_layout.add_widget(button)
 
-        equals_button = Button(text="=", pos_hint={"center_x": 0.5, "center_y": 0.5})
-        equals_button.bind(on_press=self.on_solution)
+        equals_button = Button(text="Profile", pos_hint={"center_x": 0.5, "center_y": 0.5})
+        equals_button.bind(on_press=self.on_profile_button_press)
         main_layout.add_widget(equals_button)
 
         return main_layout
 
-    def on_button_press(self, instance):
-        current = self.solution.text
-        button_text = instance.text
+    def on_journal_button_press(self, instance):
+        # kill current app and launch journal
+        app.stop()
+        app2 = JournalPage()
+        app2.run()
 
-        if button_text == "C":
-            # Clear the solution widget
-            self.solution.text = ""
-            #todo kill current app and launch journal
-            app.stop()
-            app2 = JournalPage()
-            app2.run()
-
-    def on_solution(self, instance):
-        text = self.solution.text
-        if text:
-            solution = str(eval(self.solution.text))
-            self.solution.text = solution
+    def on_profile_button_press(self, instance):
+        # kill current app and launch journal
+        app.stop()
+        app2 = ProfilePage()
+        app2.run()
 
 
 class JournalPage(App):
     def build(self):
-        self.operators = ["/", "*", "+", "-"]
-        self.last_was_operator = None
-        self.last_button = None
         main_layout = BoxLayout(orientation="vertical")
-        self.solution = TextInput(multiline=False, readonly=True, halign="right", font_size=55)
-        main_layout.add_widget(self.solution)
-        buttons = [
-            ["7", "8", "9", "/"],
-            ["4", "5", "6", "*"],
-            ["1", "2", "3", "-"],
-            [".", "0", "C", "+"],
-        ]
-        for row in buttons:
-            h_layout = BoxLayout()
-            for label in row:
-                button = Button(
-                    text=label,
-                    pos_hint={"center_x": 0.5, "center_y": 0.5},
-                )
-                button.bind(on_press=self.on_button_press)
-                h_layout.add_widget(button)
-            main_layout.add_widget(h_layout)
-
-        equals_button = Button(
-            text="=", pos_hint={"center_x": 0.5, "center_y": 0.5}
-        )
-        equals_button.bind(on_press=self.on_solution)
-        main_layout.add_widget(equals_button)
-
+        # entry text input
+        self.entry = TextInput(multiline=False, readonly=False, halign="center", font_size=50)
+        main_layout.add_widget(self.entry)
+        # entry record button
+        entry_button = Button(text="Record Entry", pos_hint={"center_x": 0.5, "center_y": 0.5}, )
+        entry_button.bind(on_press=self.on_entry_button_press)
+        main_layout.add_widget(entry_button)
+        # back button
+        back_button = Button(text="Back", pos_hint={"center_x": 0.5, "center_y": 0.5}, )
+        back_button.bind(on_press=self.on_back_button_press)
+        main_layout.add_widget(back_button)
         return main_layout
 
-    def on_button_press(self, instance):
-        current = self.solution.text
-        button_text = instance.text
+    def on_entry_button_press(self, instance):
+        entry = self.entry.text
+        # todo api call to save entry
+        response = requests.put(BASE + "journal",
+                                json={'session_token': API_KEY, 'date': '2022-07-16', 'entry': entry,
+                                      'creation_device': 'Kivy Desktop Client', 'starred': 'false', 'time_zone': 'EST'})
+        reply = response.json()
+        print(reply['status'])
+        app.stop()
+        app2 = MainMenu()
+        app2.run()
 
-        if button_text == "C":
-            # Clear the solution widget
-            self.solution.text = ""
-        else:
-            if current and (
-                self.last_was_operator and button_text in self.operators):
-                # Don't add two operators right after each other
-                return
-            elif current == "" and button_text in self.operators:
-                # First character cannot be an operator
-                return
-            else:
-                new_text = current + button_text
-                self.solution.text = new_text
-        self.last_button = button_text
-        self.last_was_operator = self.last_button in self.operators
+    def on_back_button_press(self, instance):
+        app.stop()
+        app2 = MainMenu()
+        app2.run()
 
-    def on_solution(self):
-        text = self.solution.text
-        if text:
-            solution = str(eval(self.solution.text))
-            self.solution.text = solution
-
-class TestPage(App):
+class ProfilePage(App):
     def build(self):
         self.window = GridLayout()
         self.window.cols = 1
