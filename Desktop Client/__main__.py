@@ -17,6 +17,7 @@ API_KEY = '#2AJKLFHW9203NJFC'
 
 class MainMenu(App):
     def build(self):
+        Window.size = (500, 800)
         main_layout = BoxLayout(orientation="vertical")
         button = Button(text="Journal",pos_hint={"center_x": 0.5, "center_y": 0.5},)
         button.bind(on_press=self.on_journal_button_press)
@@ -126,9 +127,8 @@ class LoginPage(App):
 
         # button widget
         self.button = Button(text="Login", size_hint=(0.6,0.6), bold=True,
-                      background_color ='#00FFCE',
-                      #remove darker overlay of background colour
-                      # background_normal = ""
+                      background_color ='#43CCC5',
+                      background_normal = "#43CCC5"
                       )
         self.button.bind(on_press=self.callback)
         self.window.add_widget(self.button)
