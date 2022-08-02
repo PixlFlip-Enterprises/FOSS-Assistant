@@ -57,6 +57,18 @@ class MainMenu(App):
         self.s_label4 = Label(text=" ", font_size=10, color='#43ccc5')
         self.window.add_widget(self.s_label4)
 
+        # button widget
+        self.contact_manager_button = Button(text="Contacts", size_hint=(0.2, 0.2), bold=True,
+                                     background_color='#43CCC5',
+                                     background_normal="#43CCC5"
+                                     )
+        self.contact_manager_button.bind(on_press=self.on_contact_manager_button_press)
+        self.window.add_widget(self.contact_manager_button)
+
+        # label as a spacer
+        self.s_label5 = Label(text=" ", font_size=10, color='#43ccc5')
+        self.window.add_widget(self.s_label5)
+
         return self.window
 
     def on_journal_button_press(self, instance):
@@ -69,6 +81,12 @@ class MainMenu(App):
         # kill current app and launch journal
         app.stop()
         app2 = ProfilePage()
+        app2.run()
+
+    def on_contact_manager_button_press(self, instance):
+        # kill current app and launch journal
+        app.stop()
+        app2 = ContactManagerPage()
         app2.run()
 
 
@@ -155,6 +173,20 @@ class ProfilePage(App):
         background = Image(source="testbackground.jpg")
         # add image to window
         self.window.add_widget(background)
+        # add widgets to window
+
+
+        return self.window
+
+
+class ContactManagerPage(App):
+    def build(self):
+        self.window = GridLayout()
+        self.window.cols = 1
+        # set window size
+        #self.window.size_hint = (0.6, 0.7)
+        # set window place on screen
+        self.window.pos_hint = {"center_x": 0.5, "center_y": 0.5}
         # add widgets to window
 
 
