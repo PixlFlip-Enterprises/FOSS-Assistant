@@ -7,6 +7,7 @@ from kivy.uix.image import Image
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.checkbox import CheckBox
+from kivy.uix.dropdown import DropDown
 import json
 import sys
 import requests
@@ -85,7 +86,7 @@ class JournalPage(App):
         self.window.add_widget(self.user_label)
 
         # entry text input
-        self.entry = TextInput(multiline=False, readonly=False, halign="center", font_size=50)
+        self.entry = TextInput(multiline=True, readonly=False, halign="center", font_size=30)
         self.window.add_widget(self.entry)
 
         # TODO To make a more detailed area using Kivy you just can create another grid and add it back as a widget. Mind blown
@@ -95,6 +96,9 @@ class JournalPage(App):
         self.subgrid.add_widget(Label(text='Favorite:', font_size=20, color='#43ccc5'))
         self.starred = CheckBox(active=False)
         self.subgrid.add_widget(self.starred)
+        self.subgrid.add_widget(Label(text='Conceal Device ID:', font_size=20, color='#43ccc5'))
+        self.creation_device = CheckBox(active=False)
+        self.subgrid.add_widget(self.creation_device)
         self.window.add_widget(self.subgrid)
 
 
