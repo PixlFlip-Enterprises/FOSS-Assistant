@@ -154,10 +154,7 @@ class JournalPage(App):
         # todo use try catch for error handling (because believe you me it will throw errors until I fix api calls)
         try:
             # api call
-            response = requests.put(config['api_server'] + "journal",
-                                    json={'session_token': config['api_key'], 'date': '2022-07-16', 'entry': entry,
-                                          'creation_device': creation_device, 'starred': self.starred.active.lower(),
-                                          'time_zone': time.tzname})
+            response = requests.put(config['api_server'] + "journal", json={'session_token': config['api_key'], 'date': '2022-07-16', 'entry': entry, 'creation_device': creation_device, 'starred': self.starred.active, 'time_zone': time.tzname})
             reply = response.json()
             print(reply['status'])
             app.stop()
