@@ -10,6 +10,7 @@ from flask import Flask, request
 from flask_restful import Api, Resource, reqparse
 # other imports
 from core_utilities.rest_resources import *
+import json
 
 '''
 aniso8601==8.0.0

@@ -13,9 +13,8 @@ import sys
 import time
 import requests
 
-# api server
-BASE = 'http://127.0.0.1:5000/'
-API_KEY = '#2AJKLFHW9203NJFC'
+# load config
+config = json.load(open('config.json',))
 
 
 class MainMenu(App):
@@ -155,8 +154,8 @@ class JournalPage(App):
         # todo use try catch for error handling (because believe you me it will throw errors until I fix api calls)
         try:
             # api call
-            response = requests.put(BASE + "journal",
-                                    json={'session_token': API_KEY, 'date': '2022-07-16', 'entry': entry,
+            response = requests.put(config['api_server'] + "journal",
+                                    json={'session_token': config['api_key'], 'date': '2022-07-16', 'entry': entry,
                                           'creation_device': creation_device, 'starred': self.starred.active.lower(),
                                           'time_zone': time.tzname})
             reply = response.json()
@@ -165,7 +164,7 @@ class JournalPage(App):
             app2 = MainMenu()
             app2.run()
         except:
-            self.entry_button.text = "Failed To Establish API Connection"
+            self.entry_button.text = "Failed To Establish API Connection. Click To Try Again."
             print('Failed')
 
     def on_back_button_press(self, instance):

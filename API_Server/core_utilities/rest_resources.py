@@ -3,15 +3,12 @@ from random import randint
 from flask_restful import Resource, reqparse
 from datetime import datetime
 import pymysql as MySQLdb
+import json
 # todo this should be gone and be fully functional as a package.
 from API_Server.Functions import Protocols, User
 
-# Top variables
-SETTINGS = Protocols.Settings()
-SQLDATABASE = SETTINGS.sqlDatabase
-SQLUSERNAME = SETTINGS.sqlUsername
-SQLPASSWORD = SETTINGS.sqlPassword
-currentDirectory = SETTINGS.currentDirectory
+# load config
+config = json.load(open('config.json',))
 
 ########################################################################################################################
 #                                                   JOURNAL RESOURCE
@@ -47,7 +44,7 @@ class Journal(Resource):
         Protocols.debug_log(console_printout="Journal View Entry", user=User.is_profile_api_key(args['session_token']), command="000020", method_of_input="REST API")
         try:
             # open the database
-            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
             cursor = db.cursor()
             # Execute the SQL command
             cursor.execute("select * from JOURNAL where PROFILE_ID LIKE '" + User.is_profile_api_key(args['session_token']) + "' AND DATE LIKE '" + args['date'] + "%';")
@@ -82,7 +79,7 @@ class Journal(Resource):
         x = datetime.now().__str__().replace(" ", "")
         try:
             # open the database
-            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
             cursor = db.cursor()
             # Execute the SQL command
             sql = "INSERT INTO JOURNAL (PROFILE_ID, DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s, %s)"
@@ -114,7 +111,7 @@ class Journal(Resource):
 
         try:
             # open the database
-            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
             cursor = db.cursor()
             # Execute the SQL command
             sql = "DELETE FROM JOURNAL WHERE PROFILE_ID = '" + username + "' AND DATE = '" + args['date'] + "%'"
@@ -188,7 +185,7 @@ class Profile(Resource):
         clearance_level = 3
         try:
             # open the database
-            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
             cursor = db.cursor()
             # Execute the SQL command
             cursor.execute("select CLEARANCE_LEVEL from PROFILES where USER LIKE '" + User.is_profile_api_key(args['session_token']) + "';")
@@ -205,7 +202,7 @@ class Profile(Resource):
         requested_profile = ()
         try:
             # open the database
-            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
             cursor = db.cursor()
             # Execute the SQL command
             cursor.execute("select * from PROFILES where USER LIKE '" + usr + "';")
@@ -249,7 +246,7 @@ class Profile(Resource):
         x = datetime.now().__str__().replace(" ", "")
         try:
             # open the database
-            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
             cursor = db.cursor()
             # Execute the SQL command
             sql = "INSERT INTO JOURNAL (PROFILE_ID, DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s, %s)"
@@ -282,7 +279,7 @@ class Profile(Resource):
 
         try:
             # open the database
-            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
             cursor = db.cursor()
             # Execute the SQL command
             sql = "DELETE FROM JOURNAL WHERE PROFILE_ID = '" + username + "' AND DATE = '" + args['date'] + "%'"
@@ -327,7 +324,7 @@ class Login(Resource):
         profile = ''
         try:
             # open the database
-            db = MySQLdb.connect(host="localhost", user=SQLUSERNAME, password=SQLPASSWORD, database=SQLDATABASE)
+            db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
             cursor = db.cursor()
             # Execute the SQL command
             cursor.execute("select * from PROFILES where USER LIKE '" + args['username'] + "' AND PASSWORD = '" + args['password'] + "';")
