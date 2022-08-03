@@ -10,6 +10,7 @@ from kivy.uix.checkbox import CheckBox
 from kivy.uix.dropdown import DropDown
 import json
 import sys
+import time
 import requests
 
 # api server
@@ -153,10 +154,11 @@ class JournalPage(App):
             creation_device = 'Kivy Desktop Client'
         # todo use try catch for error handling (because believe you me it will throw errors until I fix api calls)
         try:
-            #api call
+            # api call
             response = requests.put(BASE + "journal",
-                                json={'session_token': API_KEY, 'date': '2022-07-16', 'entry': entry,
-                                      'creation_device': creation_device, 'starred': self.starred.active.lower(), 'time_zone': 'EST'})
+                                    json={'session_token': API_KEY, 'date': '2022-07-16', 'entry': entry,
+                                          'creation_device': creation_device, 'starred': self.starred.active.lower(),
+                                          'time_zone': time.tzname})
             reply = response.json()
             print(reply['status'])
             app.stop()
