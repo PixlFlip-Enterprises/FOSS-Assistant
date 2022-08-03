@@ -13,7 +13,7 @@ import sys
 import requests
 
 # api server
-BASE = 'http://192.168.19.139:5000/'
+BASE = 'http://127.0.0.1:5000/'
 API_KEY = '#2AJKLFHW9203NJFC'
 
 
@@ -145,16 +145,26 @@ class JournalPage(App):
 
     def on_entry_button_press(self, instance):
         entry = self.entry.text
-        # todo api call to save entry
+
+        # todo add top level creation device variable from startup.txt
+        creation_device = 'Desktop Client'
+        if self.creation_device.active:
+            # If true conceal device using generic name
+            creation_device = 'Kivy Desktop Client'
         # todo use try catch for error handling (because believe you me it will throw errors until I fix api calls)
-        response = requests.put(BASE + "journal",
+        try:
+            #api call
+            response = requests.put(BASE + "journal",
                                 json={'session_token': API_KEY, 'date': '2022-07-16', 'entry': entry,
-                                      'creation_device': 'Kivy Desktop Client', 'starred': 'false', 'time_zone': 'EST'})
-        reply = response.json()
-        print(reply['status'])
-        app.stop()
-        app2 = MainMenu()
-        app2.run()
+                                      'creation_device': creation_device, 'starred': self.starred.active.lower(), 'time_zone': 'EST'})
+            reply = response.json()
+            print(reply['status'])
+            app.stop()
+            app2 = MainMenu()
+            app2.run()
+        except:
+            self.entry_button.text = "Failed To Establish API Connection"
+            print('Failed')
 
     def on_back_button_press(self, instance):
         app.stop()
