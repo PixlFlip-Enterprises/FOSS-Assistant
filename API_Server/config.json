@@ -8,5 +8,6 @@
     "video": "directory to video",
     "files": "directory to file storage for users"
   },
-  "api_server_name": "name of your instance"
+  "api_server_name": "name of your instance",
+  "api_server_debug_mode": false
 }

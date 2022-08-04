@@ -27,13 +27,9 @@ SQLAlchemy==1.3.18
 Werkzeug==1.0.1
 '''
 
-# Top variables
-SETTINGS = Protocols.Settings()
-SQLDATABASE = SETTINGS.sqlDatabase
-SQLUSERNAME = SETTINGS.sqlUsername
-SQLPASSWORD = SETTINGS.sqlPassword
-currentDirectory = SETTINGS.currentDirectory
-# Let's get some decoration and naming!
+# load config
+config = json.load(open('config.json',))
+
 print(" ________ ________  ________   ________           ________  ________   ________  ___  ________  _________  ________  ________   _________ ")
 print("|\  _____\\\   __  \|\   ____\ |\   ____\         |\   __  \|\   ____\ |\   ____\|\  \|\   ____\|\___   ___\\\   __  \|\   ___  \|\___   ___\ ")
 print("\ \  \__/\ \  \|\  \ \  \___|_\ \  \___|_        \ \  \|\  \ \  \___|_\ \  \___|\ \  \ \  \___|\|___ \  \_\ \  \|\  \ \  \\\ \  \|___ \  \_| ")
@@ -43,7 +39,7 @@ print("   \ \__\   \ \_______\____\_\  \ ____\_\  \        \ \__\ \__\____\_\  \
 print("    \|__|    \|_______|\_________\\\_________\        \|__|\|__|\_________\\\_________\|__|\_________\   \|__|  \|__|\|__|\|__| \|__|    \|__| ")
 print("                      \|_________\|_________|                 \|_________\|_________|   \|_________|                                         ")
 print()
-print("Running Version: " + SETTINGS.version)
+print("Running Version: 0.9")
 
 # init flask restful api server
 app = Flask(__name__)
@@ -69,7 +65,7 @@ api.add_resource(HelloWorld, "/hello/hello2/<string:name>/<int:age>")
 api.add_resource(Journal, "/journal/")
 api.add_resource(Profile, "/profile/")
 # run program with debug, something you want to disable for production builds
-app.run(debug=True)
+app.run(debug=config['api_server_debug_mode'])
 
 #
 #     # add base contact information
