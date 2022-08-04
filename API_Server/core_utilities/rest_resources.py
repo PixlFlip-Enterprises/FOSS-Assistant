@@ -6,6 +6,7 @@ import pymysql as MySQLdb
 import json
 # todo this should be gone and be fully functional as a package.
 from API_Server.Functions import Protocols, User
+from API_Server.core_utilities import core_functions
 
 # load config
 config = json.load(open('config.json',))
@@ -17,6 +18,8 @@ config = json.load(open('config.json',))
 journal_get_args = reqparse.RequestParser()
 journal_get_args.add_argument("session_token", type=str, help="Token from valid session. Expired token?", required=True)
 journal_get_args.add_argument("date", type=str, help="Date of journal entry", required=True)
+journal_get_args.add_argument("device_id", type=str, help="Device created on", required=False)
+
 # journal put args
 journal_put_args = reqparse.RequestParser()
 journal_put_args.add_argument("session_token", type=str, help="Token from valid session. Expired token?", required=True)
@@ -40,8 +43,6 @@ class Journal(Resource):
         # verify session
         if User.is_profile_api_key(args['session_token']) == False:
             return {"status": "failed. Invalid session token"}
-        # log
-        Protocols.debug_log(console_printout="Journal View Entry", user=User.is_profile_api_key(args['session_token']), command="000020", method_of_input="REST API")
         try:
             # open the database
             db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
@@ -53,8 +54,12 @@ class Journal(Resource):
             # first is entry
             try:
                 entry = records[0]
+                # log
+                core_functions.debug_log(user=User.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="201")
                 return {"status": "Completed.", "date": entry[2], "entry": entry[3], "starred": entry[5], "creation_device": entry[6], "timezone": entry[7]}, 201
             except:
+                # log
+                core_functions.debug_log(user=User.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Error while retrieving the entry")
                 return {"status": "Failed. Entry does not exist"}
         except:
             # Rollback in case there is any error
@@ -62,6 +67,7 @@ class Journal(Resource):
         # disconnect from server
         db.close()
         # return since entry doesn't exist
+        core_functions.debug_log(user=User.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Entry was not found in the database")
         return {"status": "Failed. Entry does not exist"}
 
 
