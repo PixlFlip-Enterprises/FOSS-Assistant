@@ -4,8 +4,6 @@ from flask_restful import Resource, reqparse
 from datetime import datetime
 import pymysql as MySQLdb
 import json
-# todo this should be gone and be fully functional as a package.
-from API_Server.Functions import Protocols, User
 from API_Server.core_utilities import core_functions
 
 # load config
@@ -41,25 +39,25 @@ class Journal(Resource):
         # verify fields
         args = journal_get_args.parse_args()
         # verify session
-        if User.is_profile_api_key(args['session_token']) == False:
+        if core_functions.is_profile_api_key(args['session_token']) == False:
             return {"status": "failed. Invalid session token"}
         try:
             # open the database
             db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("select * from JOURNAL where PROFILE_ID LIKE '" + User.is_profile_api_key(args['session_token']) + "' AND DATE LIKE '" + args['date'] + "%';")
+            cursor.execute("select * from JOURNAL where PROFILE_ID LIKE '" + core_functions.is_profile_api_key(args['session_token']) + "' AND DATE LIKE '" + args['date'] + "%';")
             # get all records
             records = cursor.fetchall()
             # first is entry
             try:
                 entry = records[0]
                 # log
-                core_functions.debug_log(user=User.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="201")
+                core_functions.debug_log(user=core_functions.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="201")
                 return {"status": "Completed.", "date": entry[2], "entry": entry[3], "starred": entry[5], "creation_device": entry[6], "timezone": entry[7]}, 201
             except:
                 # log
-                core_functions.debug_log(user=User.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Error while retrieving the entry")
+                core_functions.debug_log(user=core_functions.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Error while retrieving the entry")
                 return {"status": "Failed. Entry does not exist"}
         except:
             # Rollback in case there is any error
@@ -67,7 +65,7 @@ class Journal(Resource):
         # disconnect from server
         db.close()
         # return since entry doesn't exist
-        core_functions.debug_log(user=User.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Entry was not found in the database")
+        core_functions.debug_log(user=core_functions.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Entry was not found in the database")
         return {"status": "Failed. Entry does not exist"}
 
 
@@ -75,12 +73,11 @@ class Journal(Resource):
         # verify fields
         args = journal_put_args.parse_args()
         # verify session
-        if User.is_profile_api_key(args['session_token']) == False:
+        if core_functions.is_profile_api_key(args['session_token']) == False:
             return {"status": "Failed.", 'error_msg': " Invalid session token"}
 
-        username = User.is_profile_api_key(args['session_token'])
+        username = core_functions.is_profile_api_key(args['session_token'])
         # log
-        Protocols.debug_log(console_printout="Journal View Entry", user=username, command="000021", method_of_input="REST API")
         # todo add a thing in here to allow for arbitrary dates to be added instead of just the second the put is received
         x = datetime.now().__str__().replace(" ", "")
         try:
@@ -109,11 +106,10 @@ class Journal(Resource):
         # verify fields
         args = journal_del_args.parse_args()
         # verify session
-        if User.is_profile_api_key(args['session_token']) == False:
+        if core_functions.is_profile_api_key(args['session_token']) == False:
             return {"status": "failed. Invalid session token"}
         # log
-        Protocols.debug_log(console_printout="Journal Delete Entry", user=User.is_profile_api_key(args['session_token']), command="000022", method_of_input="REST API")
-        username = User.is_profile_api_key(args['session_token'])
+        username = core_functions.is_profile_api_key(args['session_token'])
 
         try:
             # open the database
@@ -127,6 +123,9 @@ class Journal(Resource):
         except:
             # Rollback in case there is any error
             db.rollback()
+            core_functions.debug_log(user=core_functions.is_profile_api_key(args['session_token']),
+                                     command_run="Journal Delete Entry", device_id=args['device_id'], command_id="000023",
+                                     return_code="404", debug_msg="Failed to delete entry.")
             return {"status": "Failed. Most likely means the entry does not exist or bad input."}
         return {"status": "Completed"}
 
@@ -135,11 +134,11 @@ class Journal(Resource):
         # verify fields
         args = journal_get_args.parse_args()
         # verify session
-        if User.is_profile_api_key(args['session_token']) == False:
+        if core_functions.is_profile_api_key(args['session_token']) == False:
             return {"status": "failed. Invalid session token"}
 
         # log
-        Protocols.debug_log(console_printout="Journal Delete Entry", user=User.is_profile_api_key(args['session_token']), command="000023", method_of_input="REST API")
+        core_functions.debug_log(user=core_functions.is_profile_api_key(args['session_token']), command_run="Journal Delete Entry", device_id=args['device_id'], command_id="000023", return_code="201", debug_msg="Entry was deleted.")
         return {"status": "Code will go here, but this returned correctly?"}
 
 ########################################################################################################################
@@ -173,19 +172,17 @@ class Profile(Resource):
         # verify fields
         args = profile_get_args.parse_args()
         # verify session
-        if User.is_profile_api_key(args['session_token']) == False:
+        if core_functions.is_profile_api_key(args['session_token']) == False:
             return {"status": "failed. Invalid session token"}
-        # log
-        Protocols.debug_log(console_printout="View Profile", user=User.is_profile_api_key(args['session_token']), command="000030", method_of_input="REST API")
         # if discord id given, see if exists and return data based on clearance level
-        usr = User.is_profile_api_key(args['session_token'])  # starting value
+        usr = core_functions.is_profile_api_key(args['session_token'])  # starting value
         for identifier in args.keys():
             if identifier == 'username':
                 # we know a username was provided
                 usr = args['username']
             elif identifier == 'discord':
                 # we know a discord id was provided, so a little more legwork is involved
-                usr = User.getProfileUsernameDiscord(args['discord'])
+                usr = core_functions.getProfileUsernameDiscord(args['discord'])
 
         # check clearance level of user
         clearance_level = 3
@@ -194,7 +191,7 @@ class Profile(Resource):
             db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("select CLEARANCE_LEVEL from PROFILES where USER LIKE '" + User.is_profile_api_key(args['session_token']) + "';")
+            cursor.execute("select CLEARANCE_LEVEL from PROFILES where USER LIKE '" + core_functions.is_profile_api_key(args['session_token']) + "';")
             # get all records
             record = cursor.fetchone()
             # first is entry
@@ -242,12 +239,10 @@ class Profile(Resource):
         # verify fields
         args = profile_put_args.parse_args()
         # verify session
-        if User.is_profile_api_key(args['session_token']) == False:
+        if core_functions.is_profile_api_key(args['session_token']) == False:
             return {"status": "Failed. Invalid session token"}
 
-        username = User.is_profile_api_key(args['session_token'])
-        # log
-        Protocols.debug_log(console_printout="Create Profile", user=username, command="000031", method_of_input="REST API")
+        username = core_functions.is_profile_api_key(args['session_token'])
         # todo edit for actual profile data
         x = datetime.now().__str__().replace(" ", "")
         try:
@@ -277,11 +272,9 @@ class Profile(Resource):
         # verify fields
         args = journal_del_args.parse_args()
         # verify session
-        if User.is_profile_api_key(args['session_token']) == False:
+        if core_functions.is_profile_api_key(args['session_token']) == False:
             return {"status": "failed. Invalid session token"}
-        # log
-        Protocols.debug_log(console_printout="Journal Delete Entry", user=User.is_profile_api_key(args['session_token']), command="000022", method_of_input="REST API")
-        username = User.is_profile_api_key(args['session_token'])
+        username = core_functions.is_profile_api_key(args['session_token'])
 
         try:
             # open the database
@@ -304,11 +297,9 @@ class Profile(Resource):
         # verify fields
         args = journal_get_args.parse_args()
         # verify session
-        if User.is_profile_api_key(args['session_token']) == False:
+        if core_functions.is_profile_api_key(args['session_token']) == False:
             return {"status": "failed. Invalid session token"}
 
-        # log
-        Protocols.debug_log(console_printout="Update Profile", user=User.is_profile_api_key(args['session_token']), command="000034", method_of_input="REST API")
         return {"status": "Code will go here, but this returned correctly?"}
 
 ########################################################################################################################
