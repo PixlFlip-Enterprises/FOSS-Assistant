@@ -13,15 +13,14 @@ import mutagen
 import requests
 from mutagen.wave import WAVE
 
-# All key (read top level) variables here
-file = open('program_data.txt')
-returnList = []
-for line in file:
-    returnList.append(line)
-TOKEN = returnList[4]
-PREFIX = '?'
-API_KEY = '#2AJKLFHW9203NJFC'
-BASE = 'http://127.0.0.1:5000/'
+# load config
+config = json.load(open('config.json',))
+
+
+TOKEN = config['discord_token']
+PREFIX = config['command_prefix']
+API_KEY = config['api_key']
+BASE = config['api_server']
 # End Key Variables ======================
 
 
