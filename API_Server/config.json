@@ -1,13 +1,13 @@
 {
-  "sql_database": "db name here",
-  "sql_username": "username for server",
-  "sql_password": "password for username",
+  "sql_database": "blinkdb",
+  "sql_username": "blink",
+  "sql_password": "Eica$0804",
   "server_directories": {
     "main": "folder of main api server",
     "music": "directory to music",
     "video": "directory to video",
     "files": "directory to file storage for users"
   },
-  "api_server_name": "name of your instance",
-  "api_server_debug_mode": false
+  "api_server_name": "Blink",
+  "api_server_debug_mode": true
 }
