@@ -3,12 +3,9 @@ I am Blink, PixlFlip's Smart Assistant, Version 1.1
 Base Level Commands:
 help           | how did you get here if you didn't read this??
 ping           | gets and returns current ping
-submit         | troll command
-wiki <args>    | gets wikipedia information for the specified argument
-play           | plays a track or playlist of music
-laugh          | plays a laugh track in current vc
+wikipedia      | gets wikipedia information for the specified argument
 ==========================================
-Security Clearance Level 3 And Above Commands:
-journal        | Personal Journal with military level security and absolute privacy.
+Commands Available Only In Select Discords:
+journal        | Personal Journal for you to write entries of your life.
 email          | Email from the comfort of Discord. Not for secure transmission but for practical use.
 weather        | gets the weather forecast based on user's filed location

@@ -62,7 +62,7 @@ class HelloWorld(Resource):
 
 # add resources to api
 api.add_resource(HelloWorld, "/hello/hello2/<string:name>/<int:age>")
-api.add_resource(Journal, "/journal/")
+api.add_resource(Journal, "/journal/<string:profile_id>/")
 api.add_resource(Profile, "/profile/")
 # run program with debug, something you want to disable for production builds
 app.run(debug=config['api_server_debug_mode'])

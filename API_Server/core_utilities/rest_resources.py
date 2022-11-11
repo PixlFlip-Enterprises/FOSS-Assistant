@@ -14,13 +14,11 @@ config = json.load(open('config.json',))
 ########################################################################################################################
 # journal get args
 journal_get_args = reqparse.RequestParser()
-journal_get_args.add_argument("session_token", type=str, help="Token from valid session. Expired token?", required=True)
 journal_get_args.add_argument("date", type=str, help="Date of journal entry", required=True)
 journal_get_args.add_argument("device_id", type=str, help="Device created on", required=False)
 
 # journal put args
 journal_put_args = reqparse.RequestParser()
-journal_put_args.add_argument("session_token", type=str, help="Token from valid session. Expired token?", required=True)
 journal_put_args.add_argument("date", type=str, help="Date of journal entry", required=False)
 journal_put_args.add_argument("entry", type=str, help="Journal entry", required=True)
 journal_put_args.add_argument("creation_device", type=str, help="Device created on", required=True)
@@ -35,29 +33,26 @@ journal_del_args.add_argument("date", type=str, help="Date of journal entry to b
 # create journal resource
 class Journal(Resource):
 
-    def get(self):
+    def get(self, profile_id):
         # verify fields
         args = journal_get_args.parse_args()
-        # verify session
-        if core_functions.is_profile_api_key(args['session_token']) == False:
-            return {"status": "failed. Invalid session token"}
         try:
             # open the database
             db = MySQLdb.connect(host="localhost", user=config['sql_username'], password=config['sql_password'], database=config['sql_database'])
             cursor = db.cursor()
             # Execute the SQL command
-            cursor.execute("select * from JOURNAL where PROFILE_ID LIKE '" + core_functions.is_profile_api_key(args['session_token']) + "' AND DATE LIKE '" + args['date'] + "%';")
+            cursor.execute("select * from JOURNAL where PROFILE_ID LIKE '" + profile_id + "' AND DATE LIKE '" + args['date'] + "%';")
             # get all records
             records = cursor.fetchall()
             # first is entry
             try:
                 entry = records[0]
                 # log
-                core_functions.debug_log(user=core_functions.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="201")
+                core_functions.debug_log(user=profile_id, command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="201")
                 return {"status": "Completed.", "date": entry[2], "entry": entry[3], "starred": entry[5], "creation_device": entry[6], "timezone": entry[7]}, 201
             except:
                 # log
-                core_functions.debug_log(user=core_functions.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Error while retrieving the entry")
+                core_functions.debug_log(user=profile_id, command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Error while retrieving the entry")
                 return {"status": "Failed. Entry does not exist"}
         except:
             # Rollback in case there is any error
@@ -65,18 +60,13 @@ class Journal(Resource):
         # disconnect from server
         db.close()
         # return since entry doesn't exist
-        core_functions.debug_log(user=core_functions.is_profile_api_key(args['session_token']), command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Entry was not found in the database")
+        core_functions.debug_log(user=profile_id, command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Entry was not found in the database")
         return {"status": "Failed. Entry does not exist"}
 
 
-    def put(self):
+    def put(self, profile_id):
         # verify fields
         args = journal_put_args.parse_args()
-        # verify session
-        if core_functions.is_profile_api_key(args['session_token']) == False:
-            return {"status": "Failed.", 'error_msg': " Invalid session token"}
-
-        username = core_functions.is_profile_api_key(args['session_token'])
         # log
         # todo add a thing in here to allow for arbitrary dates to be added instead of just the second the put is received
         x = datetime.now().__str__().replace(" ", "")
@@ -86,7 +76,7 @@ class Journal(Resource):
             cursor = db.cursor()
             # Execute the SQL command
             sql = "INSERT INTO JOURNAL (PROFILE_ID, DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s, %s)"
-            val = (username, x, args['entry'], "UPDATED SO THIS IS AN UNUSED FIELD FOR NOW", args['starred'], args['creation_device'], args['time_zone'])
+            val = (profile_id, x, args['entry'], "UPDATED SO THIS IS AN UNUSED FIELD FOR NOW", args['starred'], args['creation_device'], args['time_zone'])
             print(val)
             cursor.execute(sql, val)
             # Commit your changes in the database
