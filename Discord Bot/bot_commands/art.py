@@ -47,7 +47,7 @@ async def get_model_list_from_db(ctx: discord.AutocompleteContext):
 def draw(stable_horde_api_key, prompt, seed):
     # build the json
     async_art_gen['prompt'] = prompt
-    async_art_gen['seed'] = str(seed)
+    async_art_gen['params']['seed'] = str(seed)
     # api call
     api_call = requests.post("https://stablehorde.net/api/v2/generate/async", json=async_art_gen, headers={"apikey": stable_horde_api_key})
     api_call = api_call.json()
@@ -115,9 +115,11 @@ class Draw(commands.Cog):
                    model: Option(str, "Enter a Model", required=False, default="stable-diffusion"),
                    height: Option(int, "Height of image", required=False, default=512),
                    width: Option(int, "Width of image", required=False, default=512)):
+        # get user
+        member = ctx.author
         # build the json
         async_art_gen['prompt'] = prompt
-        async_art_gen['seed'] = str(seed)
+        async_art_gen['params']['seed'] = str(seed)
         async_art_gen['height'] = height
         async_art_gen['width'] = width
         # name file based on current time and save to folder
@@ -141,12 +143,12 @@ class Draw(commands.Cog):
             embed.set_footer(text=config["embed"]["footer_text"])  # todo add pfp of user running command
             embed.set_author(name=config['name'], icon_url="https://example.com/link-to-my-image.png")
             embed.set_image(url="attachment://imageToSave.png")
-            await ctx.respond(file=file, embed=embed, view=MyView(timeout=300))  # Send the embed with some text
+            await ctx.respond(member.mention, file=file, embed=embed, view=MyView(timeout=300))  # Send the embed with some text
             # delete temp file
             os.remove(file_loc)
         except Exception as e:
             print(e)
-            await ctx.respond("Couldn't generate that image.")  # Send the embed with some text
+            await ctx.respond("Couldn't generate that image " + member.mention)  # Send the embed with some text
 
 
 def setup(bot):

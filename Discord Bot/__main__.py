@@ -14,7 +14,7 @@ from datetime import datetime
 import discord
 from discord.ext import commands
 # our imports
-from bot_commands import warning, base, journal, art
+from bot_commands import warning, base, journal, art, notes, pagetest
 # load config
 config = json.load(open('config.json',))
 
@@ -24,6 +24,8 @@ bot.add_cog(base.Greetings(bot))
 bot.add_cog(warning.Warnings(bot))
 bot.add_cog(journal.Journal(bot))
 bot.add_cog(art.Draw(bot))
+bot.add_cog(notes.Notes(bot))
+#bot.add_cog(pagetest.PageTest(bot))
 
 
 @bot.event

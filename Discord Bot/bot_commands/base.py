@@ -62,7 +62,7 @@ class Greetings(commands.Cog):
         member = ctx.author
         print(member)
         print(member.id)
-        await ctx.respond("Pong!")
+        await ctx.respond("Pong!" + member.mention)
 
 
 

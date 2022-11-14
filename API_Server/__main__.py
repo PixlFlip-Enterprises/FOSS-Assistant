@@ -10,6 +10,7 @@ from flask import Flask, request
 from flask_restful import Api, Resource, reqparse
 # other imports
 from core_utilities.rest_resources import *
+from core_utilities import journal, notes
 import json
 
 '''
@@ -39,7 +40,7 @@ print("   \ \__\   \ \_______\____\_\  \ ____\_\  \        \ \__\ \__\____\_\  \
 print("    \|__|    \|_______|\_________\\\_________\        \|__|\|__|\_________\\\_________\|__|\_________\   \|__|  \|__|\|__|\|__| \|__|    \|__| ")
 print("                      \|_________\|_________|                 \|_________\|_________|   \|_________|                                         ")
 print()
-print("Running Version: 0.9")
+print("Running Version: 1.0.2")
 
 # init flask restful api server
 app = Flask(__name__)
@@ -62,7 +63,9 @@ class HelloWorld(Resource):
 
 # add resources to api
 api.add_resource(HelloWorld, "/hello/hello2/<string:name>/<int:age>")
-api.add_resource(Journal, "/journal/<string:profile_id>/")
+
+api.add_resource(journal.Journal, "/journal/<string:profile_id>/")
+api.add_resource(notes.Notes, "/notes/<string:profile_id>/")
 api.add_resource(Profile, "/profile/")
 # run program with debug, something you want to disable for production builds
 app.run(debug=config['api_server_debug_mode'])
