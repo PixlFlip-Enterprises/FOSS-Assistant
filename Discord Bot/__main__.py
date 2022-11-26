@@ -7,24 +7,24 @@ Spin it off and make it a client not a server node.
 """
 from datetime import datetime
 import time, json
-import wikipedia
 import requests
 from mutagen.wave import WAVE
 from datetime import datetime
 import discord
 from discord.ext import commands
 # our imports
-from bot_commands import warning, base, journal, art, notes, pagetest
+from bot_commands import warning, base, journal, art, notes, poll, finance
 # load config
 config = json.load(open('config.json',))
 
 # init bot object (if sharding becomes necessary just use commands.AutoShardedBot() instead)
-bot = commands.Bot(command_prefix=config['command_prefix'], intents=discord.Intents.all())
+bot = commands.Bot(command_prefix=config['command_prefix'], intents=discord.Intents.default())
 bot.add_cog(base.Greetings(bot))
 bot.add_cog(warning.Warnings(bot))
 bot.add_cog(journal.Journal(bot))
 bot.add_cog(art.Draw(bot))
 bot.add_cog(notes.Notes(bot))
+bot.add_cog(finance.Finance(bot))
 #bot.add_cog(pagetest.PageTest(bot))
 
 

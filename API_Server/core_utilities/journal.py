@@ -1,3 +1,13 @@
+"""
+Author: PixlFlip
+
+Date: November 25, 2022
+
+Notes: A sufficient stopping point for this file.
+While possibly more could be done I'm satisfied with
+how all this cleaned up and have elected not to touch
+it farther lest I break it.
+"""
 from flask_restful import Resource, reqparse
 from datetime import datetime
 import pymysql as MySQLdb
@@ -27,10 +37,8 @@ journal_put_args.add_argument("time_zone", type=str, help="Timezone created in",
 journal_del_args = reqparse.RequestParser()
 journal_del_args.add_argument("date", type=str, help="Date of journal entry to be deleted", required=True)
 
-
 # create journal resource
 class Journal(Resource):
-
     def get(self, profile_id):
         # verify fields
         args = journal_get_args.parse_args()
@@ -84,7 +92,7 @@ class Journal(Resource):
                 except:
                     # log
                     core_functions.debug_log(user=profile_id, command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Error while retrieving the entry")
-                    return {"status": "Failed. Entry does not exist"}
+                    return {"status": "Failed.", "err_msg": "Entry does not exist"}
             except:
                 # Rollback in case there is any error
                 db.rollback()
@@ -92,7 +100,7 @@ class Journal(Resource):
             db.close()
             # return since entry doesn't exist
             core_functions.debug_log(user=profile_id, command_run="Journal View Entry", device_id=args['device_id'], command_id="000020", return_code="404", debug_msg="Entry was not found in the database")
-            return {"status": "Failed. Entry does not exist"}
+            return {"status": "Failed.", "err_msg": "Entry does not exist"}
 
 
     def put(self, profile_id):
@@ -108,19 +116,18 @@ class Journal(Resource):
             # Execute the SQL command
             sql = "INSERT INTO JOURNAL (PROFILE_ID, DATE, ENTRY, UUID, STARRED, CREATIONDEVICE, TIMEZONE) VALUES(%s, %s, %s, %s, %s, %s, %s)"
             val = (profile_id, x, args['entry'], "UPDATED SO THIS IS AN UNUSED FIELD FOR NOW", args['starred'], args['creation_device'], args['time_zone'])
-            print(val)
             cursor.execute(sql, val)
             # Commit your changes in the database
             db.commit()
         except:
             # Rollback in case there is any error
             db.rollback()
-            return {"status": "Failed. Is the data provided correct?"}
+            return {"status": "Failed.", "err_msg": "Is the data provided correct?"}
 
         # disconnect from server
         db.close()
         # note, you can put a comma and then follow it with a status code of your choice. Handy for some stuff
-        return {"status": "Completed"}, 201
+        return {"status": "Completed."}, 201
 
 
     def delete(self, profile_id):
@@ -139,17 +146,6 @@ class Journal(Resource):
         except:
             # Rollback in case there is any error
             db.rollback()
-            core_functions.debug_log(user=profile_id,
-                                     command_run="Journal Delete Entry", device_id=args['device_id'], command_id="000023",
-                                     return_code="404", debug_msg="Failed to delete entry.")
-            return {"status": "Failed. Most likely means the entry does not exist or bad input."}
-        return {"status": "Completed"}
-
-
-    def patch(self, profile_id):
-        # verify fields
-        args = journal_get_args.parse_args()
-        # log
-        core_functions.debug_log(user=profile_id, command_run="Journal Delete Entry", device_id=args['device_id'], command_id="000023", return_code="201", debug_msg="Entry was deleted.")
-        # todo update entry at a date with info provided in json
-        return {"status": "Code will go here, but this returned correctly?"}
+            core_functions.debug_log(user=profile_id, command_run="Journal Delete Entry", device_id=args['device_id'], command_id="000023", return_code="404", debug_msg="Failed to delete entry.")
+            return {"status": "Failed.", "err_msg": "Most likely means the entry does not exist or bad input."}
+        return {"status": "Completed."}

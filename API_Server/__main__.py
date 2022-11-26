@@ -10,7 +10,7 @@ from flask import Flask, request
 from flask_restful import Api, Resource, reqparse
 # other imports
 from core_utilities.rest_resources import *
-from core_utilities import journal, notes
+from core_utilities import journal, notes, finance
 import json
 
 '''
@@ -66,6 +66,7 @@ api.add_resource(HelloWorld, "/hello/hello2/<string:name>/<int:age>")
 
 api.add_resource(journal.Journal, "/journal/<string:profile_id>/")
 api.add_resource(notes.Notes, "/notes/<string:profile_id>/")
+api.add_resource(finance.Finance, "/finance/<string:profile_id>/")
 api.add_resource(Profile, "/profile/")
 # run program with debug, something you want to disable for production builds
 app.run(debug=config['api_server_debug_mode'])

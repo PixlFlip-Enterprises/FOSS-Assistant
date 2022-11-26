@@ -64,8 +64,8 @@ class Greetings(commands.Cog):
         print(member.id)
         await ctx.respond("Pong!" + member.mention)
 
-    @commands.slash_command(name="anyone", description="Randomly ping someone in the server")
-    async def anyone(self, ctx):
+    @commands.slash_command(name="someone", description="Randomly ping someone in the server")
+    async def someone(self, ctx):
         channel = self.bot.get_channel(ctx.channel.id)
         server_members = list(channel.members)
-        await ctx.respond("Anyone ping! I choose you " + random.choice(server_members).mention)
+        await ctx.respond("Someone ping! I choose you " + random.choice(server_members).mention)
